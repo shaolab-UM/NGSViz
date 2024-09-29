@@ -1,0 +1,14 @@
+{
+  "common_parameters": {
+    "num_datapoints": 100,
+    "scaler_method": "bin",
+    "flanking_size": 3000,
+    "buf_size": 300,
+    "min_mapq": 20,
+    "frag_len": 300
+  },
+  "server": {
+    "port": 8080
+  }
+}
+
