@@ -24,22 +24,27 @@ public class PhysicalCoverageCalculator {
         int min_mapq = CommonFinalParas.min_mapq;
         int frag_len = CommonFinalParas.frag_len;
 
-        File bamFile = new File(bam_file_path);
+        File bam_file = new File(bam_file_path);
+        String bam_name = bam_file.getName();
+        System.out.println("Calculate the physical coverage for each query region: " + bam_name);
+
         // check whether the bam file exist
-        if (!bamFile.exists()) {
+        if (!bam_file.exists()) {
             System.err.println("Error: The BAM file" + bam_file_path + " does not exist!");
             System.exit(1);
         }
         // create the SamReader class
         SamReaderFactory factory = SamReaderFactory.makeDefault();
-        SamReader bam_reader = factory.open(bamFile);
+        System.out.println("Read the bam file: " + bam_name);
+        SamReader bam_reader = factory.open(bam_file);
         //
         String chr_name = intervalRange.getContig();
         int query_range_start = intervalRange.getStart();
         int query_range_end = intervalRange.getEnd();
         // use the MultiValueMap to save the alignment information
-        //calculate.coverageMatrix.MultiValueMap<String, Object> readInfoMap = new MultiValueMap<>();
         // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
+        System.out.println("Get all the reads fully included in the query region: " + chr_name + "-" +
+                query_range_start + "-" + query_range_end);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
         // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;

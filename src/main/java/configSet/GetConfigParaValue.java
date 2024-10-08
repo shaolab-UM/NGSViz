@@ -14,11 +14,11 @@ public class GetConfigParaValue {
     // config file
     private String config_path = "src/main/resources/config.json";
     private ReadConfig config;
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper object_mapper = new ObjectMapper();
 
     {
         try {
-            config = objectMapper.readValue(new File(config_path), ReadConfig.class);
+            config = object_mapper.readValue(new File(config_path), ReadConfig.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -30,23 +30,23 @@ public class GetConfigParaValue {
         return num_datapoints;
     }
     public String getScalerMethod() {
-        String scaler_method = config.getCommonParameters().getScalerMethod();
+        String scaler_method = config.getCalculatorParaters().getScalerMethod();
         return scaler_method;
     }
     public int getFlankingSize() {
-        int flanking_size = config.getCommonParameters().getFlankingSize();
+        int flanking_size = config.getCalculatorParaters().getFlankingSize();
         return flanking_size;
     }
     public int getBufSize() {
-        int buf_size = config.getCommonParameters().getBufSize();
+        int buf_size = config.getCalculatorParaters().getBufSize();
         return buf_size;
     }
     public int getMinMapq() {
-        int min_mapq = config.getCommonParameters().getMinMapq();
+        int min_mapq = config.getCalculatorParaters().getMinMapq();
         return min_mapq;
     }
     public int getFragLen() {
-        int frag_len = config.getCommonParameters().getFragLen();
+        int frag_len = config.getCalculatorParaters().getFragLen();
         return frag_len;
     }
 }
