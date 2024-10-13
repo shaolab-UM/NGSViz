@@ -8,17 +8,47 @@ package configSet;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReadConfig {
+    @JsonProperty("mandatory_parameters")
+    private MandatoryParameters mandatory_parameters;
     @JsonProperty("common_parameters")
     private CommonParameters common_parameters;
     @JsonProperty("coverage_calculator")
     private CalculatorParameters calculator_parameters;
 
     // Getters
+    public MandatoryParameters getMandatoryParameters() {
+        return mandatory_parameters;
+    }
     public CommonParameters getCommonParameters() {
         return common_parameters;
     }
     public CalculatorParameters getCalculatorParaters() {
         return calculator_parameters;
+    }
+
+    public static class MandatoryParameters {
+        @JsonProperty("bam_file")
+        private String bam_file;
+        @JsonProperty("genome")
+        private String genome;
+        @JsonProperty("output_name")
+        private String output_name;
+        @JsonProperty("region_plot")
+        private String region_plot;
+
+        // Getters
+        public String getBamFile() {
+            return bam_file;
+        }
+        public String getGenome() {
+            return genome;
+        }
+        public String getOutputName() {
+            return output_name;
+        }
+        public String getRegionPlot() {
+            return region_plot;
+        }
     }
 
     public static class CommonParameters {
@@ -57,6 +87,7 @@ public class ReadConfig {
         public int getFragLen() {
             return frag_len;
         }
+
     }
 }
 

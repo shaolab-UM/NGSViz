@@ -1,13 +1,19 @@
 {
+  "mandatory_parameters": {
+    "bam_file": "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+    "genome" : "hg19",
+    "output_name" : "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M_output.txt",
+    "region_plot" : "genebody"
+  },
   "common_parameters": {
     "num_datapoints": 100
   },
   "coverage_calculator": {
     "scaler_method": "bin",
-    "flanking_size": 3000,
+    "flanking_size": 2000,
     "buf_size": 300,
     "min_mapq": 20,
-    "frag_len": 300
+    "frag_len": 150
   }
 }
 

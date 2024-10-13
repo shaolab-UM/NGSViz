@@ -1,20 +1,10 @@
 package coverageCalculator;
 
 import configSet.CommonFinalParas;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SAMRecordIterator;
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
-import htsjdk.samtools.filter.DuplicateReadFilter;
-import htsjdk.samtools.filter.MappingQualityFilter;
-import htsjdk.samtools.filter.SamRecordFilter;
 import htsjdk.samtools.util.Interval;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Benchen Ye

@@ -43,24 +43,24 @@ public class PhysicalCoverageCalculator {
         int query_range_end = intervalRange.getEnd();
         // use the MultiValueMap to save the alignment information
         // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
-        System.out.println("Get all the reads fully included in the query region: " + chr_name + "-" +
-                query_range_start + "-" + query_range_end);
+        String query_region_text =  chr_name + "-" + query_range_start + "-" + query_range_end;
+        System.out.println("Get all reads fully included in the query region: " + query_region_text);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
         // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;
         System.out.println("Query length: " + range_len);
         // create a list (length = rangeLen, value = 0)
         ArrayList<Integer> physical_coverage = new ArrayList<>(Collections.nCopies(range_len, 0));
+        System.out.println("Start to calculate physical coverage for all reads in query region: " + query_region_text);
         while (iterator.hasNext()) {
             SAMRecord record = iterator.next();
             ReadRecordProcess record_obj = new ReadRecordProcess(record);
             // filter the bam alignment for each read
             boolean filterRes = record_obj.filterOneReadAlign();
-            System.out.println(filterRes);
             // bam filter
             if (! filterRes) {
                 List<Integer> readAlignInfo = record_obj.getReadAlignmentInfo();
-                System.out.println(readAlignInfo);
+                System.out.println("Processing a read: " + readAlignInfo);
                 int align_pos_start =readAlignInfo.get(0);
                 int qwidth = readAlignInfo.get(1);
                 // read start position in the search range
@@ -70,6 +70,7 @@ public class PhysicalCoverageCalculator {
                 physical_coverage = physicalCoverageCalculate(physical_coverage, align_pos_start, qwidth);
             }
         }
+        System.out.println("Finish calculating physical coverage in query region: " + query_region_text);
         // calculate the data point coverage
         return physical_coverage;
     }

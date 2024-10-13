@@ -25,10 +25,30 @@ public class GetConfigParaValue {
     }
 
 
+    // MandatoryParameters
+    public String getBamFile() {
+        String bam_file = config.getMandatoryParameters().getBamFile();
+        return bam_file;
+    }
+    public String getGenome() {
+        String genome = config.getMandatoryParameters().getGenome();
+        return genome;
+    }
+    public String getOutputName() {
+        String output_name = config.getMandatoryParameters().getOutputName();
+        return output_name;
+    }
+    public String getRegionPlot() {
+        String output_name = config.getMandatoryParameters().getRegionPlot();
+        return output_name;
+    }
+
+    // CommonParameters
     public int getNumDatapoints() {
         int num_datapoints = config.getCommonParameters().getNumDatapoints();
         return num_datapoints;
     }
+    // CalculatorParaters
     public String getScalerMethod() {
         String scaler_method = config.getCalculatorParaters().getScalerMethod();
         return scaler_method;

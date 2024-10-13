@@ -2,7 +2,6 @@ package coverageCalculator;
 
 import configSet.CommonFinalParas;
 import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SamReader;
 import htsjdk.samtools.filter.DuplicateReadFilter;
 import htsjdk.samtools.filter.MappingQualityFilter;
 import htsjdk.samtools.filter.SamRecordFilter;
