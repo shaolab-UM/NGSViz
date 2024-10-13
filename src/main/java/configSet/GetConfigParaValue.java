@@ -48,18 +48,50 @@ public class GetConfigParaValue {
         int num_datapoints = config.getCommonParameters().getNumDatapoints();
         return num_datapoints;
     }
-    // CalculatorParaters
-    public String getScalerMethod() {
-        String scaler_method = config.getCalculatorParaters().getScalerMethod();
-        return scaler_method;
+    public int getMiddleDatapoints(){
+        int num_datapoints = config.getCommonParameters().getMiddleDatapoints();
+        return num_datapoints;
     }
+    public int getFlankingRegionDatapoints(){
+        int flanking_region_datapoints = config.getCommonParameters().getFlankingRegionDatapoints();
+        return flanking_region_datapoints;
+    }
+    public String[] getPlotTitle(){
+        String[] plot_title = config.getCommonParameters().getPlotTitle();
+        return plot_title;
+    }
+
+    // CalculatorParaters
+    public String getDatabase(){
+        String database = config.getCalculatorParaters().getDatabase();
+        return database;
+    }
+
     public int getFlankingSize() {
         int flanking_size = config.getCalculatorParaters().getFlankingSize();
         return flanking_size;
     }
-    public int getBufSize() {
-        int buf_size = config.getCalculatorParaters().getBufSize();
-        return buf_size;
+
+    public int getFlankFactor() {
+        int flank_factor = config.getCalculatorParaters().getFlankFactor();
+        return flank_factor;
+    }
+    public int getRobust() {
+        int robust = config.getCalculatorParaters().getRobust();
+        return robust;
+    }
+    public int getSamprate() {
+        int samprate = config.getCalculatorParaters().getSamprate();
+        return samprate;
+    }
+    public int getCoresNum() {
+        int cores_num = config.getCalculatorParaters().getCoresNum();
+        return cores_num;
+    }
+
+    public String getScalerMethod() {
+        String scaler_method = config.getCalculatorParaters().getScalerMethod();
+        return scaler_method;
     }
     public int getMinMapq() {
         int min_mapq = config.getCalculatorParaters().getMinMapq();
@@ -69,4 +101,38 @@ public class GetConfigParaValue {
         int frag_len = config.getCalculatorParaters().getFragLen();
         return frag_len;
     }
+    public int getBufSize() {
+        int buf_size = config.getCalculatorParaters().getBufSize();
+        return buf_size;
+    }
+
+    public String getStrandSpec() {
+        String strand_spec = config.getCalculatorParaters().getStrandSpec();
+        return strand_spec;
+    }
+    public int getFiTag() {
+        int fi_tag = config.getCalculatorParaters().getFiTag();
+        return fi_tag;
+    }
+    public String[] getGeneList() {
+        String[] gene_list = config.getCalculatorParaters().getGeneList();
+        return gene_list;
+    }
+    public boolean getRnaseqGb() {
+        boolean rnaseq_gb = config.getCalculatorParaters().getRnaseqGb();
+        return rnaseq_gb;
+    }
+    public int getLargeInterval() {
+        int large_interval = config.getCalculatorParaters().getLargeInterval();
+        return large_interval;
+    }
+    public String getIntervalType() {
+        String interval_type = config.getCalculatorParaters().getIntervalType();
+        return interval_type;
+    }
+    public String[] getRegionLabels() {
+        String[] region_labels = config.getCalculatorParaters().getRegionLabels();
+        return region_labels;
+    }
+
 }

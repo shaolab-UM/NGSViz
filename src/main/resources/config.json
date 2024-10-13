@@ -6,14 +6,34 @@
     "region_plot" : "genebody"
   },
   "common_parameters": {
-    "num_datapoints": 100
+    "num_datapoints": 100,
+    "middle_datapoints": 61,
+    "flanking_region_datapoints": 21,
+    "plot_title": ["Noname"]
   },
   "coverage_calculator": {
-    "scaler_method": "bin",
+    "database": "ensembl",
+
     "flanking_size": 2000,
-    "buf_size": 300,
+
+    "flank_factor": 0,
+    "robust": 0,
+    "samprate": 1,
+    "cores_num": 4,
+
+    "scaler_method": "bin",
     "min_mapq": 20,
-    "frag_len": 150
+    "frag_len": 150,
+    "buf_size": 150,
+    
+    "strand_spec": "both",
+    "fi_tag": 0,
+
+    "gene_list": [""],
+    "rnaseq_gb": false,
+    "large_interval": 1,
+    "interval_type": "large_interval",
+    "region_labels": ["TES", "TSS"]
   }
 }
 

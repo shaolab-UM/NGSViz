@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/ProcessDatabaseRecord.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/configSet/CommonFinalParas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/CommonFinalParas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetConfigParaValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/GetConfigParaValue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ReadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/ReadConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/GetGeneAlignmentInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/GetGeneAlignmentInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ExecuteSQLFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ExecuteSQLFile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,42 +57,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Config.executor&quot;: &quot;Run&quot;,
-    &quot;Application.CoverageCalculator.executor&quot;: &quot;Run&quot;,
-    &quot;Application.CreateBamIndex.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DatabaseConnector.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DatabaseReader.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ExecuteSQLFile.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.PhysicalCoverageListObj.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SQLiteExample.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SQLiteQuery.executor&quot;: &quot;Run&quot;,
-    &quot;Application.coverageCalculator.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.coverageCalculator.dataScaler.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path&quot;: &quot;/opt/homebrew/Cellar/maven/3.9.9/libexec/localRepository&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;true&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;true&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/bencheye/myProj/ngsPlot/NGSPlot2&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.47241378&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Config.executor": "Run",
+    "Application.CoverageCalculator.executor": "Run",
+    "Application.CreateBamIndex.executor": "Run",
+    "Application.DatabaseConnector.executor": "Run",
+    "Application.DatabaseReader.executor": "Run",
+    "Application.ExecuteSQLFile.executor": "Run",
+    "Application.Main (1).executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.PhysicalCoverageListObj.executor": "Run",
+    "Application.SQLiteExample.executor": "Run",
+    "Application.SQLiteQuery.executor": "Run",
+    "Application.coverageCalculator.Main.executor": "Run",
+    "Application.coverageCalculator.dataScaler.Main.executor": "Run",
+    "Downloaded.Files.Path": "/opt/homebrew/Cellar/maven/3.9.9/libexec/localRepository",
+    "Downloaded.Files.Path.Enabled": "true",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "Repository.Attach.Annotations": "true",
+    "Repository.Attach.JavaDocs": "true",
+    "Repository.Attach.Sources": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSPlot2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.47241378",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -108,9 +102,9 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SQLiteQuery">
-    <configuration name="DatabaseReader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.DatabaseReader" />
+  <component name="RunManager" selected="Application.Main (1)">
+    <configuration name="ExecuteSQLFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sqldbOperate.ExecuteSQLFile" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
@@ -122,15 +116,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ExecuteSQLFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.ExecuteSQLFile" />
+    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="sqldbOperate.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -176,11 +164,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main (1)" />
         <item itemvalue="Application.SQLiteQuery" />
         <item itemvalue="Application.ExecuteSQLFile" />
         <item itemvalue="Application.coverageCalculator.Main" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.DatabaseReader" />
       </list>
     </recent_temporary>
   </component>
@@ -207,7 +195,7 @@
       <workItem from="1727362647576" duration="17195000" />
       <workItem from="1727618589006" duration="22986000" />
       <workItem from="1728218299028" duration="18445000" />
-      <workItem from="1728543583981" duration="6665000" />
+      <workItem from="1728543583981" duration="13164000" />
     </task>
     <servers />
   </component>
