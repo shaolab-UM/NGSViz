@@ -9,6 +9,7 @@ import htsjdk.samtools.util.Interval;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,15 +20,10 @@ import java.util.List;
 public class PhysicalCoverageCalculator {
 
     // calculate the physical coverage for each query region
-    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path, Interval intervalRange) {
-        // use final para*
-        int min_mapq = CommonFinalParas.min_mapq;
-        int frag_len = CommonFinalParas.frag_len;
-
+    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path, Interval interval_range) {
         File bam_file = new File(bam_file_path);
         String bam_name = bam_file.getName();
         System.out.println("Calculate the physical coverage for each query region: " + bam_name);
-
         // check whether the bam file exist
         if (!bam_file.exists()) {
             System.err.println("Error: The BAM file" + bam_file_path + " does not exist!");
@@ -38,39 +34,39 @@ public class PhysicalCoverageCalculator {
         System.out.println("Read the bam file: " + bam_name);
         SamReader bam_reader = factory.open(bam_file);
         //
-        String chr_name = intervalRange.getContig();
-        int query_range_start = intervalRange.getStart();
-        int query_range_end = intervalRange.getEnd();
+        String chr_name = interval_range.getContig();
+        int query_range_start = interval_range.getStart();
+        int query_range_end = interval_range.getEnd();
         // use the MultiValueMap to save the alignment information
         // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
-        String query_region_text =  chr_name + "-" + query_range_start + "-" + query_range_end;
-        System.out.println("Get all reads fully included in the query region: " + query_region_text);
+        System.out.println("Get all reads fully included in the query region: " + interval_range);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
         // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;
         System.out.println("Query length: " + range_len);
         // create a list (length = rangeLen, value = 0)
         ArrayList<Integer> physical_coverage = new ArrayList<>(Collections.nCopies(range_len, 0));
-        System.out.println("Start to calculate physical coverage for all reads in query region: " + query_region_text);
+        System.out.println("Start to calculate physical coverage for all reads in query region: " + interval_range);
         while (iterator.hasNext()) {
             SAMRecord record = iterator.next();
-            ReadRecordProcess record_obj = new ReadRecordProcess(record);
             // filter the bam alignment for each read
-            boolean filterRes = record_obj.filterOneReadAlign();
+            boolean filterRes = ReadRecordProcess.filterOneReadAlign(record);
             // bam filter
             if (! filterRes) {
-                List<Integer> readAlignInfo = record_obj.getReadAlignmentInfo();
-                System.out.println("Processing a read: " + readAlignInfo);
-                int align_pos_start =readAlignInfo.get(0);
-                int qwidth = readAlignInfo.get(1);
-                // read start position in the search range
-                // index start from zero, so no add 1
-                align_pos_start = align_pos_start - query_range_start;
-                // calculate the physical coverage
-                physical_coverage = physicalCoverageCalculate(physical_coverage, align_pos_start, qwidth);
+                List<Integer> readAlignInfo = ReadRecordProcess.getReadAlignmentInfo(record, interval_range);
+                if (readAlignInfo.get(0) != 0) {
+                    System.out.println("Processing a read: " + readAlignInfo);
+                    int align_pos_start =readAlignInfo.get(0);
+                    int qwidth = readAlignInfo.get(1);
+                    // read start position in the search range
+                    // index start from zero, so no add 1
+                    align_pos_start = align_pos_start - query_range_start;
+                    // calculate the physical coverage
+                    physical_coverage = physicalCoverageCalculate(physical_coverage, align_pos_start, qwidth);
+                }
             }
         }
-        System.out.println("Finish calculating physical coverage in query region: " + query_region_text);
+        System.out.println("Finish calculating physical coverage in query region: " + interval_range);
         // calculate the data point coverage
         return physical_coverage;
     }

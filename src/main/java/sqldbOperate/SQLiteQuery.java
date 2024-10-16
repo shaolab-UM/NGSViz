@@ -6,26 +6,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @author Benchen Ye
  * @create 2024-10--20:28
+ * @function get all the genome coordinates for the query key `refname`
  */
 public class SQLiteQuery {
-    public static void main(String[] args) {
-        List<Map<String, Object>> results = queryDatabaseRecord();
-        results.parallelStream().forEach(SQLiteQuery::processRecord);
-    }
 
-    public static List<Map<String, Object>> queryDatabaseRecord() {
+    public static List<Map<String, Object>> queryGenomeCoorDatabaseRecord(String query_refname) {
+        // can use the chunk to improve the performance
+        // DB need the whole path
         String url = "jdbc:sqlite:coordinate_db.db";
-        String query_keyword = "hg19.ensembl.genebody.protein_coding";
 
         List<Map<String, Object>> results = new ArrayList<>();
+        // query database table name is `elementgenomecoordinate`
         String query = "SELECT *  FROM elementgenomecoordinate WHERE refname = ?";
+        System.out.println("Starting the query in the Table elementgenomecoordinate!");
+        System.out.println("The query keyword is : " + query_refname);
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, query_keyword);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            PreparedStatement prepared_statement = connection.prepareStatement(query)) {
+            prepared_statement.setString(1, query_refname);
+            try (ResultSet resultSet = prepared_statement.executeQuery()) {
                 while (resultSet.next()) {
                     Map<String, Object> record = new HashMap<>();
                     // get the items from database table with getString/getInt
@@ -40,9 +42,6 @@ public class SQLiteQuery {
             e.printStackTrace();
         }
         return results;
-    }
-    private static void processRecord(Map<String, Object> record) {
-        System.out.println("Processing record: " + record);
     }
 }
 

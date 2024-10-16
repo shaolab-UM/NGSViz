@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/CommonFinalParas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/CommonFinalParas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetConfigParaValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/GetConfigParaValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ReadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/ReadConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ProcessDatabaseRecord.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/DatabaseReader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ExecuteSQLFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,7 +106,7 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main (1)">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="ExecuteSQLFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="sqldbOperate.ExecuteSQLFile" />
       <module name="NGSPlot2" />
@@ -164,11 +168,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main (1)" />
-        <item itemvalue="Application.SQLiteQuery" />
-        <item itemvalue="Application.ExecuteSQLFile" />
-        <item itemvalue="Application.coverageCalculator.Main" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.SQLiteQuery" />
+        <item itemvalue="Application.coverageCalculator.Main" />
+        <item itemvalue="Application.Main (1)" />
+        <item itemvalue="Application.ExecuteSQLFile" />
       </list>
     </recent_temporary>
   </component>
@@ -195,7 +199,7 @@
       <workItem from="1727362647576" duration="17195000" />
       <workItem from="1727618589006" duration="22986000" />
       <workItem from="1728218299028" duration="18445000" />
-      <workItem from="1728543583981" duration="13164000" />
+      <workItem from="1728543583981" duration="46529000" />
     </task>
     <servers />
   </component>
