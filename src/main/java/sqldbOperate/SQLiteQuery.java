@@ -31,6 +31,9 @@ public class SQLiteQuery {
                 while (resultSet.next()) {
                     Map<String, Object> record = new HashMap<>();
                     // get the items from database table with getString/getInt
+                    String record_name = resultSet.getString("gname") + ":" +
+                            resultSet.getString("tid");
+                    record.put("record_name", record_name);
                     record.put("chrom", resultSet.getString("chrom"));
                     record.put("start", resultSet.getInt("start"));
                     record.put("end", resultSet.getInt("end"));

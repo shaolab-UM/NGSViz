@@ -19,6 +19,7 @@ public class PintProcessRecordGenomeCoordinateDB {
     private static int flanking_size = CommonFinalParas.flanking_size;
     private static int buf_size = CommonFinalParas.buf_size;
     private static String scaler_method = CommonFinalParas.scaler_method;
+    private static int num_datapoints = CommonFinalParas.num_datapoints;
 
 
 

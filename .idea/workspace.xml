@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/CurrentTime.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/DataPointNum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/QueryGenomeRange.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/AverageCoverage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Matrix2CSV.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeIntervalMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config-board.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config-point.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ProcessDatabaseRecord.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/DatabaseReader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ExecuteSQLFile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
     </list>
@@ -63,15 +68,22 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.AverageCoverageTrimmedMeanMatrix.executor": "Run",
+    "Application.BamUniqChar.executor": "Run",
     "Application.Config.executor": "Run",
     "Application.CoverageCalculator.executor": "Run",
     "Application.CreateBamIndex.executor": "Run",
+    "Application.DataPointNum.executor": "Run",
     "Application.DatabaseConnector.executor": "Run",
     "Application.DatabaseReader.executor": "Run",
     "Application.ExecuteSQLFile.executor": "Run",
+    "Application.LargeIntervalMain.executor": "Run",
     "Application.Main (1).executor": "Run",
     "Application.Main.executor": "Run",
+    "Application.Matrix2CSV.executor": "Run",
     "Application.PhysicalCoverageListObj.executor": "Run",
+    "Application.PointInternalMain.executor": "Run",
+    "Application.ReadBam.executor": "Run",
     "Application.SQLiteExample.executor": "Run",
     "Application.SQLiteQuery.executor": "Run",
     "Application.coverageCalculator.Main.executor": "Run",
@@ -85,7 +97,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSPlot2",
+    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSPlot2/src/main/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -100,60 +112,28 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
-    <configuration name="ExecuteSQLFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.ExecuteSQLFile" />
+  <component name="RunManager" selected="Application.PointInternalMain">
+    <configuration name="AverageCoverageTrimmedMeanMatrix" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="coverageCalculator.AverageCoverageTrimmedMeanMatrix" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="sqldbOperate.*" />
+          <option name="PATTERN" value="coverageCalculator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="NGSPlot2" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.Main" />
-      <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="sqldbOperate.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SQLiteQuery" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.SQLiteQuery" />
-      <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="sqldbOperate.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="coverageCalculator.Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="coverageCalculator.Main" />
       <module name="NGSPlot2" />
       <extension name="coverage">
@@ -166,13 +146,52 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Matrix2CSV" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="coverageCalculator.Matrix2CSV" />
+      <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="coverageCalculator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PointInternalMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sqldbOperate.PointInternalMain" />
+      <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="sqldbOperate.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReadBam" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ReadBam.ReadBam" />
+      <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ReadBam.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PointInternalMain" />
+        <item itemvalue="Application.Matrix2CSV" />
+        <item itemvalue="Application.AverageCoverageTrimmedMeanMatrix" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.SQLiteQuery" />
-        <item itemvalue="Application.coverageCalculator.Main" />
-        <item itemvalue="Application.Main (1)" />
-        <item itemvalue="Application.ExecuteSQLFile" />
+        <item itemvalue="Application.ReadBam" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +218,7 @@
       <workItem from="1727362647576" duration="17195000" />
       <workItem from="1727618589006" duration="22986000" />
       <workItem from="1728218299028" duration="18445000" />
-      <workItem from="1728543583981" duration="46529000" />
+      <workItem from="1728543583981" duration="84019000" />
     </task>
     <servers />
   </component>

@@ -1,14 +1,14 @@
 {
   "mandatory_parameters": {
-    "bam_file": "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+    "bam_file": ["/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam"],
     "genome" : "hg19",
     "output_name" : "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M_output.txt",
     "region_plot" : "tss"
   },
   "common_parameters": {
     "num_datapoints": 100,
-    "middle_datapoints": 61,
-    "flanking_region_datapoints": 21,
+    "middle_datapoints": 1,
+    "flanking_region_datapoints": 50,
     "plot_title": ["Noname"]
   },
   "coverage_calculator": {
