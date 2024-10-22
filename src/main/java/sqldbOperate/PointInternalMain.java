@@ -47,7 +47,8 @@ public class PointInternalMain {
 
         // whether is the pair-end bam
 
-        // Calculate SEM if needed. Shut off SEM in single gene case.
+        // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
+
 
         // output the result
         System.out.println("Coverage Scaled Matrix finish!");
@@ -57,7 +58,6 @@ public class PointInternalMain {
         // Return avg. profile.
         double[] average_coverage_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
         // save the data
-
         Matrix2CSV.saveMatrix2CSV(coverage_scaled_matrix, row_names, heatmap_data_path);
         Matrix2CSV.saveMatrix2CSV(average_coverage_matrix, average_coverage_path);
 

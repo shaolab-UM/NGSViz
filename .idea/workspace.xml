@@ -5,21 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/CurrentTime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/DataPointNum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DataPrepare/QueryGenomeRange.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/AverageCoverage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Matrix2CSV.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeIntervalMain.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config-board.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config-point.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +72,7 @@
     "Application.PhysicalCoverageListObj.executor": "Run",
     "Application.PointInternalMain.executor": "Run",
     "Application.ReadBam.executor": "Run",
+    "Application.SEMCalculator.executor": "Run",
     "Application.SQLiteExample.executor": "Run",
     "Application.SQLiteQuery.executor": "Run",
     "Application.coverageCalculator.Main.executor": "Run",
@@ -119,7 +108,7 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.PointInternalMain">
+  <component name="RunManager" selected="Application.SEMCalculator">
     <configuration name="AverageCoverageTrimmedMeanMatrix" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="coverageCalculator.AverageCoverageTrimmedMeanMatrix" />
       <module name="NGSPlot2" />
@@ -172,12 +161,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ReadBam" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ReadBam.ReadBam" />
+    <configuration name="SEMCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="coverageCalculator.SEMCalculator" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="ReadBam.*" />
+          <option name="PATTERN" value="coverageCalculator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -187,11 +176,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SEMCalculator" />
         <item itemvalue="Application.PointInternalMain" />
         <item itemvalue="Application.Matrix2CSV" />
         <item itemvalue="Application.AverageCoverageTrimmedMeanMatrix" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.ReadBam" />
       </list>
     </recent_temporary>
   </component>
@@ -218,7 +207,7 @@
       <workItem from="1727362647576" duration="17195000" />
       <workItem from="1727618589006" duration="22986000" />
       <workItem from="1728218299028" duration="18445000" />
-      <workItem from="1728543583981" duration="84019000" />
+      <workItem from="1728543583981" duration="105480000" />
     </task>
     <servers />
   </component>
