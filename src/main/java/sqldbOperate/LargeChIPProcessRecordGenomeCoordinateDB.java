@@ -1,19 +1,25 @@
 package sqldbOperate;
 
 import DataPrepare.DataPointNum;
-import DataPrepare.QueryGenomeRange;
+import ReadBam.QueryGenomeRange;
+import ReadBam.ReadBam;
+
 import configSet.CommonFinalParas;
 import coverageCalculator.PhysicalCoverageCalculator;
+import coverageCalculator.TrimBuffer;
 import coverageCalculator.dataScaler.DataScaler;
+import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.Interval;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Benchen Ye
  * @create 2024-10--16:16
+ * @function calculate the scaled coverage of large ChIP for each query region (record)
  */
 public class LargeChIPProcessRecordGenomeCoordinateDB {
         private static String region_plot = CommonFinalParas.region_plot;
@@ -24,14 +30,15 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
         private static int flank_factor = CommonFinalParas.flank_factor;
         private static int flank_size;
 
-        public static void processRecord(Map<String, Object> record) {
+        public static List<Double> processRecord(Map<String, Object> record) {
             System.out.println("Processing record: " + record);
             // genome coordinate information
             String chr_name = (String) record.get("chrom");
             int start_pos = (int) record.get("start");
             int end_pos = (int) record.get("end");
-            String strand = (String) record.get("strand");
+            String query_strand = (String) record.get("strand");
 
+            // get the number of middle point and flank_point
             ArrayList<Integer> data_point_list = DataPointNum.getDataPointNum();
             int num_middle_point = data_point_list.get(0);
             int num_flank_point = data_point_list.get(1);
@@ -48,48 +55,37 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
             int query_length = interval_range.getEnd() - interval_range.getStart() + 1;
 
             // calculate the physical coverage for each query region
-
-            // query the bam for the given region
             ArrayList<Integer> physical_coverage =
-                    PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range);
-
+                    PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);
             /*
-            # Subset by strand info.
-            if(strand.spec != 'both') {
-                if(strand.spec == 'same') {
-                    s.mask = srg$strand == as.character(strand)
-                } else {
-                    s.mask = srg$strand != as.character(strand)
-                }
-                all.mask <- all.mask & s.mask
-             }
-                # If paired, filter reads that are not properly paired.
-                paired <- all(with(srg, is.na(isize) | isize != 0))
-                if(paired) {
-                    p.mask <- with(srg, rname == mrnm & xor(strand == '+', isize < 0))
-                    all.mask <- all.mask & p.mask
-                }
-
+            # If paired, filter reads that are not properly paired.
+            paired <- all(with(srg, is.na(isize) | isize != 0))
+            if(paired) {
+                p.mask <- with(srg, rname == mrnm & xor(strand == '+', isize < 0))
+                all.mask <- all.mask & p.mask
+            }
              */
 
             // Filter transcripts whose chromosomes do not match bam file.
 
-
-            /*
-
-            //System.out.println("Physical coverage: " + physical_coverage);
-
-            // remove the bufsize
+            // remove the buffers from the coverage
+            physical_coverage = TrimBuffer.trimBuffer(physical_coverage, buf_size);
 
             // scale the coverage into the data point for plot
             DataScaler data_scaler = new DataScaler(physical_coverage);
             List<Double> coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
+            // if strand is `-` , reverse the coverage
+            if(query_strand.equals("-")){
+                System.out.println("query strand: " + query_strand);
+                System.out.println("reverse the scaled coverage. " );
+                Collections.reverse(coverage_scaled);
+            }
+            // (done in the spline method) Floor negative values which are caused by spline.
+
+
             System.out.println(coverage_scaled);
             System.out.println("finishing record: " + record);
             return coverage_scaled;
-
-             */
-
         }
         // identify the middle point coordinate for the point interval of query gene
         private static int getMiddlePointPos(int start_pos, int end_pos, String strand) {

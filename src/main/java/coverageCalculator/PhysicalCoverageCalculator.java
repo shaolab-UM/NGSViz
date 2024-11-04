@@ -1,38 +1,27 @@
 package coverageCalculator;
 
-import configSet.CommonFinalParas;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.util.Interval;
+import ReadBam.ReadBam;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import ReadBam.ReadRecordProcess;
 
 /**
  * @author Benchen Ye
  * @create 2024-09--22:25
+ * @function calculate the physical coverage for one query region
  */
 public class PhysicalCoverageCalculator {
-
     // calculate the physical coverage for each query region
-    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path, Interval interval_range) {
-        File bam_file = new File(bam_file_path);
-        String bam_name = bam_file.getName();
-        System.out.println("Calculate the physical coverage for each query region: " + bam_name);
-        // check whether the bam file exist
-        if (!bam_file.exists()) {
-            System.err.println("Error: The BAM file" + bam_file_path + " does not exist!");
-            System.exit(1);
-        }
-        // create the SamReader class
-        SamReaderFactory factory = SamReaderFactory.makeDefault();
-        System.out.println("Read the bam file: " + bam_name);
-        SamReader bam_reader = factory.open(bam_file);
+    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path,
+                                                               Interval interval_range,
+                                                               String query_strand)
+    {
         //
         String chr_name = interval_range.getContig();
         int query_range_start = interval_range.getStart();
@@ -40,35 +29,76 @@ public class PhysicalCoverageCalculator {
         // use the MultiValueMap to save the alignment information
         // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
         System.out.println("Get all reads fully included in the query region: " + interval_range);
+        SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
         // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;
         System.out.println("Query length: " + range_len);
         // create a list (length = rangeLen, value = 0)
-        ArrayList<Integer> physical_coverage = new ArrayList<>(Collections.nCopies(range_len, 0));
+        ArrayList<Integer> coverage = new ArrayList<>(Collections.nCopies(range_len, 0));
         System.out.println("Start to calculate physical coverage for all reads in query region: " + interval_range);
         while (iterator.hasNext()) {
             SAMRecord record = iterator.next();
             // filter the bam alignment for each read
-            boolean filterRes = ReadRecordProcess.filterOneReadAlign(record);
+            boolean filterRes = ReadRecordProcess.filterOneReadAlign(record, query_strand);
             // bam filter
             if (! filterRes) {
+
+                // If paired, filter reads that are not properly paired.
+                //        paired <- all(with(srg, is.na(isize) | isize != 0))
+                //        if(paired) {
+                //            p.mask <- with(srg, rname == mrnm & xor(strand == '+', isize < 0))
+                //            all.mask <- all.mask & p.mask
+                //        }
+
+                //if(paired) {
+                //                cov.pos <- with(srg, ifelse(isize < 0, mpos, pos))
+                //                cov.wd <- abs(srg$isize)
+                //            } else {
+                //                # Adjust negative read positions for physical coverage.
+                //                cov.pos <- with(srg, ifelse(strand == '-',
+                //                                            pos - fraglen + qwidth, pos))
+                //                cov.wd <- fraglen
+                //            }
+
+                // get the alignment read information
                 List<Integer> readAlignInfo = ReadRecordProcess.getReadAlignmentInfo(record, interval_range);
                 if (readAlignInfo.get(0) != 0) {
                     System.out.println("Processing a read: " + readAlignInfo);
-                    int align_pos_start =readAlignInfo.get(0);
+                    int align_pos_start = readAlignInfo.get(0);
                     int qwidth = readAlignInfo.get(1);
                     // read start position in the search range
                     // index start from zero, so no add 1
                     align_pos_start = align_pos_start - query_range_start;
                     // calculate the physical coverage
-                    physical_coverage = physicalCoverageCalculate(physical_coverage, align_pos_start, qwidth);
+                    coverage = physicalCoverageCalculate(coverage, align_pos_start, qwidth);
+
+                    // if(!is.null(gr.rna)) {  # RNA-seq.
+                    //                # Shift exonic ranges by subtracting start positions.
+                    //                # BE careful with negative start positions! Need to adjust end
+                    //                # positions first(or the GRanges lib will emit errors if
+                    //                # start > end).
+                    //                # Negative start positions happen when flanking region exceeds
+                    //                # the chromosomal start.
+                    //                if(start > 0) {
+                    //                    start(gr.rna) <- start(gr.rna) - start + 1
+                    //                    end(gr.rna) <- end(gr.rna) - start + 1
+                    //                } else {
+                    //                    end(gr.rna) <- end(gr.rna) - start + 1
+                    //                    start(gr.rna) <- start(gr.rna) - start + 1
+                    //                }
+                    //                # Concatenate all exon coverages.
+                    //                covg[ranges(gr.rna)]
+                    //            } else {  # ChIP-seq.
+                    //                covg
+                    //            }
+
                 }
             }
         }
         System.out.println("Finish calculating physical coverage in query region: " + interval_range);
         // calculate the data point coverage
-        return physical_coverage;
+        return coverage;
     }
 
     // calculate the physical coverage for a reads in query range

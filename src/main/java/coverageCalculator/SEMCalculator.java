@@ -96,4 +96,25 @@ public class SEMCalculator {
         System.out.println("Sem: " + sem);
         return sem;
     }
+    // get each column from a matrix
+    public static double[] getColumnFromMatrix(double[][] matrix, int col_index) {
+        // get the row number of matrix for matrix.length
+        int num_rows = matrix.length;
+        double[] column_list = new double[matrix.length];
+        for (int row = 0; row < num_rows; row++) {
+            column_list[row] = matrix[row][col_index];
+        }
+        return column_list;
+    }
+    // calculate the SEM value for each column from a matrix
+    public static double[] calculateSEM2MatrixColumn(double[][] matrix, double trim_ratio) {
+        int num_col = matrix[0].length;
+        double[] sem_list = new double[num_col];
+        for (int col = 0; col < num_col; col++) {
+            double[] matrix_column_list = getColumnFromMatrix(matrix, col);
+            double sem_value = calculateSEM(matrix_column_list, trim_ratio);
+            sem_list[col] = sem_value;
+        }
+        return sem_list;
+    }
 }

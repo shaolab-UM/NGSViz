@@ -42,13 +42,12 @@ public class PointInternalMain {
             for (int j = 0; j < coverage_scaled.size(); j++) {
                 coverage_scaled_matrix[i][j] = coverage_scaled.get(j);
             }
-            //System.out.println("Coverage Scaled Sum: " + coverage_scaled_sum);
         }
 
         // whether is the pair-end bam
 
         // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
-
+        double[] confi_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
 
         // output the result
         System.out.println("Coverage Scaled Matrix finish!");
@@ -60,7 +59,6 @@ public class PointInternalMain {
         // save the data
         Matrix2CSV.saveMatrix2CSV(coverage_scaled_matrix, row_names, heatmap_data_path);
         Matrix2CSV.saveMatrix2CSV(average_coverage_matrix, average_coverage_path);
-
     }
 }
 

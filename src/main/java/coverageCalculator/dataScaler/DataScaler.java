@@ -12,7 +12,6 @@ import java.util.List;
 
 // Class: scale the physical coverage into the number of data point to plot
 // Constructor Input:
-//
 public class DataScaler {
     private ArrayList<Integer> physical_coverage;
     private int num_datapoints = CommonFinalParas.num_datapoints;
@@ -87,6 +86,10 @@ public class DataScaler {
             // Linear interpolation method is used to calculate the value after interpolation
             double interpolatedValue = (1 - weight) * physical_coverage.get(lower) +
                     weight * physical_coverage.get(upper);
+            // Floor negative values which are caused by spline.
+            if(interpolatedValue < 0){
+                interpolatedValue = 0;
+            }
             coverage_scaled.add(interpolatedValue);
         }
         return coverage_scaled;

@@ -1,5 +1,6 @@
 package sqldbOperate;
 
+import ReadBam.QueryGenomeRange;
 import configSet.CommonFinalParas;
 import coverageCalculator.PhysicalCoverageCalculator;
 import coverageCalculator.dataScaler.DataScaler;
@@ -24,25 +25,27 @@ public class PintProcessRecordGenomeCoordinateDB {
 
 
     public static List<Double> processRecord(Map<String, Object> record) {
+        List<Double> coverage_scaled = new ArrayList<>();
         System.out.println("Processing record: " + record);
+        // genome coordinate information
         String chr_name = (String) record.get("chrom");
         int start_pos = (int) record.get("start");
         int end_pos = (int) record.get("end");
-        String strand = (String) record.get("strand");
-        int middle_point = getMiddlePointPos(start_pos, end_pos, strand);
+        String query_strand = (String) record.get("strand");
+        int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
         System.out.println("The middle point is " + middle_point);
         // Specify the genome interval range to calculate the coverage
-        Interval interval_range = getQueryBamGranges(chr_name, middle_point);
+        Interval interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
         // calculate the physical coverage for each query region
         ArrayList<Integer> physical_coverage =
-                PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range);
+                PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);
         //System.out.println("Physical coverage: " + physical_coverage);
 
         // remove the bufsize
 
         // scale the coverage into the data point for plot
         DataScaler data_scaler = new DataScaler(physical_coverage);
-        List<Double> coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
+        coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
         System.out.println(coverage_scaled);
         System.out.println("finishing record: " + record);
         return coverage_scaled;
@@ -60,12 +63,5 @@ public class PintProcessRecordGenomeCoordinateDB {
         }
         return middle_point;
     }
-    // calculate the range coordinate of point interval of query gene
-    private static Interval getQueryBamGranges(String chr_name, int middle_point){
-        Interval interval_range;
-        int query_start = middle_point - flanking_size - buf_size;
-        int query_end = middle_point + flanking_size + buf_size;
-        interval_range = new Interval(chr_name, query_start, query_end);
-        return interval_range;
-    }
+
 }

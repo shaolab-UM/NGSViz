@@ -16,9 +16,9 @@ import java.util.Set;
  * @create 2024-10--18:56
  */
 public class ReadBam {
-    private static String bam_file_path = CommonFinalParas.bam_file;
+    // test
 
-    public static SamReader getBamReader () {
+    public static SamReader getBamReader (String bam_file_path) {
         File bam_file = new File(bam_file_path);
         String bam_name = bam_file.getName();
         System.out.println("Calculate the physical coverage for each query region: " + bam_name);
@@ -31,14 +31,13 @@ public class ReadBam {
         SamReaderFactory factory = SamReaderFactory.makeDefault();
         System.out.println("Read the bam file: " + bam_name);
         SamReader bam_reader = factory.open(bam_file);
-
         return bam_reader;
     }
 
     // get all the unique chromosome numbers
-    public static Set<String> getBamUniqCharList() {
+    public static Set<String> getBamUniqCharList(String bam_file_path) {
         // get the bam header
-        SamReader bam_reader = ReadBam.getBamReader();
+        SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
         SAMFileHeader header = bam_reader.getFileHeader();
         // Get all unique chromosome numbers
         Set<String> chromosomes = new HashSet<>();
@@ -49,10 +48,10 @@ public class ReadBam {
     }
 
     // check whether the given chr num include in the chromosome number of bam
-    public static boolean checkChromosomeInBam(String chromosome_2_check) {
+    public static boolean checkChromosomeInBam(String bam_file_path, String chromosome_2_check) {
         boolean check_result;
-        Set<String> chromosomes = ReadBam.getBamUniqCharList();
-        // 判断染色体号是否在 Set 中
+        Set<String> chromosomes = ReadBam.getBamUniqCharList(bam_file_path);
+        // check whether the chromosome is in Set
         if (chromosomes.contains(chromosome_2_check)) {
             check_result = true;
         } else {
@@ -61,11 +60,5 @@ public class ReadBam {
         }
         return check_result;
     }
-
-    public static void main(String[] args) throws IOException {
-        Set<String> chromosomes = ReadBam.getBamUniqCharList();
-        System.out.println(chromosomes);
-    }
-
 
 }
