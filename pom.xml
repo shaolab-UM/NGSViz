@@ -58,11 +58,17 @@
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.46.1.3</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.github.broadinstitute/picard -->
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
     <dependency>
-      <groupId>com.github.broadinstitute</groupId>
-      <artifactId>picard</artifactId>
-      <version>3.2.0</version>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20240303</version>
     </dependency>
+      <dependency>
+          <groupId>org.jetbrains</groupId>
+          <artifactId>annotations</artifactId>
+          <version>RELEASE</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
 </project>

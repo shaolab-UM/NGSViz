@@ -1,8 +1,8 @@
 {
   "mandatory_parameters": {
-    "bam_file": "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+    "bam_file": "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
     "genome" : "hg19",
-    "output_name" : "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M_output.txt",
+    "output_name" : "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M_output.txt",
     "region_plot" : "genebody"
   },
   "common_parameters": {

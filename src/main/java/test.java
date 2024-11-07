@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import configSet.GetCommandParameter;
 
 /**
  * @author Benchen Ye
@@ -6,22 +10,18 @@ import java.util.ArrayList;
  */
 public class test {
     public static void main(String[] args) {
-        ArrayList<Integer> integerList = new ArrayList<>();
-        integerList.add(10);
-        integerList.add(20);
-        integerList.add(30);
-
-        long librarySize = 500000;
-
-        ArrayList<Double> resultList = new ArrayList<>();
-
-        for (Integer num : integerList) {
-            double result = (double) num / librarySize * 1e6;
-            resultList.add(result);
-        }
-
-        for (Double num : resultList) {
-            System.out.print(num + " ");
-        }
+        args = new String[]{
+                "-G", "hg19",
+                "-R", "genebody",
+                "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                "-O", "/Users/bencheye/myProj/ngsPlot/Output/hesc.RNAseq.1M",
+                "-SS", "same"
+        };
+        GetCommandParameter.getInputParameter(args);
+        String getRegion2Plot = GetCommandParameter.getRegion2Plot();
+        //System.out.println(getRegion2Plot);
+        int flank_size = GetCommandParameter.getFlankRegion();
+        //System.out.println(flank_size);
     }
+
 }

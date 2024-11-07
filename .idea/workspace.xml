@@ -5,27 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/BamFileLibrarySize.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/BamSizeNormalization.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/TrimBuffer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config-note.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/BamIndexBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ReadBam/CheckBamSort.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/configSet/GetCommandParameter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" beforeDir="false" afterPath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ngsplot report.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/ngsplot report.pptx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DataPrepare/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/dataScaler/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/dataScaler/DataScaler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeIntervalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeIntervalMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PointInternalMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config-board.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config-board.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,6 +66,7 @@
   "keyToString": {
     "Application.AverageCoverageTrimmedMeanMatrix.executor": "Run",
     "Application.BamFileLibrarySize.executor": "Run",
+    "Application.BamIndexBuilder.executor": "Run",
     "Application.BamUniqChar.executor": "Run",
     "Application.Config.executor": "Run",
     "Application.CoverageCalculator.executor": "Run",
@@ -85,6 +75,8 @@
     "Application.DatabaseConnector.executor": "Run",
     "Application.DatabaseReader.executor": "Run",
     "Application.ExecuteSQLFile.executor": "Run",
+    "Application.GenerateJsonConfig.executor": "Run",
+    "Application.GetCommandParameter.executor": "Run",
     "Application.LargeIntervalMain.executor": "Run",
     "Application.ListReverse.executor": "Run",
     "Application.Main (1).executor": "Run",
@@ -132,13 +124,39 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.LargeIntervalMain">
-    <configuration name="BamFileLibrarySize" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ReadBam.BamFileLibrarySize" />
+  <component name="RunManager" selected="Application.test">
+    <configuration name="BamIndexBuilder" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ReadBam.BamIndexBuilder" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="ReadBam.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GenerateJsonConfig" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="configSet.GenerateJsonConfig" />
+      <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="configSet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GetCommandParameter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="configSet.GetCommandParameter" />
+      <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="configSet.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -159,32 +177,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ListReverse" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="coverageCalculator.ListReverse" />
-      <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="coverageCalculator.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TrimBuffer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="coverageCalculator.TrimBuffer" />
-      <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="coverageCalculator.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test" />
       <module name="NGSPlot2" />
@@ -194,11 +186,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.LargeIntervalMain" />
         <item itemvalue="Application.test" />
-        <item itemvalue="Application.BamFileLibrarySize" />
-        <item itemvalue="Application.ListReverse" />
-        <item itemvalue="Application.TrimBuffer" />
+        <item itemvalue="Application.GetCommandParameter" />
+        <item itemvalue="Application.GenerateJsonConfig" />
+        <item itemvalue="Application.LargeIntervalMain" />
+        <item itemvalue="Application.BamIndexBuilder" />
       </list>
     </recent_temporary>
   </component>
@@ -225,7 +217,9 @@
       <workItem from="1727362647576" duration="17195000" />
       <workItem from="1727618589006" duration="22986000" />
       <workItem from="1728218299028" duration="18445000" />
-      <workItem from="1728543583981" duration="158741000" />
+      <workItem from="1728543583981" duration="171481000" />
+      <workItem from="1730775582044" duration="7447000" />
+      <workItem from="1730891209319" duration="40097000" />
     </task>
     <servers />
   </component>
