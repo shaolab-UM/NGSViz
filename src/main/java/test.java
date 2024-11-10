@@ -1,8 +1,12 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import configSet.CheckLegal2InputParameter;
 import configSet.GetCommandParameter;
+import configSet.InputParameterAttributes;
+import configSet.ProcessInputParameters;
 
 /**
  * @author Benchen Ye
@@ -15,13 +19,13 @@ public class test {
                 "-R", "genebody",
                 "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 "-O", "/Users/bencheye/myProj/ngsPlot/Output/hesc.RNAseq.1M",
-                "-SS", "same"
+                "-L", "2000"
         };
-        GetCommandParameter.getInputParameter(args);
-        String getRegion2Plot = GetCommandParameter.getRegion2Plot();
-        //System.out.println(getRegion2Plot);
-        int flank_size = GetCommandParameter.getFlankRegion();
-        //System.out.println(flank_size);
+        //ProcessInputParameters.processInputParameter(args);
+        String file_path = "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt";
+        //getFileExtension(file_path);
+        CheckLegal2InputParameter.CheckFilePath(file_path);
     }
+
 
 }

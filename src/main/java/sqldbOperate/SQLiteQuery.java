@@ -13,18 +13,15 @@ import java.util.Map;
  * @function get all the genome coordinates for the query key `refname`
  */
 public class SQLiteQuery {
-
+    private static String db_url = DBAtribute.DATABASE_URL;
     public static List<Map<String, Object>> queryGenomeCoorDatabaseRecord(String query_refname) {
         // can use the chunk to improve the performance
-        // DB need the whole path
-        String url = "jdbc:sqlite:coordinate_db.db";
-
         List<Map<String, Object>> results = new ArrayList<>();
         // query database table name is `elementgenomecoordinate`
         String query = "SELECT *  FROM elementgenomecoordinate WHERE refname = ?";
         System.out.println("Starting the query in the Table elementgenomecoordinate!");
         System.out.println("The query keyword is : " + query_refname);
-        try (Connection connection = DriverManager.getConnection(url);
+        try (Connection connection = DriverManager.getConnection(db_url);
             PreparedStatement prepared_statement = connection.prepareStatement(query)) {
             prepared_statement.setString(1, query_refname);
             try (ResultSet resultSet = prepared_statement.executeQuery()) {

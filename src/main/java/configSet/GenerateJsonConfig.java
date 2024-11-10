@@ -9,9 +9,25 @@ import java.io.IOException;
  * @author Benchen Ye
  * @create 2024-11--19:08
  */
-public class GenerateJsonConfig {
+public class GenerateJsonConfig extends InputParameterAttributes {
     public static void main(String[] args) {
         String config_name = "/Users/bencheye/myProj/ngsPlot/Output/config_test.json";
+        // read in the parameter
+        args = new String[]{
+                "-G", "hg19",
+                "-R", "genebody",
+                "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                "-O", "/Users/bencheye/myProj/ngsPlot/Output/hesc.RNAseq.1M",
+                "-SS", "same"
+        };
+        //GetCommandParameter.getInputParameter(args);
+        // get the value of parameter
+        String genome = GetCommandParameter.getGenome();
+        String region_plot = GetCommandParameter.getRegion2Plot();
+        // check bam/txt
+        String input_file = GetCommandParameter.getInputFile();
+        String output_path = GetCommandParameter.getOutputPath();
+
         // create JSONObject to save config
         JSONObject config = new JSONObject();
         // create "mandatory_parameters" JSONObject

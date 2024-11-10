@@ -8,7 +8,7 @@ coord_file <- 'hg19.ensembl.genebody.protein_coding.csv'
 dbfile_file <- 'dbfile.tbl.csv'
 defaultTbl_file <- 'default_tbl.csv'
 coord_df <- read_csv(coord_file)
-dbfile <- read_csv(coord_file)
+dbfile <- read_csv(dbfile_file)
 defaultTbl_df <- read_csv(coord_file)
 
 # 创建 SQLite 数据库连接
