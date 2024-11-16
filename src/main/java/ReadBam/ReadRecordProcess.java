@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author Benchen Ye
  * @create 2024-09--22:38
+ * @function
  */
 public class ReadRecordProcess {
     // get the genome position information of read in the bam

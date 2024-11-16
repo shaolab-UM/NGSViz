@@ -99,6 +99,4 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
             }
             return middle_point;
         }
-
-
 }

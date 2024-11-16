@@ -11,14 +11,12 @@ import java.util.Map;
 /**
  * @author Benchen Ye
  * @create 2024-11--20:09
+ * @function check whether is a legal value for input parameter
  */
 public class CheckLegal2InputParameter extends InputParameterAttributes {
     public static void checkLegal2InputParameter() {
-
-        // check whether the file exist
-        // input path
-        // outpath
-
+        System.out.println("Start check the legality of all input parameters!");
+        System.out.println("---------");
         // check necessary parameters
         checkNecessaryPara();
         // check input file path
@@ -26,7 +24,9 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         // check whether the input parameter is legal value
         checkQueryDBUniqLegal(genome, "Genome");
         checkQueryDBUniqLegal(region_plot, "Region");
-        checkQueryDBUniqLegal(DB_tpye, "DB");
+        if (DB_tpye != null){
+            checkQueryDBUniqLegal(DB_tpye, "DB");
+        }
         checkAnalysisMethod(analysis_type);
         checkValueGreater0(flank_region, "-L");
         checkValue01(flank_factor, "-N");
@@ -39,6 +39,8 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         checkValueGreater0(frag_len, "-FL");
         checkStrandSpecificValue(strand_spec);
         checkValueGreater0(fi_tag, "-FI");
+        System.out.println("All input parameters have been checked!");
+        System.out.println("---------");
     }
     //
     // check whether the path of input file or directory exist
@@ -102,8 +104,15 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         String [] legal_list = {"chipseq", "rnaseq"};
         boolean value = check_value.equals(legal_list[0]) || check_value.equals(legal_list[1]);
         if (!value){
-            System.out.println("Your input paramter -F `" + check_value +  "` is illegal item!");
-            System.out.println("-F must be `chipseq` or `rnaseq`!");
+            System.out.println("Your input paramter -A `" + check_value +  "` is illegal item!");
+            System.out.println("-A must be `chipseq` or `rnaseq`!");
+        }
+        if (check_value.equals(legal_list[1])){
+            if (!region_plot.equals("genebody")){
+                System.out.println("when -A analysis method is " + check_value);
+                System.out.println("the -R region2plot is must be genebody!");
+                System.exit(-1);
+            }
         }
     }
     public static void checkValue01 (double check_value, String parameter_name) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author Benchen Ye
  * @create 2024-09--19:45
+ * @function
  */
 public class CommonFinalParas {
     // MandatoryParameters

@@ -8,6 +8,7 @@ import java.io.IOException;
 /**
  * @author Benchen Ye
  * @create 2024-11--19:08
+ * @function generate the config file
  */
 public class GenerateJsonConfig extends InputParameterAttributes {
     public static void main(String[] args) {
@@ -61,5 +62,4 @@ public class GenerateJsonConfig extends InputParameterAttributes {
             e.printStackTrace();
         }
     }
-
 }

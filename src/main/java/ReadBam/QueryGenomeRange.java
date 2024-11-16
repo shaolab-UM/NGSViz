@@ -6,6 +6,7 @@ import htsjdk.samtools.util.Interval;
 /**
  * @author Benchen Ye
  * @create 2024-10--18:03
+ * @function get all aligned reads information for query region
  */
 public class QueryGenomeRange {
     private static int buf_size = CommonFinalParas.buf_size;
