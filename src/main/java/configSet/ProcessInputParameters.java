@@ -1,6 +1,12 @@
 package configSet;
 
+import sqldbOperate.GetExonModelData;
 import sqldbOperate.GetRefDB;
+import sqldbOperate.QueryWholeRegionCoordinate;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Benchen Ye
@@ -24,19 +30,25 @@ public class ProcessInputParameters extends InputParameterAttributes {
         CheckLegal2InputParameter.checkLegal2InputParameter();
         // get default point label value
         DBdefaultValue.getPointLabFIValue();
-        // get the interval type
-        DBdefaultValue.getIntervalType();
         // process the input text file
         ProcessInputFile.processInputFile();
         // get the coordinate database will be used
         refname = GetRefDB.getDBFISubset(fi_subset, genome, region_plot, DB_tpye);
         // get the species name for database's table
         species = GetRefDB.getSpeciesName(genome, region_plot, DB_tpye);
-        System.out.println("refname is " + refname);
-        System.out.println("species is " + species);
+        // get the whole coordinate
+        List<Map<String, Object>> region_coord = QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
+        List<Double> width_list = QueryWholeRegionCoordinate.width_list;
+        // get the interval type
+        interval_type = SetIntervalType.setIntervalTypeValue(width_list, region_labels, flank_region);
+        // get data points
+        DataPointNum.getDataPointNum();
 
+        // exonModel for rnaseq
+        if(analysis_type.equals("rnaseq")){
+            //GetExonModelData.getExonModelData();
+        }
+        //
+        GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
-
-
-
 }

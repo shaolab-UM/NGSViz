@@ -21,6 +21,10 @@ public class InputParameterAttributes {
     public static int buf_size;
     public static List<String> region_labels = new ArrayList<>();
     public static String interval_type = null;
+    public static int num_datapoints = 100;
+    public static int middle_points = 0;
+    public static int flank_points = 0;
+    public static String config_name = "ngsplot2_running_config.json";
     // option parameters
     public static String DB_tpye = null; //-D
     // -1 is all gene in the database

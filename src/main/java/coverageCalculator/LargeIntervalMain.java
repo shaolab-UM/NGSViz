@@ -1,6 +1,6 @@
 package coverageCalculator;
 
-import DataPrepare.CurrentTime;
+import utils.CurrentTime;
 import ReadBam.ReadBam;
 import configSet.CommonFinalParas;
 import htsjdk.samtools.SamReader;
@@ -8,6 +8,7 @@ import ReadBam.BamFileLibrarySize;
 import ReadBam.BamSizeNormalization;
 import sqldbOperate.LargeChIPProcessRecordGenomeCoordinateDB;
 import sqldbOperate.SQLiteQuery;
+import utils.Matrix2CSV;
 
 import java.util.ArrayList;
 import java.util.List;

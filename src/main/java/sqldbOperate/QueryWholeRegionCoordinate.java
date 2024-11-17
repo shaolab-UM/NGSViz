@@ -14,10 +14,12 @@ import java.util.Map;
  * @function get the whole query region coordinate
  */
 public class QueryWholeRegionCoordinate extends DBAtribute{
+    public static List<Double> width_list = new ArrayList<>();
     public static void main(String [] args){
         String species = "human";
         String refname = "hg19.ensembl.genebody.protein_coding";
         List<Map<String, Object>> res = queryGenomeCoorDatabaseRecord(species, refname);
+        //System.out.println("res is " + res);
     }
     public static List<Map<String, Object>> queryGenomeCoorDatabaseRecord(String species, String refname) {
         // can use the chunk to improve the performance
@@ -37,7 +39,8 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
                 record.put("start", resultSet.getInt("start"));
                 record.put("end", resultSet.getInt("end"));
                 record.put("strand", resultSet.getString("strand"));
-                results.add(record);
+                int width = resultSet.getInt("end") - resultSet.getInt("start") +1;
+                width_list.add((double) width);
             }
         }catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());

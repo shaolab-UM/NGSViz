@@ -1,14 +1,13 @@
 package sqldbOperate;
 
-import DataPrepare.DataPointNum;
+import configSet.DataPointNum;
 import ReadBam.QueryGenomeRange;
-import ReadBam.ReadBam;
 
 import configSet.CommonFinalParas;
+import configSet.InputParameterAttributes;
 import coverageCalculator.PhysicalCoverageCalculator;
 import coverageCalculator.TrimBuffer;
 import coverageCalculator.dataScaler.DataScaler;
-import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.Interval;
 
 import java.util.ArrayList;
@@ -39,9 +38,8 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
             String query_strand = (String) record.get("strand");
 
             // get the number of middle point and flank_point
-            ArrayList<Integer> data_point_list = DataPointNum.getDataPointNum();
-            int num_middle_point = data_point_list.get(0);
-            int num_flank_point = data_point_list.get(1);
+            int num_middle_point = InputParameterAttributes.middle_points;
+            int num_flank_point = InputParameterAttributes.flank_points;
             // config code need to change when flank_factor exist
             if (flank_factor > 0){
                 flank_size = (end_pos - start_pos + 1)*flank_factor;

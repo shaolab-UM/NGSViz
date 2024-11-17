@@ -1,4 +1,4 @@
-package coverageCalculator;
+package utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -48,7 +48,7 @@ public class Matrix2CSV {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {
             for (double value : matrix_data) {
                 writer.write(Double.toString(value));
-                writer.newLine(); // 每个值写入新的一行
+                writer.newLine();
             }
             System.out.println("Average coverage data saved to " + file_path);
         } catch (IOException e) {

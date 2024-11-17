@@ -21,6 +21,7 @@ public class QueryDefaultDB extends DBAtribute{
         try {
             statement = initialDB();
             String query = String.format("SELECT %s FROM defaulttbl WHERE Genome = '%s' AND Region = '%s'", query_item, genome, region2plot);
+            System.out.println("The query keyword is : " + query);
             resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 query_res = resultSet.getString(query_item);

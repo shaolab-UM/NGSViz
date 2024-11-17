@@ -1,4 +1,6 @@
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,7 @@ import configSet.GetCommandParameter;
 import configSet.InputParameterAttributes;
 import configSet.ProcessInputParameters;
 import sqldbOperate.QueryDefaultDB;
+import utils.DirectoryChecker;
 
 /**
  * @author Benchen Ye
@@ -31,6 +34,8 @@ public class test extends InputParameterAttributes {
         //getFileExtension(file_path);
         //CheckLegal2InputParameter.CheckFilePath(file_path);
         //String query_key = "PointLab";
+
+
 
 
 

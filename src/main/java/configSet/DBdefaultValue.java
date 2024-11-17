@@ -45,12 +45,5 @@ public class DBdefaultValue extends InputParameterAttributes {
         }
         System.out.println("Point lab is " +  region_labels);
     }
-    public static void getIntervalType(){
-        if(region_labels.size() == 1){
-            interval_type = "point_interval";
-        }else {
-            interval_type = "broad_interval";
-        }
-        System.out.println("interval type is " + interval_type);
-    }
+
 }
