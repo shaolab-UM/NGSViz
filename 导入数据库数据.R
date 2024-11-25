@@ -62,8 +62,9 @@ con <- dbConnect(RSQLite::SQLite(), dbname = db_file)
 # exonmodel
 load_name <- "/Users/bencheye/myProj/ngsPlot/ngsplot-develop/database/hg19/hg19.ensembl.exonmodel.RData"
 load(load_name)
+
 ## test-----------------------
-exonmodel_list <- exonmodel[1:20]
+exonmodel_list <- exonmodel
 rm(exonmodel)
 # test-------------------------
 exon_df <- processExonModel(load_name, exonmodel_list)

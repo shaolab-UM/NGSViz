@@ -48,14 +48,16 @@ public class ReadBam {
     }
 
     // check whether the given chr num include in the chromosome number of bam
-    public static boolean checkChromosomeInBam(String bam_file_path, String chromosome_2_check) {
-        boolean check_result;
+    public static String checkChromosomeInBam(String bam_file_path, String chromosome_2_check, String nochrName_2_check) {
+        String check_result = null;
         Set<String> chromosomes = ReadBam.getBamUniqCharList(bam_file_path);
+        System.out.println("chromosomes: " + chromosomes);
         // check whether the chromosome is in Set
         if (chromosomes.contains(chromosome_2_check)) {
-            check_result = true;
+            check_result = chromosome_2_check;
+        } else if (chromosomes.contains(nochrName_2_check)) {
+            check_result = nochrName_2_check;
         } else {
-            check_result = false;
             System.out.println(chromosome_2_check + " is not in the set.");
         }
         return check_result;

@@ -16,25 +16,6 @@ import java.util.List;
  * @function generate the config file
  */
 public class GenerateJsonConfig extends InputParameterAttributes {
-    public static void main(String[] args) {
-        String config_name = "/Users/bencheye/myProj/ngsPlot/Output/config_test.json";
-        // read in the parameter
-        args = new String[]{
-                "-G", "hg19",
-                "-R", "genebody",
-                "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
-                "-O", "/Users/bencheye/myProj/ngsPlot/Output/hesc.RNAseq.1M",
-                "-SS", "same"
-        };
-        //GetCommandParameter.getInputParameter(args);
-        // get the value of parameter
-        String genome = GetCommandParameter.getGenome();
-        String region_plot = GetCommandParameter.getRegion2Plot();
-        // check bam/txt
-        String input_file = GetCommandParameter.getInputFile();
-        String output_path = GetCommandParameter.getOutputPath();
-
-    }
     public static void generateJsonConfig(String out_path, String config_name) {
         // check whether the directory of out path exist
         DirectoryChecker.checkDirectoryExist(out_path);

@@ -17,12 +17,7 @@ import java.util.Map;
 public class PintProcessRecordGenomeCoordinateDB {
     private static String region_plot = CommonFinalParas.region_plot;
     private static String bam_file_path = CommonFinalParas.bam_file;
-    private static int flanking_size = CommonFinalParas.flanking_size;
-    private static int buf_size = CommonFinalParas.buf_size;
     private static String scaler_method = CommonFinalParas.scaler_method;
-    private static int num_datapoints = CommonFinalParas.num_datapoints;
-
-
 
     public static List<Double> processRecord(Map<String, Object> record) {
         List<Double> coverage_scaled = new ArrayList<>();

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import ReadBam.ReadRecordProcess;
+import sqldbOperate.exonMode.ExonModelData;
+import sqldbOperate.exonMode.OneEnstAllExonCoorClass;
 
 /**
  * @author Benchen Ye
@@ -72,27 +74,12 @@ public class PhysicalCoverageCalculator {
                     align_pos_start = align_pos_start - query_range_start;
                     // calculate the physical coverage
                     coverage = physicalCoverageCalculate(coverage, align_pos_start, qwidth);
-
-                    // if(!is.null(gr.rna)) {  # RNA-seq.
-                    //                # Shift exonic ranges by subtracting start positions.
-                    //                # BE careful with negative start positions! Need to adjust end
-                    //                # positions first(or the GRanges lib will emit errors if
-                    //                # start > end).
-                    //                # Negative start positions happen when flanking region exceeds
-                    //                # the chromosomal start.
-                    //                if(start > 0) {
-                    //                    start(gr.rna) <- start(gr.rna) - start + 1
-                    //                    end(gr.rna) <- end(gr.rna) - start + 1
-                    //                } else {
-                    //                    end(gr.rna) <- end(gr.rna) - start + 1
-                    //                    start(gr.rna) <- start(gr.rna) - start + 1
-                    //                }
-                    //                # Concatenate all exon coverages.
-                    //                covg[ranges(gr.rna)]
-                    //            } else {  # ChIP-seq.
-                    //                covg
-                    //            }
-
+                    System.out.println("---------");
+                    System.out.println("---------");
+                    System.out.println("align_pos_start  is :" + align_pos_start);
+                    System.out.println("coverage is :" + coverage);
+                    System.out.println("---------");
+                    System.out.println("---------");
                 }
             }
         }
@@ -117,5 +104,4 @@ public class PhysicalCoverageCalculator {
         }
         return physical_coverage;
     }
-
 }

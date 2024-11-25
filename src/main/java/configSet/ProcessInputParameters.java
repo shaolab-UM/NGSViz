@@ -1,12 +1,9 @@
 package configSet;
 
-import sqldbOperate.GetExonModelData;
 import sqldbOperate.GetRefDB;
 import sqldbOperate.QueryWholeRegionCoordinate;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Benchen Ye
@@ -17,6 +14,7 @@ import java.util.Map;
  * @process set default value for those without an input value
  */
 public class ProcessInputParameters extends InputParameterAttributes {
+    //public static List<Map<String, Object>> region_coord;
     public static void processInputParameter(String[] args) {
         if (args.length % 2 ==1 || args.length == 0){
             System.out.println("Unpaired argument and value.");
@@ -37,13 +35,12 @@ public class ProcessInputParameters extends InputParameterAttributes {
         // get the species name for database's table
         species = GetRefDB.getSpeciesName(genome, region_plot, DB_tpye);
         // get the whole coordinate
-        List<Map<String, Object>> region_coord = QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
+        QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
         List<Double> width_list = QueryWholeRegionCoordinate.width_list;
         // get the interval type
         interval_type = SetIntervalType.setIntervalTypeValue(width_list, region_labels, flank_region);
         // get data points
         DataPointNum.getDataPointNum();
-
         // exonModel for rnaseq
         if(analysis_type.equals("rnaseq")){
             //GetExonModelData.getExonModelData();

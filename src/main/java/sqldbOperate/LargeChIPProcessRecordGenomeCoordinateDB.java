@@ -21,18 +21,17 @@ import java.util.Map;
  * @function calculate the scaled coverage of large ChIP for each query region (record)
  */
 public class LargeChIPProcessRecordGenomeCoordinateDB {
-        private static String region_plot = CommonFinalParas.region_plot;
-        private static String bam_file_path = CommonFinalParas.bam_file;
-        private static int flanking_size = CommonFinalParas.flanking_size;
-        private static int buf_size = CommonFinalParas.buf_size;
-        private static String scaler_method = CommonFinalParas.scaler_method;
-        private static int flank_factor = CommonFinalParas.flank_factor;
+        private static String region_plot = InputParameterAttributes.region_plot;
+        //private static String bam_file_path = CommonFinalParas.bam_file;
+        private static int flanking_size = InputParameterAttributes.flank_region;
+        private static int buf_size = InputParameterAttributes.buf_size;
+        private static String scaler_method = InputParameterAttributes.scaler_method;
+        private static double flank_factor = InputParameterAttributes.flank_factor;
         private static int flank_size;
 
-        public static List<Double> processRecord(Map<String, Object> record) {
+        public static List<Double> processRecord(Map<String, Object> record, String bam_file_path, String chr_name) {
             System.out.println("Processing record: " + record);
             // genome coordinate information
-            String chr_name = (String) record.get("chrom");
             int start_pos = (int) record.get("start");
             int end_pos = (int) record.get("end");
             String query_strand = (String) record.get("strand");
@@ -42,7 +41,8 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
             int num_flank_point = InputParameterAttributes.flank_points;
             // config code need to change when flank_factor exist
             if (flank_factor > 0){
-                flank_size = (end_pos - start_pos + 1)*flank_factor;
+                double calculate_res = (end_pos - start_pos + 1)*flank_factor;
+                flank_size = (int) calculate_res;
             } else {
                 flank_size = flanking_size;
             }

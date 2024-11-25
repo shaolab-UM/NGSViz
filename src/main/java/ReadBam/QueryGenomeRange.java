@@ -1,6 +1,7 @@
 package ReadBam;
 
 import configSet.CommonFinalParas;
+import configSet.InputParameterAttributes;
 import htsjdk.samtools.util.Interval;
 
 /**
@@ -9,13 +10,16 @@ import htsjdk.samtools.util.Interval;
  * @function get all aligned reads information for query region
  */
 public class QueryGenomeRange {
-    private static int buf_size = CommonFinalParas.buf_size;
-    private static int flanking_size = CommonFinalParas.flanking_size;
+    private static int buf_size = InputParameterAttributes.buf_size;
+    private static int flanking_size = InputParameterAttributes.flank_region;
 
     // calculate the range coordinate of point interval of query gene
     public static Interval getQueryBamGranges(String chr_name, int middle_point){
         Interval interval_range;
         int query_start = middle_point - flanking_size - buf_size;
+        if(query_start < 0){
+            query_start = 0;
+        }
         int query_end = middle_point + flanking_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);
         System.out.println("The point interval range is: " + interval_range);
@@ -25,13 +29,17 @@ public class QueryGenomeRange {
     public static Interval getQueryBamGranges(String chr_name,
                                                int start_pos,
                                                int end_pos,
-                                               int large_flanking_size)
+                                               int flank_size)
     {
         Interval interval_range;
-        int query_start = start_pos - large_flanking_size - buf_size;
-        int query_end = end_pos + large_flanking_size + buf_size;
+        int query_start = start_pos - flank_size - buf_size;
+        if(query_start < 0){
+            query_start = 0;
+        }
+        int query_end = end_pos + flank_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);
         System.out.println("The large interval range is: " + interval_range);
         return interval_range;
     }
+
 }

@@ -2,6 +2,8 @@ package configSet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 /**
  * @author Benchen Ye
  * @create 2024-09--19:45
