@@ -33,7 +33,6 @@ public class NGSplot2Main {
         MainCalculator.mainCalculator();
         int region_num = QueryWholeRegionCoordinate.region_num;
         System.out.println("region num: " + region_num);
-
     }
 
 }

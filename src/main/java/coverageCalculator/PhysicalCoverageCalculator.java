@@ -74,12 +74,6 @@ public class PhysicalCoverageCalculator {
                     align_pos_start = align_pos_start - query_range_start;
                     // calculate the physical coverage
                     coverage = physicalCoverageCalculate(coverage, align_pos_start, qwidth);
-                    System.out.println("---------");
-                    System.out.println("---------");
-                    System.out.println("align_pos_start  is :" + align_pos_start);
-                    System.out.println("coverage is :" + coverage);
-                    System.out.println("---------");
-                    System.out.println("---------");
                 }
             }
         }

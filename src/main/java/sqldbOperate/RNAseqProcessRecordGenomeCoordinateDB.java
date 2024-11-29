@@ -62,19 +62,12 @@ public class RNAseqProcessRecordGenomeCoordinateDB {
         // calculate the physical coverage for each query region
         ArrayList<Integer> physical_coverage =
                 PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);
-        System.out.println("---------");
-        System.out.println("---------");
-        System.out.println("tid_name: " + tid_name);
-        OneEnstAllExonCoorClass tid_res = (OneEnstAllExonCoorClass) ExonModelData.exon_matrix.get(tid_name);
-        System.out.println("exon res is : " + tid_res);
-        System.out.println("start list is :" + tid_res.getStartList());
-        System.out.println("physical coverage is: " + physical_coverage);
-        System.out.println("---------");
-        System.out.println("---------");
+
         if(analysis_type.equals("rnaseq")){
             // process exon coverage
             physical_coverage = CoverageExonSubset.getCoverageExonSubset(physical_coverage, tid_name,
                     query_range_start, query_range_end);
+
         }
             /*
             # If paired, filter reads that are not properly paired.
