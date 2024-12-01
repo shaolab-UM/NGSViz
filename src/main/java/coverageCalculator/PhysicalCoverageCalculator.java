@@ -24,7 +24,6 @@ public class PhysicalCoverageCalculator {
                                                                Interval interval_range,
                                                                String query_strand)
     {
-        //
         String chr_name = interval_range.getContig();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
@@ -41,30 +40,23 @@ public class PhysicalCoverageCalculator {
         System.out.println("Start to calculate physical coverage for all reads in query region: " + interval_range);
         while (iterator.hasNext()) {
             SAMRecord record = iterator.next();
-            // filter the bam alignment for each read
+            // filter the bam alignment for each read, true filter, false not filter
             boolean filterRes = ReadRecordProcess.filterOneReadAlign(record, query_strand);
+            boolean paired_lab = ReadRecordProcess.checkPairedRecord(record);
+            // paired mood
+            if (paired_lab) {
+                boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(record);
+                filterRes = filterRes & !paired_filter;
+            }
             // bam filter
             if (! filterRes) {
-
-                // If paired, filter reads that are not properly paired.
-                //        paired <- all(with(srg, is.na(isize) | isize != 0))
-                //        if(paired) {
-                //            p.mask <- with(srg, rname == mrnm & xor(strand == '+', isize < 0))
-                //            all.mask <- all.mask & p.mask
-                //        }
-
-                //if(paired) {
-                //                cov.pos <- with(srg, ifelse(isize < 0, mpos, pos))
-                //                cov.wd <- abs(srg$isize)
-                //            } else {
-                //                # Adjust negative read positions for physical coverage.
-                //                cov.pos <- with(srg, ifelse(strand == '-',
-                //                                            pos - fraglen + qwidth, pos))
-                //                cov.wd <- fraglen
-                //            }
-
                 // get the alignment read information
-                List<Integer> readAlignInfo = ReadRecordProcess.getReadAlignmentInfo(record, interval_range);
+                List<Integer> readAlignInfo;
+                if(paired_lab) {
+                    readAlignInfo = ReadRecordProcess.getPairedReadAlignmentInfo(record);
+                } else {
+                    readAlignInfo = ReadRecordProcess.getReadAlignmentInfo(record, interval_range);
+                }
                 if (readAlignInfo.get(0) != 0) {
                     System.out.println("Processing a read: " + readAlignInfo);
                     int align_pos_start = readAlignInfo.get(0);

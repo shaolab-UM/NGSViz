@@ -7,8 +7,6 @@ import utils.CurrentTime;
 import ReadBam.ReadBam;
 import htsjdk.samtools.SamReader;
 import ReadBam.BamFileLibrarySize;
-import ReadBam.BamSizeNormalization;
-import sqldbOperate.LargeChIPProcessRecordGenomeCoordinateDB;
 import utils.Matrix2CSV;
 
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ public class RNAseqIntervalMain {
         double[][] coverage_scaled_matrix = new double[num_query_regions][num_datapoints+1];
         // save the row names of the coverage_scaled_matrix
         List<String> row_names = new ArrayList<>();
-
         for (int i = 0; i < num_query_regions; i++) {
             System.out.println("---------");
             System.out.println("i is :" + i);
@@ -55,12 +52,11 @@ public class RNAseqIntervalMain {
             // check whether is the bowtie
             //if(bowtie) {srg = within(srg, mapq[is.na(mapq)] <- 254)}
 
-
             chr_name = ReadBam.checkChromosomeInBam(bam_file_path, chr_name, nochr_name);
             if (chr_name != null) {
                 coverage_scaled = RNAseqProcessRecordGenomeCoordinateDB.processRecord(record, bam_file_path, chr_name);
                 // normalize to RPM.
-                coverage_scaled = BamSizeNormalization.bamSizeNormalization(coverage_scaled, library_size);
+                coverage_scaled = BamFileLibrarySize.bamSizeNormalization(coverage_scaled, library_size);
             }
             // List<Double> coverage_scaled = PintProcessRecordGenomeCoordinateDB.processRecord(record);
             // add the coverage_scaled to coverage_scaled_matrix

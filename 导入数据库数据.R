@@ -94,5 +94,5 @@ query_key <- "SELECT tid,start,end,width FROM humanexonModel WHERE Genome = 'hg1
 results <- dbGetQuery(con, query_key)
 print(results)
 
-
-
+library(Rsamtools)
+fl <- system.file("extdata", "ex1.bam", package="Rsamtools")

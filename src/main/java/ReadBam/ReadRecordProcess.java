@@ -1,6 +1,7 @@
 package ReadBam;
 
 import configSet.CommonFinalParas;
+import configSet.InputParameterAttributes;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.filter.DuplicateReadFilter;
 import htsjdk.samtools.filter.MappingQualityFilter;
@@ -16,6 +17,9 @@ import java.util.List;
  * @function
  */
 public class ReadRecordProcess {
+    private static int frag_len = InputParameterAttributes.frag_len;
+    private static int min_mapq = InputParameterAttributes.min_mapq;
+    private static String strand_spec = InputParameterAttributes.strand_spec;
     // get the genome position information of read in the bam
     // Input:
     //   record: SAMRecord object, a record of a read including the query range
@@ -23,7 +27,6 @@ public class ReadRecordProcess {
     // Output: read_align_info, an integer list includes two item, align_start_pos and read_width
     //   align_start_pos, the start position of read; read_width, the width of read
     public static List<Integer> getReadAlignmentInfo(SAMRecord record, Interval interval_range){
-        int frag_len = CommonFinalParas.frag_len;
         // get the alignment value, the start position and width of read
         int align_start_pos = record.getAlignmentStart();
         int read_width = record.getReadLength();
@@ -48,14 +51,63 @@ public class ReadRecordProcess {
         return read_align_info;
     }
 
+    public static List<Integer> getPairedReadAlignmentInfo(SAMRecord record){
+        int align_start_pos;
+        int read_width;
+        // the length of insert (width)
+        int tlen = record.getInferredInsertSize();
+        // get the alignment value, the start position and width of read
+        int pos = record.getAlignmentStart();
+        int mpos = record.getMateAlignmentStart();
+        if(tlen<0){
+            align_start_pos = mpos;
+        }else{
+            align_start_pos = pos;
+        }
+        read_width = Math.abs(tlen);
+        System.out.println("The align start pos of this paired read is " + align_start_pos);
+        System.out.println("The align start pos of this paired insert size is " + read_width);
+        List<Integer> read_align_info;
+        read_align_info = Arrays.asList(align_start_pos, read_width);
+        return read_align_info;
+    }
+
+    public static boolean checkPairedRecord(SAMRecord record){
+        //paired <- all(with(srg, is.na(isize) | isize != 0))
+        boolean paired_mood = false;
+        // the length of insert
+        int tlen = record.getInferredInsertSize();
+        if(tlen != 0){
+            paired_mood  = true;
+        }
+        return paired_mood;
+    }
+     public static boolean checkPairedRecordQuality(SAMRecord record){
+        // the length of insert
+        int tlen = record.getInferredInsertSize();
+        String rname = record.getReferenceName();
+        String mrnm = record.getMateReferenceName();
+        boolean strand_flag = record.getReadNegativeStrandFlag();
+        String read_strand;
+        if (strand_flag){
+             read_strand = "-";
+        } else {
+             read_strand = "+";
+        }
+        boolean condition1 = rname.equals(mrnm);
+        boolean condition2 = read_strand.equals("+");
+        boolean condition3 = tlen<0;
+        boolean condition_xor = condition2 ^ condition3;
+        boolean paired_res = condition1 & condition2;
+        return paired_res;
+     }
+
     // filter the bam alignment information for one read (duplicated read, unmapped reads, low alignment quality)
     // Input:
     //   record: SAMRecord object, a record of a read including the query range
     //   min_mapq: the read will be filtered lower than the bam quality
     // Output: filter_res, true (read needed to be filtered)/false (read will be not filter)
     public static boolean filterOneReadAlign(SAMRecord record, String query_strand){
-        int min_mapq = CommonFinalParas.min_mapq;
-        String strand_spec = CommonFinalParas.strand_spec;
         String read_strand;
         boolean strand_flag = record.getReadNegativeStrandFlag();
         if (strand_flag){
@@ -95,5 +147,4 @@ public class ReadRecordProcess {
         }
         return filter_res;
     }
-
 }

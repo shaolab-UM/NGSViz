@@ -55,20 +55,10 @@ public class LargeChIPProcessRecordGenomeCoordinateDB {
             // calculate the physical coverage for each query region
             ArrayList<Integer> physical_coverage =
                     PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);
-            /*
-            # If paired, filter reads that are not properly paired.
-            paired <- all(with(srg, is.na(isize) | isize != 0))
-            if(paired) {
-                p.mask <- with(srg, rname == mrnm & xor(strand == '+', isize < 0))
-                all.mask <- all.mask & p.mask
-            }
-             */
-
             // Filter transcripts whose chromosomes do not match bam file.
 
             // remove the buffers from the coverage
             physical_coverage = TrimBuffer.trimBuffer(physical_coverage, buf_size);
-
             // scale the coverage into the data point for plot
             DataScaler data_scaler = new DataScaler(physical_coverage);
             List<Double> coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
