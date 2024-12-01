@@ -41,13 +41,13 @@ public class MainCalculator extends InputParameterAttributes {
             System.out.println("Start coverage calculation!");
             System.out.println("---------");
             // coverage_scaled_matrix is data matrix for heatmap
-            double[][] coverage_scaled_matrix = LargeIntervalMain.largeIntervalMain(bam_file);
+            double[][] coverage_scaled_matrix = EachQueryRegionProcess.processEachQueryRegion(bam_file);
             //RNAseqIntervalMain.rnaseqIntervalMain(bam_file);
 
             if(paired_mode){
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
-                double[][] bkg_coverage_scaled_matrix = LargeIntervalMain.largeIntervalMain(paired_bam);
+                double[][] bkg_coverage_scaled_matrix = EachQueryRegionProcess.processEachQueryRegion(paired_bam);
                 // libsize
                 // get the library size of bam file
                 SamReader bam_reader = ReadBam.getBamReader(bam_file);

@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/LargeIntervalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/LargeIntervalMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/RNAseqIntervalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/RNAseqIntervalMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/LargeIntervalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PointInternalMain.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/RNAseqIntervalMain.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,8 +135,11 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="sqldbOperate" />
+    </key>
   </component>
-  <component name="RunManager" selected="Application.test">
+  <component name="RunManager" selected="Application.NGSplot2Main">
     <configuration name="ExonModelData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="sqldbOperate.exonMode.ExonModelData" />
       <module name="NGSPlot2" />
@@ -182,8 +195,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.test" />
         <item itemvalue="Application.NGSplot2Main" />
+        <item itemvalue="Application.test" />
         <item itemvalue="Application.ExonModelData" />
         <item itemvalue="Application.GetExonModelData" />
         <item itemvalue="Application.QueryWholeRegionCoordinate" />
@@ -217,7 +230,7 @@
       <workItem from="1730775582044" duration="7447000" />
       <workItem from="1730891209319" duration="232390000" />
       <workItem from="1732427409599" duration="25167000" />
-      <workItem from="1732532445488" duration="32627000" />
+      <workItem from="1732532445488" duration="42136000" />
     </task>
     <servers />
   </component>

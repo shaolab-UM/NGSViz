@@ -27,6 +27,7 @@ public class PintProcessRecordGenomeCoordinateDB {
         int start_pos = (int) record.get("start");
         int end_pos = (int) record.get("end");
         String query_strand = (String) record.get("strand");
+
         int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
         System.out.println("The middle point is " + middle_point);
         // Specify the genome interval range to calculate the coverage

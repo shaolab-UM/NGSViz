@@ -55,8 +55,6 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
         }catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());
         }
-        //System.out.println("query results is: " + results);
         exitDB();
-        //return results;
     }
 }

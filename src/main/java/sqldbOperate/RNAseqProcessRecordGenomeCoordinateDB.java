@@ -8,7 +8,6 @@ import coverageCalculator.dataScaler.DataScaler;
 import htsjdk.samtools.util.Interval;
 import sqldbOperate.exonMode.CoverageExonSubset;
 import sqldbOperate.exonMode.ExonModelData;
-import sqldbOperate.exonMode.OneEnstAllExonCoorClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +19,6 @@ import java.util.Map;
  * @create 2024-11--17:36
  */
 public class RNAseqProcessRecordGenomeCoordinateDB {
-    private static String region_plot = InputParameterAttributes.region_plot;
     private static int flanking_size = InputParameterAttributes.flank_region;
     private static int buf_size = InputParameterAttributes.buf_size;
     private static String scaler_method = InputParameterAttributes.scaler_method;
@@ -56,9 +54,11 @@ public class RNAseqProcessRecordGenomeCoordinateDB {
         // Specify the genome interval range to calculate the coverage
         Interval interval_range = QueryGenomeRange.getQueryBamGranges(chr_name,
                 start_pos, end_pos, flank_size);
+
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
         System.out.println("interval_range: " + interval_range);
+
         // calculate the physical coverage for each query region
         ArrayList<Integer> physical_coverage =
                 PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);

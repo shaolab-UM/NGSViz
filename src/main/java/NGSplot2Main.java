@@ -1,8 +1,6 @@
 import configSet.InputParameterAttributes;
 import configSet.ProcessInputParameters;
-import coverageCalculator.LargeIntervalMain;
 import coverageCalculator.MainCalculator;
-import sqldbOperate.LargeChIPProcessRecordGenomeCoordinateDB;
 import sqldbOperate.QueryWholeRegionCoordinate;
 import sqldbOperate.exonMode.ExonModelData;
 
@@ -14,13 +12,14 @@ public class NGSplot2Main {
     public static void main(String[] args) {
         args = new String[]{
                 "-G", "hg19",
-                "-R", "genebody",
-                //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
-                "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                //"-R", "genebody",
+                "-R", "tes",
+                "-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
+                //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
                 "-O", "/Users/bencheye/myProj/ngsPlot/Output/hesc.RNAseq.1M",
                 //"-F", "protein_coding, test",
-                "-A", "rnaseq",
+                //"-A", "rnaseq",
                 "-L", "2000"
         };
         ProcessInputParameters.processInputParameter(args);
