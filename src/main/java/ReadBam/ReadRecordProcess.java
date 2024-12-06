@@ -26,15 +26,15 @@ public class ReadRecordProcess {
     //   frag_len: fragment length
     // Output: read_align_info, an integer list includes two item, align_start_pos and read_width
     //   align_start_pos, the start position of read; read_width, the width of read
-    public static List<Integer> getReadAlignmentInfo(SAMRecord record, Interval interval_range){
+    public static List<Integer> getReadAlignmentInfo(SAMRecord bam_record, Interval interval_range){
         // get the alignment value, the start position and width of read
-        int align_start_pos = record.getAlignmentStart();
-        int read_width = record.getReadLength();
+        int align_start_pos = bam_record.getAlignmentStart();
+        int read_width = bam_record.getReadLength();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
         System.out.println("The align start pos of this read is " + align_start_pos);
         // Negative Strand Flag
-        boolean strand_flag = record.getReadNegativeStrandFlag();
+        boolean strand_flag = bam_record.getReadNegativeStrandFlag();
         System.out.println("The strand flag of this read is " + strand_flag);
         if (strand_flag){
             // if strand's direction is "-", adjust the start position of read
@@ -51,14 +51,15 @@ public class ReadRecordProcess {
         return read_align_info;
     }
 
-    public static List<Integer> getPairedReadAlignmentInfo(SAMRecord record){
+    public static List<Integer> getPairedReadAlignmentInfo(SAMRecord bam_record){
+        // adjust paired interval range
         int align_start_pos;
         int read_width;
         // the length of insert (width)
-        int tlen = record.getInferredInsertSize();
+        int tlen = bam_record.getInferredInsertSize();
         // get the alignment value, the start position and width of read
-        int pos = record.getAlignmentStart();
-        int mpos = record.getMateAlignmentStart();
+        int pos = bam_record.getAlignmentStart();
+        int mpos = bam_record.getMateAlignmentStart();
         if(tlen<0){
             align_start_pos = mpos;
         }else{
@@ -72,22 +73,26 @@ public class ReadRecordProcess {
         return read_align_info;
     }
 
-    public static boolean checkPairedRecord(SAMRecord record){
-        //paired <- all(with(srg, is.na(isize) | isize != 0))
+    public static boolean checkPairedRecord(SAMRecord bam_record){
         boolean paired_mood = false;
         // the length of insert
-        int tlen = record.getInferredInsertSize();
+        int tlen = bam_record.getInferredInsertSize();
+        System.out.println("---------");
+        System.out.println("---------");
+        System.out.println("the tlen is: " + tlen);
+        System.out.println("---------");
+        System.out.println("---------");
         if(tlen != 0){
             paired_mood  = true;
         }
         return paired_mood;
     }
-     public static boolean checkPairedRecordQuality(SAMRecord record){
+     public static boolean checkPairedRecordQuality(SAMRecord bam_record){
         // the length of insert
-        int tlen = record.getInferredInsertSize();
-        String rname = record.getReferenceName();
-        String mrnm = record.getMateReferenceName();
-        boolean strand_flag = record.getReadNegativeStrandFlag();
+        int tlen = bam_record.getInferredInsertSize();
+        String rname = bam_record.getReferenceName();
+        String mrnm = bam_record.getMateReferenceName();
+        boolean strand_flag = bam_record.getReadNegativeStrandFlag();
         String read_strand;
         if (strand_flag){
              read_strand = "-";

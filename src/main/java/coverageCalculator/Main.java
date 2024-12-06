@@ -24,12 +24,12 @@ public class Main {
         int qEnd = 72271115;
         String query_strand = "+";
         String scaler_method = CommonFinalParas.scaler_method;
-
+        boolean paired_mode = false;
         // Specify the genome interval range to calculate the coverage
         Interval interval_range = new Interval(chr_name, qStart, qEnd);
         // calculate the physical coverage for each query region
         ArrayList<Integer> physical_coverage =
-                PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand);
+                PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range, query_strand, paired_mode);
         System.out.println("Physical coverage: " + physical_coverage);
         //List<Double> averages = data_scaler.getCoverageScaled("peakSelection");
         //System.out.println(averages);

@@ -40,12 +40,13 @@ public class ExonModelData extends DBAtribute {
             resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
+                // get item of tid,start,end,width
                 String query_tid = resultSet.getString("tid");
                 int query_start = resultSet.getInt("start");
                 int query_end = resultSet.getInt("end");
                 int query_width = resultSet.getInt("width");
                 if(!tid_name.equals(query_tid)){
-                    // save last enst res
+                    // process each enst result
                     if(!tid_name.equals("")){
                         OneEnstAllExonCoorClass one_enst = new OneEnstAllExonCoorClass(tid_name, start_enst, end_enst,
                                 width_enst, start_list, end_list, width_list);
@@ -63,6 +64,7 @@ public class ExonModelData extends DBAtribute {
                     end_list.add(query_end);
                     width_list.add(query_width);
                 } else {
+                    // process new enst result
                     end_enst = query_end;
                     width_enst = width_enst + query_width;
                     //

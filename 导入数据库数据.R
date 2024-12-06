@@ -64,7 +64,7 @@ load_name <- "/Users/bencheye/myProj/ngsPlot/ngsplot-develop/database/hg19/hg19.
 load(load_name)
 
 ## test-----------------------
-exonmodel_list <- exonmodel
+exonmodel_list <- exonmodel[1:10]
 rm(exonmodel)
 # test-------------------------
 exon_df <- processExonModel(load_name, exonmodel_list)

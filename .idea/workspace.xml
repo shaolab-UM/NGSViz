@@ -5,18 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" beforeDir="false" afterPath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ngsplot report.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/ngsplot report.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/LargeIntervalMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PointInternalMain.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/RNAseqIntervalMain.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/导入数据库数据.R" beforeDir="false" afterPath="$PROJECT_DIR$/导入数据库数据.R" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,8 +203,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.NGSplot2Main" />
-        <item itemvalue="Application.test" />
         <item itemvalue="Application.ExonModelData" />
+        <item itemvalue="Application.test" />
         <item itemvalue="Application.GetExonModelData" />
         <item itemvalue="Application.QueryWholeRegionCoordinate" />
       </list>
@@ -230,7 +237,7 @@
       <workItem from="1730775582044" duration="7447000" />
       <workItem from="1730891209319" duration="232390000" />
       <workItem from="1732427409599" duration="25167000" />
-      <workItem from="1732532445488" duration="42136000" />
+      <workItem from="1732532445488" duration="63440000" />
     </task>
     <servers />
   </component>

@@ -21,7 +21,6 @@ public class ReadBam {
     public static SamReader getBamReader (String bam_file_path) {
         File bam_file = new File(bam_file_path);
         String bam_name = bam_file.getName();
-        System.out.println("Calculate the physical coverage for each query region: " + bam_name);
         // check whether the bam file exist
         if (!bam_file.exists()) {
             System.err.println("Error: The BAM file" + bam_file_path + " does not exist!");

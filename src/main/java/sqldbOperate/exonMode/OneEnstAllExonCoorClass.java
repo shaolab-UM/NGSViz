@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * @author Benchen Ye
  * @create 2024-11--16:29
+ * @fuction adjust
  */
 public class OneEnstAllExonCoorClass {
     public String enst_name;

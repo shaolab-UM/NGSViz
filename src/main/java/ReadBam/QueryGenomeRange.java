@@ -7,7 +7,7 @@ import htsjdk.samtools.util.Interval;
 /**
  * @author Benchen Ye
  * @create 2024-10--18:03
- * @function get all aligned reads information for query region
+ * @function build the interval region range for query bam read
  */
 public class QueryGenomeRange {
     private static int buf_size = InputParameterAttributes.buf_size;
@@ -22,7 +22,7 @@ public class QueryGenomeRange {
         }
         int query_end = middle_point + flanking_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);
-        System.out.println("The point interval range is: " + interval_range);
+        //System.out.println("The point interval range is: " + interval_range);
         return interval_range;
     }
     // calculate the range coordinate of broad interval of query gene for epigenetic
@@ -38,8 +38,7 @@ public class QueryGenomeRange {
         }
         int query_end = end_pos + flank_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);
-        System.out.println("The large interval range is: " + interval_range);
+        //System.out.println("The large interval range is: " + interval_range);
         return interval_range;
     }
-
 }

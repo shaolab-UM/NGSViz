@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * @author Benchen Ye
  * @create 2024-11--21:01
+ * @fucntion integrate exon coverage
  */
 public class CoverageExonSubset {
     public static ArrayList<Integer> getCoverageExonSubset(ArrayList<Integer> physical_coverage, String tid_name,
