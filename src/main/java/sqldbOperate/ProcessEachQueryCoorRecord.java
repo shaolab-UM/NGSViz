@@ -8,7 +8,6 @@ import coverageCalculator.DataScaler;
 import htsjdk.samtools.util.Interval;
 import sqldbOperate.exonMode.CoverageExonSubset;
 import sqldbOperate.exonMode.ExonModelData;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,10 +42,6 @@ public class ProcessEachQueryCoorRecord {
             String[] parts = record_name.split(":");
             String tid_name = parts.length > 1 ? parts[1] : "";
 
-            // get the number of middle point and flank_point
-            //int num_middle_point = InputParameterAttributes.middle_points;
-            //int num_flank_point = InputParameterAttributes.flank_points;
-
             // config code need to change when flank_factor exist
             if (flank_factor > 0){
                 System.out.println("Processing the flank size with flanking factor: " + flank_factor);
@@ -68,8 +63,6 @@ public class ProcessEachQueryCoorRecord {
                 // point interval
                 System.out.println("--- Performing point interval analysis mode for chipseq! ---");
                 int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
-                /*System.out.println("start point is " + start_pos);
-                System.out.println("end point is " + end_pos);*/
                 System.out.println("The middle point is " + middle_point);
                 // Specify the genome interval range to calculate the coverage
                 interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
@@ -107,10 +100,6 @@ public class ProcessEachQueryCoorRecord {
 
             // remove the buffers from the coverage
             physical_coverage = TrimBuffer.trimBuffer(physical_coverage, buf_size);
-
-            //System.out.println(physical_coverage);
-
-            // ---- debug
             // scale the coverage into the data point for plot
             List<Double> coverage_scaled = DataScaler.getCoverageScaled(physical_coverage, scaler_method, flank_size);
             // if strand is `-` , reverse the coverage

@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  * @author Benchen Ye
- * @create 2024-11--20:09
- * @function check whether is a legal value for input parameter
+ * @ create 2024-11--20:09
+ * @ function check whether is a legal value for input parameter
  */
 public class CheckLegal2InputParameter extends InputParameterAttributes {
     public static void checkLegal2InputParameter() {
@@ -59,7 +59,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
             System.exit(-1);
         }
         String file_type = getFileExtension(file_ath);
-        if (file_type.equals("")) {
+        if (file_type.isEmpty()) {
             System.out.println("Error: There is no extension file for input file!");
             System.out.println("Input file path : " + file_ath);
             System.exit(-1);
@@ -107,13 +107,6 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
             System.out.println("Your input paramter -A `" + check_value +  "` is illegal item!");
             System.out.println("-A must be `transcript` or `exon`!");
         }
-        /*if (check_value.equals(legal_list[1])){
-            if (!region_plot.equals("genebody")){
-                System.out.println("when -A analysis method is " + check_value);
-                System.out.println("the -R region2plot is must be genebody!");
-                System.exit(-1);
-            }
-        }*/
     }
     public static void checkValue01 (double check_value, String parameter_name) {
         if(check_value < 0 || check_value > 1) {
@@ -165,8 +158,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
     public static int getFlankRegion (String region_plot) {
         checkFlankRegionValue(region_plot);
         Map<String, Integer> region_FR_map = getRegion2FRMap();
-        int flank_region = region_FR_map.get(region_plot);
-        return flank_region;
+        return region_FR_map.get(region_plot);
     }
     // check necessary parameters
     public static void checkNecessaryPara(){
@@ -188,7 +180,6 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         if (output_path == null) {
             System.out.println("There is not a parameter -O, please check!");
             System.out.println("-O is to specify the output file path");
-            return;
         }
     }
 }

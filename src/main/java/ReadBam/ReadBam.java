@@ -5,11 +5,9 @@ import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMSequenceRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -17,8 +15,6 @@ import java.util.Set;
  * @create 2024-10--18:56
  */
 public class ReadBam {
-    // test
-
     public static SamReader getBamReader (String bam_file_path) {
         File bam_file = new File(bam_file_path);
         String bam_name = bam_file.getName();

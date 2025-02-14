@@ -21,12 +21,6 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
     public static Map<String, List<Transcript>> gene_map = new HashMap<>();
     public static int region_num = 0;
 
-    public static void main(String[] args) {
-        String tbl_name = "Homo_sapiens_ensembl_GRCh38_113";
-        String biotype = "protein_coding";
-        String type = "transcript";
-        queryGenomeCoorDatabaseRecord(tbl_name, biotype, type);
-    }
     public static void queryGenomeCoorDatabaseRecord(String tbl_name, String biotype, String type) {
         // can use the chunk to improve the performance
         List<Map<String, Object>> results = new ArrayList<>();
@@ -51,9 +45,6 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
                 int end_pos = resultSet.getInt("end");
                 // remove the 'chr' of chromosome name
                 String nochr_name = chr_name.replace("chr", "");
-                /*record.put("chrom", chr_name);
-                record.put("nochr_name", nochr_name);
-                record.put("gene_name", gene_name);*/
                 if (!unique_chrname_list.contains(chr_name)) {
                     unique_chrname_list.add(chr_name);
                     unique_nochrname_list.add(nochr_name);
@@ -64,13 +55,8 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
                 Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
                         chr_name, nochr_name, strand, start_pos, end_pos);
                 gene_map.computeIfAbsent(gene_name, k -> new ArrayList<>()).add(transcript);
-
-                /*record.put("start", resultSet.getInt("start"));
-                record.put("end", resultSet.getInt("end"));
-                record.put("strand", resultSet.getString("strand"));*/
                 int width = resultSet.getInt("end") - resultSet.getInt("start") +1;
                 width_list.add((double) width);
-                /*query_coord.add(record);*/
             }
         }catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());

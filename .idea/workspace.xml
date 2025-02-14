@@ -6,16 +6,61 @@
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/NGSPlot2/App.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/BamFileLibrarySize.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/BamIndexBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/CheckBamSort.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/CheckLegal2InputParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/CheckLegal2InputParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/CommonFinalParas.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/DBdefaultValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/DBdefaultValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/DataPointNum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetConfigParaValue.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/GetInputParameterValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ReadConfig.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/configSet/SetDefaultOptionParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/SetDefaultOptionParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/AverageCoverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/AverageCoverage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/CoverageMatrixObj.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/DataScaler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcessCP.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/GetGeneAlignmentInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/ReadTextFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$NGSViz.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculatorCP.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculatorTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/dataScaler/DataScaler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/DBAtribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/DBAtribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/DBRegionQueryRes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/GetRefDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/GetRefDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDBUniqueItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDBUniqueItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDefaultDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDefaultDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinateCP.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/SQLiteQuery.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Transcript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/Transcript.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/CheckListExistValue.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Matrix2CSV.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/DBconfig.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config-board.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config-note.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config-point.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/NGSPlot2/AppTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,76 +110,76 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.App.executor": "Run",
-    "Application.AverageCoverageTrimmedMeanMatrix.executor": "Run",
-    "Application.BamFileLibrarySize.executor": "Run",
-    "Application.BamIndexBuilder.executor": "Run",
-    "Application.BamUniqChar.executor": "Run",
-    "Application.CheckQueryItemLegal.executor": "Run",
-    "Application.Config.executor": "Run",
-    "Application.ConstructDB.executor": "Run",
-    "Application.CoverageCalculator.executor": "Run",
-    "Application.CreateBamIndex.executor": "Run",
-    "Application.DataPointNum.executor": "Run",
-    "Application.DataScaler.executor": "Run",
-    "Application.DatabaseConnector.executor": "Run",
-    "Application.DatabaseReader.executor": "Run",
-    "Application.ExecuteSQLFile.executor": "Run",
-    "Application.ExonModelData.executor": "Run",
-    "Application.GenerateJsonConfig.executor": "Run",
-    "Application.GetCommandParameter.executor": "Run",
-    "Application.GetExonModelData.executor": "Run",
-    "Application.GetRefDB.executor": "Run",
-    "Application.LargeIntervalMain.executor": "Run",
-    "Application.ListReverse.executor": "Run",
-    "Application.Main (1).executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.MainCalculator.executor": "Run",
-    "Application.Matrix2CSV.executor": "Run",
-    "Application.NGSplot2Main.executor": "Run",
-    "Application.PhysicalCoverageCalculatorTest.executor": "Run",
-    "Application.PhysicalCoverageListObj.executor": "Run",
-    "Application.PointInternalMain.executor": "Run",
-    "Application.QueryDBUniqueItem.executor": "Run",
-    "Application.QueryDefaultDB.executor": "Run",
-    "Application.QueryWholeRegionCoordinate.executor": "Run",
-    "Application.ReadBam.executor": "Run",
-    "Application.ReadTextFile.executor": "Run",
-    "Application.SEMCalculator.executor": "Run",
-    "Application.SQLiteExample.executor": "Run",
-    "Application.SQLiteQuery.executor": "Run",
-    "Application.SetIntervalType.executor": "Run",
-    "Application.TrimBuffer.executor": "Run",
-    "Application.coverageCalculator.Main.executor": "Run",
-    "Application.coverageCalculator.dataScaler.Main.executor": "Run",
-    "Application.main.executor": "Run",
-    "Application.mergeDB.executor": "Run",
-    "Application.test.executor": "Run",
-    "Downloaded.Files.Path": "/opt/homebrew/Cellar/maven/3.9.9/libexec/localRepository",
-    "Downloaded.Files.Path.Enabled": "true",
-    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
-    "Repository.Attach.Annotations": "true",
-    "Repository.Attach.JavaDocs": "true",
-    "Repository.Attach.Sources": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSPlot2",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.47241378",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AverageCoverageTrimmedMeanMatrix.executor&quot;: &quot;Run&quot;,
+    &quot;Application.BamFileLibrarySize.executor&quot;: &quot;Run&quot;,
+    &quot;Application.BamIndexBuilder.executor&quot;: &quot;Run&quot;,
+    &quot;Application.BamUniqChar.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CheckQueryItemLegal.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Config.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ConstructDB.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CoverageCalculator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CreateBamIndex.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DataPointNum.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DataScaler.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DatabaseConnector.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DatabaseReader.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ExecuteSQLFile.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ExonModelData.executor&quot;: &quot;Run&quot;,
+    &quot;Application.GenerateJsonConfig.executor&quot;: &quot;Run&quot;,
+    &quot;Application.GetCommandParameter.executor&quot;: &quot;Run&quot;,
+    &quot;Application.GetExonModelData.executor&quot;: &quot;Run&quot;,
+    &quot;Application.GetRefDB.executor&quot;: &quot;Run&quot;,
+    &quot;Application.LargeIntervalMain.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ListReverse.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MainCalculator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Matrix2CSV.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NGSplot2Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PhysicalCoverageCalculatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PhysicalCoverageListObj.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PointInternalMain.executor&quot;: &quot;Run&quot;,
+    &quot;Application.QueryDBUniqueItem.executor&quot;: &quot;Run&quot;,
+    &quot;Application.QueryDefaultDB.executor&quot;: &quot;Run&quot;,
+    &quot;Application.QueryWholeRegionCoordinate.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ReadBam.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ReadTextFile.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SEMCalculator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SQLiteExample.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SQLiteQuery.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SetIntervalType.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TrimBuffer.executor&quot;: &quot;Run&quot;,
+    &quot;Application.coverageCalculator.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.coverageCalculator.dataScaler.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.mergeDB.executor&quot;: &quot;Run&quot;,
+    &quot;Application.test.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path&quot;: &quot;/opt/homebrew/Cellar/maven/3.9.9/libexec/localRepository&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bencheye/myProj/ngsPlot/NGSPlot2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.47241378&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
@@ -148,7 +193,7 @@
       <recent name="sqldbOperate" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.NGSplot2Main">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="DataScaler" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="coverageCalculator.DataScaler" />
       <module name="NGSPlot2" />
@@ -204,9 +249,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.NGSplot2Main" />
         <item itemvalue="Application.ReadTextFile" />
-        <item itemvalue="Application.Main" />
         <item itemvalue="Application.main" />
         <item itemvalue="Application.DataScaler" />
       </list>
@@ -245,6 +290,7 @@
       <workItem from="1737615177896" duration="597000" />
       <workItem from="1738627213776" duration="8445000" />
       <workItem from="1739083752559" duration="135813000" />
+      <workItem from="1739537209115" duration="4059000" />
     </task>
     <servers />
   </component>

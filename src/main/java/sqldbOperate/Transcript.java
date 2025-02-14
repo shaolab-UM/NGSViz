@@ -1,8 +1,6 @@
 package sqldbOperate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +18,6 @@ public class Transcript {
     private String no_chr_lab;
     private static Map<String, Object> record = new HashMap<>();
 
-    // 构造函数、getter 和 setter 方法
     public Transcript(String record_name,
                       String gene_name,
                       String transcript_id,
@@ -55,36 +52,4 @@ public class Transcript {
         return record;
     }
 
-
-    public String getTranscriptId() {
-        return transcript_id;
-    }
-
-    public int getStartPos() {
-        return start_pos;
-    }
-
-    public int getEndPos(){
-        return end_pos;
-    }
-
-    public String getStrand(){
-        return query_strand;
-    }
-
-    public String getChrLab(){
-        return chr_lab;
-    }
-
-    public String getNoChrLab(){
-        return no_chr_lab;
-    }
-    /*@Override
-    public String toString() {
-        return "Transcript{" +
-                "geneName='" + geneName + '\'' +
-                ", transcriptId='" + transcriptId + '\'' +
-                ", coordinates='" + coordinates + '\'' +
-                '}';
-    }*/
 }

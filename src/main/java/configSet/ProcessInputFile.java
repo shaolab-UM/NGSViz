@@ -1,14 +1,13 @@
 package configSet;
 
 import utils.ReadTextFile;
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Benchen Ye
- * @create 2024-11--21:36
- * @function process input file, bam file or txt/csv file
+ * @ create 2024-11--21:36
+ * @ function process input file, bam file or txt/csv file
  */
 public class ProcessInputFile extends InputParameterAttributes {
     public static void processInputFile(){

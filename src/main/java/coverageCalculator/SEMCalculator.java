@@ -10,17 +10,6 @@ import java.util.List;
  * @function trim has error
  */
 public class SEMCalculator {
-    // test
-    public static void main(String[] args) {
-        double[] data = {2,3,1,4,5,6,7,9,2};
-        // calculate the SEM without trim
-        //double semValue = calculateSEM(data, 0);
-        //System.out.println("SEM without trimming: " + semValue);
-        // calculate the SEM of trim 5% data
-        double semValueTrimmed = calculateSEM(data, 0.95);
-        System.out.println("SEM with 5% trimming: " + semValueTrimmed);
-    }
-
     // calculate quantile value for trim_ratio
     public static double quantile(double[] vector_list, double trim_ratio) {
         double percentile_value;
@@ -42,8 +31,7 @@ public class SEMCalculator {
     public static List<Double> trim(double[] vector_list, double trim_ratio) {
         double low = quantile(vector_list, trim_ratio);
         double high = quantile(vector_list, 1-trim_ratio);
-        List<Double> filter_res = filterData(vector_list, low, high);
-        return filter_res;
+        return filterData(vector_list, low, high);
     }
 
     // filter the value of [] data lower than low value and greater than high value

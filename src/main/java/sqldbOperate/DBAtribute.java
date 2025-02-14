@@ -1,13 +1,8 @@
 package sqldbOperate;
 
-import org.sqlite.core.DB;
-
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Benchen Ye
@@ -28,8 +23,6 @@ public class DBAtribute {
             System.out.println("Database error: " + e.getMessage());
             System.exit(1);
         }
-        //System.out.println("successfully connected to database!");
-        //System.out.println("---------");
         return statement;
     }
 
@@ -41,8 +34,6 @@ public class DBAtribute {
                 System.out.println("Stop database error: " + e.getMessage());
                 System.exit(0);
             }
-        //System.out.println("---------");
-        //System.out.println("Database exit successfully.");
     }
 
 }

@@ -7,7 +7,6 @@ import htsjdk.samtools.filter.DuplicateReadFilter;
 import htsjdk.samtools.filter.MappingQualityFilter;
 import htsjdk.samtools.filter.SamRecordFilter;
 import htsjdk.samtools.util.Interval;
-
 import java.util.Arrays;
 import java.util.List;
 

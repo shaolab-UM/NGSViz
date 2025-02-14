@@ -4,13 +4,12 @@ import java.util.List;
 
 /**
  * @author Benchen Ye
- * @create 2024-11--21:10
+ * @ create 2024-11--21:10
  */
 public class GetInputParameterValue extends InputParameterAttributes {
     // Parse by traversing the command line argument array.
     public static void getInputParametersValue (String[] args) {
         for (int i = 0; i < args.length; i = i + 2) {
-            String res_out = null;
             // necessary parameters
             genome = setParameterValue(genome, "-G", args, i);
             region_plot = setParameterValue(region_plot, "-R", args, i);

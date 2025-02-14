@@ -1,10 +1,8 @@
 package configSet;
 
-import sqldbOperate.QueryDefaultDB;
-
 /**
  * @author Benchen Ye
- * @create 2024-11--20:34
+ * @ create 2024-11--20:34
  */
 public class SetDefaultOptionParameter extends InputParameterAttributes {
     // set the default value for option parameters.

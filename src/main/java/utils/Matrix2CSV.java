@@ -12,22 +12,6 @@ import java.util.List;
  * @function save the matrix data into the csv file with/without rownames
  */
 public class Matrix2CSV {
-    // test
-    public static void main(String[] args) {
-        double[][] matrix_df = {
-            {1.0, 2.0, 3.0},
-            {4.0, 5.0, 6.0},
-            {7.0, 8.0, 9.0}
-    };
-        double [] matrix = {1.0, 2.0, 3.0};
-
-        List<String> rowNames = Arrays.asList("Row1", "Row2", "Row3");
-        String filePath = "/Users/bencheye/myProj/ngsPlot/Output/matrix_with_row_names.csv";
-        //saveMatrix2CSV(matrix, rowNames, filePath);
-        //List<String> col_names = Arrays.asList("col1", "col2", "col3");
-        String col_names = "col1";
-        saveMatrix2CSV(filePath, matrix_df, rowNames);
-    }
 
     public static int getNumColumns(double[][] matrix) {
         if (matrix.length > 0) {

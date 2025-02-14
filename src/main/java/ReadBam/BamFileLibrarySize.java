@@ -1,8 +1,7 @@
 package ReadBam;
-import configSet.InputParameterAttributes;
+
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
-
 import java.util.ArrayList;
 import java.util.List;
 

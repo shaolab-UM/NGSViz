@@ -3,17 +3,14 @@ package configSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.DirectoryChecker;
-
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
  * @author Benchen Ye
- * @create 2024-11--19:08
- * @function generate the config file
+ * @ create 2024-11--19:08
+ * @ function generate the config file
  */
 public class GenerateJsonConfig extends InputParameterAttributes {
     public static void generateJsonConfig(String out_path, String config_name) {
@@ -54,8 +51,6 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         JSONObject basis_parameters = new JSONObject();
         basis_parameters.put("database", DB_tpye);
         basis_parameters.put("analysis_type", analysis_type);
-        //basis_parameters.put("species", species);
-        //basis_parameters.put("coord_refDB", refname);
         JSONArray gene_listArray = new JSONArray();
         gene_listArray = buildJsonListConfig(gene_listArray, gene_list);
         basis_parameters.put("gene_list", gene_listArray);

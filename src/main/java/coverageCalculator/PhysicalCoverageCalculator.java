@@ -5,7 +5,6 @@ import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.Interval;
 import ReadBam.ReadBam;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

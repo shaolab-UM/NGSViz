@@ -12,11 +12,6 @@ import java.util.List;
  * @output List<String> to save the unique value for query item
  */
 public class QueryDBUniqueItem extends DBAtribute{
-    public static void main(String[] args) {
-        String query_key = "DB";
-        List<String> query_res = QueryDBUniqueItem.getDBQueryUniqueItem(query_key);
-        System.out.println("query_res : " + query_res);
-    }
     public static List<String> getDBQueryUniqueItem(String query_key) {
         List<String> query_results = new ArrayList<>();
         ResultSet resultSet = null;

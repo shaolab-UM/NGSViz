@@ -7,24 +7,6 @@ import java.util.Arrays;
  * @create 2024-10--20:38
  */
 public class AverageCoverage {
-    public static void main(String[] args) {
-        double[][] matrix = {
-                {1.0, 2.0, 3.0, 4.0},
-                {2.0, 3.0, 4.0, 5.0},
-                {3.0, 4.0, 5.0, 6.0},
-                {4.0, 5.0, 6.0, 7.0},
-                {5.0, 6.0, 7.0, 8.0}
-        };
-        // trim ration，such as 10%
-        double trim_ratio = 0.1;
-
-        double[] trimmedMeans = calculateAverageCoverage(matrix, trim_ratio);
-
-        System.out.println("Trimmed means for each column:");
-        for (double mean : trimmedMeans) {
-            System.out.println(mean);
-        }
-    }
 
     public static double[] calculateAverageCoverage(double[][] coverage_scaled_matrix, double trim_ratio) {
         int rows = coverage_scaled_matrix.length;

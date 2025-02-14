@@ -46,9 +46,6 @@ public class EachGeneRegionProcess {
     }
 
     public static HashMap<String, Object> parallelProcessEachGene(String bam_file, List<String> query_gene_list, boolean paired_mode) {
-        // initiation coverage_scaled_matrix (heatmap data)
-        //int num_query_gene = query_gene_list.size();
-        //double[][] coverage_scaled_matrix = new double[num_query_gene][num_datapoints+1];
         // get the library size of bam file
         SamReader bam_reader = ReadBam.getBamReader(bam_file);
         long library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
@@ -156,32 +153,4 @@ public class EachGeneRegionProcess {
         }
         return transcript_mat;
     }
-    /*
-    * merge all gene results
-    * */
-    /*private static HashMap<String, Object> mergeResults(HashMap<String, Object> feature_list) {
-        double[][] coverage_scaled_matrix = new double[feature_list.size()][];
-        int i = 0;
-        List<String> query_gene_list = new ArrayList<>();
-        for(Map.Entry<String, Object> entry : feature_list.entrySet()){
-        //for (int i = 0; i < feature_list.size(); i++) {
-            // Retrieve the processing results for each gene
-            String gene_name = entry.getKey();
-            query_gene_list.add(gene_name);
-            Future<List<Double>> future = (Future<List<Double>>) entry.getValue();
-            List<Double> result = future.get();
-            //List<Double> gene_result = futures.get(i).get();
-            List<Double> gene_result = future.get();
-            coverage_scaled_matrix[i] = new double[gene_result.size()];
-            for (int j = 0; j < gene_result.size(); j++) {
-                coverage_scaled_matrix[i][j] = gene_result.get(j);
-            }
-            i++;
-        }
-        System.out.println("--- all gene coverage results have been merged!");
-        HashMap<String, Object> cal_res_map = new HashMap<>();
-        cal_res_map.put("row_names", query_gene_list);
-        cal_res_map.put("coverage_matrix", coverage_scaled_matrix);
-        return cal_res_map;
-    }*/
 }

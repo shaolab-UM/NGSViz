@@ -1,7 +1,5 @@
 package sqldbOperate.exonMode;
 
-import utils.CheckListExistValue;
-
 import java.util.ArrayList;
 import java.util.List;
 

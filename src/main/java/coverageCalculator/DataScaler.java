@@ -1,9 +1,7 @@
 package coverageCalculator;
 
 import configSet.InputParameterAttributes;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,12 +35,7 @@ public class DataScaler {
                 head_cov_scaled = bin(head_cov, flanking_region_datapoints);
                 tail_cov_scaled = bin(tail_cov, flanking_region_datapoints);
                 mid_cov_scaled = bin(mid_cov, middle_datapoints);
-                /*System.out.println("-----debug----");
-                System.out.println("--- head_cov coverage size is " + head_cov_scaled.size());
-                System.out.println("--- tail_cov coverage size is " + tail_cov_scaled.size());
-                System.out.println("--- mid_cov coverage size is " + mid_cov_scaled.size());*/
-                /*int f1 = (head_cov.get(head_cov.size() - 1) + mid_cov.get(0)) / 2;
-                int f2 = (mid_cov.get(mid_cov.size() - 1) + tail_cov.get(0)) / 2;*/
+                System.out.println("--- Normalize data with bin");
                 coverage_scaled.addAll(head_cov_scaled);
                 coverage_scaled.addAll(mid_cov_scaled);
                 coverage_scaled.addAll(tail_cov_scaled);
@@ -51,11 +44,7 @@ public class DataScaler {
                 head_cov_scaled = spline(head_cov, flanking_region_datapoints);
                 tail_cov_scaled = spline(tail_cov, flanking_region_datapoints);
                 mid_cov_scaled = spline(mid_cov, middle_datapoints);
-                /*System.out.println("-----debug----");
-                System.out.println("--- head_cov coverage size is " + head_cov_scaled.size());
-                System.out.println("--- tail_cov coverage size is " + tail_cov_scaled.size());
-                System.out.println("--- mid_cov coverage size is " + mid_cov_scaled.size());
-                System.out.println("--- Normalize data with spline");*/
+                System.out.println("--- Normalize data with spline");
                 coverage_scaled.addAll(head_cov_scaled);
                 coverage_scaled.addAll(mid_cov_scaled);
                 coverage_scaled.addAll(tail_cov_scaled);
