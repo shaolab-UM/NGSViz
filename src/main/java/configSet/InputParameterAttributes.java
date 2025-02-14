@@ -17,6 +17,7 @@ public class InputParameterAttributes {
     //
     public static String refname = null;
     public static String species = null;
+    public static String tbl_name = null;
     public static List<String> bam_list = new ArrayList<>();
     public static int buf_size;
     public static List<String> region_labels = new ArrayList<>();
@@ -24,14 +25,14 @@ public class InputParameterAttributes {
     public static int num_datapoints = 100;
     public static int middle_points = 0;
     public static int flank_points = 0;
-    public static String config_name = "ngsplot2_running_config.json";
+    public static String config_name = "NGSVir_running_config.json";
     // option parameters
     public static String DB_tpye = null; //-D
     // -1 is all gene in the database
     public static List<String> gene_list = Arrays.asList("-1"); // -E
     public static List<String> analysis_title = Arrays.asList("noname"); //-T
-    public static String analysis_type = "chipseq"; // -A
-    public static List<String> fi_subset = new ArrayList<>(); // -F
+    public static String analysis_type = "RefSeq"; // -A
+    public static String biotype = "protein_coding"; // -F
     public static int flank_region = 0; //-L
     public static double flank_factor = 0.0; // -N
     public static double robust = 0.0; //-RB
@@ -64,7 +65,7 @@ public class InputParameterAttributes {
         para_value_map.put("output_path", output_path);
         para_value_map.put("db_tpye", DB_tpye);
         para_value_map.put("analysis_type", analysis_type);
-        para_value_map.put("fi_subset", fi_subset);
+        para_value_map.put("biotype", biotype);
         para_value_map.put("gene_list", gene_list);
         para_value_map.put("analysis_title", analysis_title);
         para_value_map.put("scaler_method", scaler_method);
@@ -110,8 +111,8 @@ public class InputParameterAttributes {
     public static String getAnalysisType() {
         return analysis_type;
     }
-    public static List<String> getFiSubset() {
-        return fi_subset;
+    public static String getBiotype() {
+        return biotype;
     }
     public static List<String> getGeneList() {
         return gene_list;

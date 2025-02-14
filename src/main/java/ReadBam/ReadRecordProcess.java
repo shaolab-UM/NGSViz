@@ -1,6 +1,6 @@
 package ReadBam;
 
-import configSet.CommonFinalParas;
+
 import configSet.InputParameterAttributes;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.filter.DuplicateReadFilter;
@@ -32,7 +32,7 @@ public class ReadRecordProcess {
         int read_width = bam_record.getReadLength();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
-        System.out.println("The align start pos of this read is " + align_start_pos);
+        //System.out.println("The align start pos of this read is " + align_start_pos);
         // Negative Strand Flag
         boolean strand_flag = bam_record.getReadNegativeStrandFlag();
         System.out.println("The strand flag of this read is " + strand_flag);
@@ -77,11 +77,7 @@ public class ReadRecordProcess {
         boolean paired_mood = false;
         // the length of insert
         int tlen = bam_record.getInferredInsertSize();
-        System.out.println("---------");
-        System.out.println("---------");
-        System.out.println("the tlen is: " + tlen);
-        System.out.println("---------");
-        System.out.println("---------");
+        System.out.println("--- the tlen is: " + tlen);
         if(tlen != 0){
             paired_mood  = true;
         }

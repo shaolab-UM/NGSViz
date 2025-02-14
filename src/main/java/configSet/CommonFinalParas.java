@@ -9,6 +9,7 @@ import java.util.List;
  * @create 2024-09--19:45
  * @function
  */
+/*
 public class CommonFinalParas {
     // MandatoryParameters
     public static final String bam_file;
@@ -84,3 +85,4 @@ public class CommonFinalParas {
         region_labels = config_obj.getRegionLabels();
     }
 }
+*/

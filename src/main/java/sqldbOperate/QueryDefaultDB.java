@@ -10,12 +10,30 @@ import java.util.List;
  */
 public class QueryDefaultDB extends DBAtribute{
     public static void main(String[] args) {
-        String query_key = "DefaultDB";
-        String query_res = getDefaultDBValue(query_key, "hg19", "tss");
+        String query_key = "PointLab";
+        String query_res = getDefaultDBValue(query_key, "GRCh38", "ensembl", "tss");
         System.out.println("query_res : " + query_res);
     }
-
-    public static String getDefaultDBValue(String query_item, String genome, String region2plot){
+    public static String getDefaultDBValue(String query_item, String genome, String DB, String region2plot){
+        String query_res = null;
+        ResultSet resultSet;
+        try {
+            statement = initialDB();
+            String query = String.format("SELECT %s FROM defaultTbl WHERE Genome = '%s' AND DB = '%s' AND Region = '%s'",
+                    query_item, genome, DB, region2plot);
+            System.out.println("The query keyword is : " + query);
+            resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                query_res = resultSet.getString(query_item);
+                System.out.println(query_res);
+            }
+        } catch (SQLException e) {
+            System.out.println("Database read data error: " + e.getMessage());
+        }
+        exitDB();
+        return query_res;
+    }
+    /*public static String getDefaultDBValue(String query_item, String genome, String region2plot){
         String query_res = null;
         ResultSet resultSet = null;
         try {
@@ -31,5 +49,5 @@ public class QueryDefaultDB extends DBAtribute{
         }
         exitDB();
         return query_res;
-    }
+    }*/
 }

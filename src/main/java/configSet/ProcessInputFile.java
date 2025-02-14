@@ -35,6 +35,7 @@ public class ProcessInputFile extends InputParameterAttributes {
         System.out.println("bam list: " + bam_list);
         System.out.println("gene list: " + gene_list);
         System.out.println("analysis_title: " + analysis_title);
+        System.out.println("---------");
     }
     public static String getFileExtensionName(String file_name){
         int dot_index = file_name.lastIndexOf('.');

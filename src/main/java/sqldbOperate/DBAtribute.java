@@ -15,7 +15,8 @@ import java.util.List;
  */
 public class DBAtribute {
     // DB need the whole path
-    public static final String DATABASE_URL = "jdbc:sqlite:coordinate_db.db";
+    //public static final String DATABASE_URL = "jdbc:sqlite:coordinate_db.db";
+    public static final String DATABASE_URL = "jdbc:sqlite:genomeCoordinate.db";
     public static Connection connection = null;
     public static Statement statement = null;
 
@@ -27,8 +28,8 @@ public class DBAtribute {
             System.out.println("Database error: " + e.getMessage());
             System.exit(1);
         }
-        System.out.println("successfully connected to database!");
-        System.out.println("---------");
+        //System.out.println("successfully connected to database!");
+        //System.out.println("---------");
         return statement;
     }
 
@@ -40,8 +41,8 @@ public class DBAtribute {
                 System.out.println("Stop database error: " + e.getMessage());
                 System.exit(0);
             }
-        System.out.println("---------");
-        System.out.println("Database exit successfully.");
+        //System.out.println("---------");
+        //System.out.println("Database exit successfully.");
     }
 
 }

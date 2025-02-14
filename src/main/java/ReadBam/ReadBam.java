@@ -1,6 +1,6 @@
 package ReadBam;
 
-import configSet.CommonFinalParas;
+
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMSequenceRecord;
 import htsjdk.samtools.SamReader;
@@ -9,6 +9,7 @@ import htsjdk.samtools.SamReaderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -32,6 +33,13 @@ public class ReadBam {
         SamReader bam_reader = factory.open(bam_file);
         return bam_reader;
     }
+    public static void closeBamReader (SamReader bam_reader) {
+        try {
+            bam_reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // get all the unique chromosome numbers
     public static Set<String> getBamUniqCharList(String bam_file_path) {
@@ -46,11 +54,14 @@ public class ReadBam {
         return chromosomes;
     }
 
-    // check whether the given chr num include in the chromosome number of bam
-    public static String checkChromosomeInBam(String bam_file_path, String chromosome_2_check, String nochrName_2_check) {
-        String check_result = null;
+    // get the chromosome list in bam file
+    public static Set<String> getChromosomesInBam(String bam_file_path) {
         Set<String> chromosomes = ReadBam.getBamUniqCharList(bam_file_path);
-        System.out.println("chromosomes: " + chromosomes);
+        return chromosomes;
+    }
+
+    public static String checkChromosomeInBam(Set<String> chromosomes, String chromosome_2_check, String nochrName_2_check) {
+        String check_result = null;
         // check whether the chromosome is in Set
         if (chromosomes.contains(chromosome_2_check)) {
             check_result = chromosome_2_check;
@@ -61,5 +72,4 @@ public class ReadBam {
         }
         return check_result;
     }
-
 }

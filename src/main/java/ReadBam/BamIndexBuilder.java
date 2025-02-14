@@ -1,6 +1,5 @@
 package ReadBam;
 
-import configSet.CommonFinalParas;
 import htsjdk.samtools.*;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.nio.file.Path;
  * @author Benchen Ye
  * @create 2024-11--17:16
  */
+/*
 public class BamIndexBuilder {
     private static String bam_file_path = CommonFinalParas.bam_file;
     public static void xx(String[] args) {
@@ -28,4 +28,4 @@ public class BamIndexBuilder {
     }
 
 
-}
+}*/

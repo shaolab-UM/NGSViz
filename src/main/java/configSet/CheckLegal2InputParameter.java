@@ -23,11 +23,12 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         CheckFilePath(input_file);
         // check whether the input parameter is legal value
         checkQueryDBUniqLegal(genome, "Genome");
+        region_plot = region_plot.toLowerCase();
         checkQueryDBUniqLegal(region_plot, "Region");
         if (DB_tpye != null){
             checkQueryDBUniqLegal(DB_tpye, "DB");
         }
-        checkAnalysisMethod(analysis_type);
+        checkAnalysisType(analysis_type);
         checkValueGreater0(flank_region, "-L");
         checkValue01(flank_factor, "-N");
         checkValue01(robust, "-RB");
@@ -51,7 +52,6 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         legal_extension.add("bam");
         File file = new File(file_ath);
         if (file.exists()) {
-            System.out.println("Input file or directory exists !");
             System.out.println("Input file path : " + file_ath);
         } else {
             System.out.println("Error: Input file or directory not exists !");
@@ -100,20 +100,20 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
             System.exit(-1);
         }
     }
-    private static void checkAnalysisMethod (String check_value){
-        String [] legal_list = {"chipseq", "rnaseq"};
+    private static void checkAnalysisType (String check_value){
+        String [] legal_list = {"exon", "transcript"};
         boolean value = check_value.equals(legal_list[0]) || check_value.equals(legal_list[1]);
         if (!value){
             System.out.println("Your input paramter -A `" + check_value +  "` is illegal item!");
-            System.out.println("-A must be `chipseq` or `rnaseq`!");
+            System.out.println("-A must be `transcript` or `exon`!");
         }
-        if (check_value.equals(legal_list[1])){
+        /*if (check_value.equals(legal_list[1])){
             if (!region_plot.equals("genebody")){
                 System.out.println("when -A analysis method is " + check_value);
                 System.out.println("the -R region2plot is must be genebody!");
                 System.exit(-1);
             }
-        }
+        }*/
     }
     public static void checkValue01 (double check_value, String parameter_name) {
         if(check_value < 0 || check_value > 1) {

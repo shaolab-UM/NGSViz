@@ -20,13 +20,15 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Database
             DB_tpye = setParameterValue(DB_tpye,"-D", args, i);
             // analysis title
-            analysis_title = setParameterValue(analysis_title,"-T", args, i);
+            analysis_title = setSpecialParameterValue(analysis_title,"-T", args, i);
             // gene list
-            gene_list = setParameterValue(gene_list,"-E", args, i);
+            gene_list = setSpecialParameterValue(gene_list,"-E", args, i);
             // analysis type
             analysis_type = setParameterValue(analysis_type,"-A", args, i);
-            // subset for region - FI
-            fi_subset = setParameterValue(fi_subset,"-F", args, i);
+
+            // subset for region - B
+            biotype = setParameterValue(biotype,"-B", args, i);
+
             // Flanking region size
             flank_region = setParameterValue(flank_region,"-L", args, i);
             // Flanking size factor
@@ -56,6 +58,13 @@ public class GetInputParameterValue extends InputParameterAttributes {
     public static String setParameterValue(String var_name, String parameter, String [] args, int index){
         String res_out = getParameterValue(parameter, args, index);
         if (res_out != null) {var_name = res_out;}
+        return var_name;
+    }
+    public static List<String> setSpecialParameterValue(List<String> var_name, String parameter, String [] args, int index){
+        String res_out = getParameterValue(parameter, args, index);
+        if (res_out != null){
+            var_name.add(res_out);
+        }
         return var_name;
     }
     public static int setParameterValue(int var_name, String parameter, String [] args, int index){

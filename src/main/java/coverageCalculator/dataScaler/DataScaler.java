@@ -1,20 +1,27 @@
+/*
 package coverageCalculator.dataScaler;
 
-import configSet.CommonFinalParas;
+import configSet.InputParameterAttributes;
+import configSet.InputParameterAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * @author Benchen Ye
  * @create 2024-09--19:56
- */
+ *//*
+
 
 // Class: scale the physical coverage into the number of data point to plot
 // Constructor Input:
 public class DataScaler {
     private ArrayList<Integer> physical_coverage;
-    private int num_datapoints = CommonFinalParas.num_datapoints;
+    private int num_datapoints = InputParameterAttributes.num_datapoints;
+    public static void testmain(){
+
+    }
 
     public DataScaler(ArrayList<Integer> physical_coverage)
     {
@@ -97,3 +104,4 @@ public class DataScaler {
 
 }
 
+*/

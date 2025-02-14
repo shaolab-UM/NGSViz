@@ -6,9 +6,7 @@ import ReadBam.ReadBam;
 import htsjdk.samtools.SamReader;
 import ReadBam.BamFileLibrarySize;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Benchen Ye
@@ -16,12 +14,12 @@ import java.util.Map;
  */
 public class EachQueryRegionProcess {
     private static int num_datapoints = InputParameterAttributes.num_datapoints;
-    public static List<Map<String, Object>> query_regions = QueryWholeRegionCoordinate.query_coord;
+    public static List<Map<String, Object>> query_regions = QueryWholeRegionCoordinateCP.query_coord;
     private static String analysis_type = InputParameterAttributes.analysis_type;
     private static String interval_type = InputParameterAttributes.interval_type;
     private static int num_core = InputParameterAttributes.core_num;
 
-    public static double[][] processEachQueryRegion(String bam_file_path, boolean paired_mode) {
+    public static HashMap<String, Object> processEachQueryRegion(String bam_file_path, boolean paired_mode) {
         List<Double> coverage_scaled = new ArrayList<>();
         // get the library size of bam file
         SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
@@ -33,18 +31,18 @@ public class EachQueryRegionProcess {
         double[][] coverage_scaled_matrix = new double[num_query_regions][num_datapoints+1];
         // save the row names of the coverage_scaled_matrix
         List<String> row_names = new ArrayList<>();
+
+        // get the chromosome list in bam file
+        Set<String> bam_chromosomes_list = ReadBam.getChromosomesInBam(bam_file_path);
+
         for (int i = 0; i < num_query_regions; i++) {
-            System.out.println("\n---------");
-            System.out.println("Processing the coordinate region for the i-th query gene : " + i);
+            System.out.println("> ---------");
+            //System.out.println("Processing the coordinate region for the i-th query gene : " + i);
             Map<String, Object> queryDB_record = query_regions.get(i);
 
-            System.out.println("---------");
             System.out.println("This query region range is: " + queryDB_record);
-            System.out.println("---------");
-
             String record_name = queryDB_record.get("record_name").toString();
-            String chr_name = (String) queryDB_record.get("chrom");
-            String nochr_name = (String) queryDB_record.get("nochr_name");
+
             row_names.add(record_name);
             System.out.println("The query region name is " + record_name);
 
@@ -52,18 +50,25 @@ public class EachQueryRegionProcess {
             //if(bowtie) {srg = within(srg, mapq[is.na(mapq)] <- 254)}
 
             // check whether query char name is in bam
-            chr_name = ReadBam.checkChromosomeInBam(bam_file_path, chr_name, nochr_name);
+            String chr_name = (String) queryDB_record.get("chrom");
+            String nochr_name = (String) queryDB_record.get("nochr_name");
+            chr_name = ReadBam.checkChromosomeInBam(bam_chromosomes_list, chr_name, nochr_name);
+
             if (chr_name != null) {
                 // calculate the coverage for each queryDB region
                 coverage_scaled = ProcessEachQueryCoorRecord.processRecord(queryDB_record, bam_file_path, chr_name, paired_mode);
                 // normalize to RPM.
                 coverage_scaled = BamFileLibrarySize.bamSizeNormalization(coverage_scaled, library_size);
             }
+
             // add the coverage_scaled to coverage_scaled_matrix
             for (int j = 0; j < coverage_scaled.size(); j++) {
                 coverage_scaled_matrix[i][j] = coverage_scaled.get(j);
             }
         }
-        return coverage_scaled_matrix;
+        HashMap<String, Object> cal_res_map = new HashMap<>();
+        cal_res_map.put("row_names", row_names);
+        cal_res_map.put("coverage_matrix", coverage_scaled_matrix);
+        return cal_res_map;
     }
 }

@@ -91,6 +91,7 @@ query <- "SELECT * FROM defaulttbl"
 query <- "SELECT Genome FROM defaulttbl WHERE Genome = 'hg19' AND Region = 'tss'"
 query_key <- "SELECT FI1 FROM refmappinginfotab WHERE Genome = 'hg19' AND Region = 'cgi' AND DB = 'ensembl' "
 query_key <- "SELECT tid,start,end,width FROM humanexonModel WHERE Genome = 'hg19' AND db = 'ensembl'"
+query_key <- "SELECT * FROM humanexonModel"
 results <- dbGetQuery(con, query_key)
 print(results)
 

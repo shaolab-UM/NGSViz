@@ -1,11 +1,10 @@
 package sqldbOperate;
 
 import ReadBam.QueryGenomeRange;
-import configSet.CommonFinalParas;
 import configSet.InputParameterAttributes;
 import coverageCalculator.PhysicalCoverageCalculator;
 import coverageCalculator.TrimBuffer;
-import coverageCalculator.dataScaler.DataScaler;
+import coverageCalculator.DataScaler;
 import htsjdk.samtools.util.Interval;
 import sqldbOperate.exonMode.CoverageExonSubset;
 import sqldbOperate.exonMode.ExonModelData;
@@ -22,7 +21,6 @@ import java.util.Map;
  */
 public class ProcessEachQueryCoorRecord {
         private static String region_plot = InputParameterAttributes.region_plot;
-        //private static String bam_file_path = CommonFinalParas.bam_file;
         private static int flanking_size = InputParameterAttributes.flank_region;
         private static int buf_size = InputParameterAttributes.buf_size;
         private static String scaler_method = InputParameterAttributes.scaler_method;
@@ -30,18 +28,17 @@ public class ProcessEachQueryCoorRecord {
         private static String analysis_type = InputParameterAttributes.analysis_type;
         private static String interval_type = InputParameterAttributes.interval_type;
         private static int flank_size;
-        private static int start_pos;
-        private static int end_pos;
         private static Interval interval_range;
 
 
         public static List<Double> processRecord(Map<String, Object> queryDB_record, String bam_file_path,
                                                  String chr_name, boolean paired_mode) {
-            System.out.println("\n---------");
-            System.out.println("Start processing queryDB region record!");
+            System.out.println("--- Start processing queryDB region record! ---");
             // genome coordinate information
             String query_strand = (String) queryDB_record.get("strand");
             String record_name = (String) queryDB_record.get("record_name");
+            int start_pos = (int)queryDB_record.get("start");
+            int end_pos = (int)queryDB_record.get("end");
             // get the exon tid name
             String[] parts = record_name.split(":");
             String tid_name = parts.length > 1 ? parts[1] : "";
@@ -53,8 +50,8 @@ public class ProcessEachQueryCoorRecord {
             // config code need to change when flank_factor exist
             if (flank_factor > 0){
                 System.out.println("Processing the flank size with flanking factor: " + flank_factor);
-                if(analysis_type.equals("rnaseq")){
-                    // RNA-seq specific
+                if(analysis_type.equals("exon")){
+                    // exon specific
                     double calculate_res = ExonModelData.getEnstExonWidth(tid_name)*flank_factor;
                     flank_size = (int) calculate_res;
                 } else {
@@ -69,26 +66,24 @@ public class ProcessEachQueryCoorRecord {
             // process the start and end position
             if(interval_type.equals("point_interval")){
                 // point interval
-                System.out.println("\n---------");
-                System.out.println("Performing point interval analysis mode for chipseq!");
-                System.out.println("---------\n");
+                System.out.println("--- Performing point interval analysis mode for chipseq! ---");
                 int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
+                /*System.out.println("start point is " + start_pos);
+                System.out.println("end point is " + end_pos);*/
                 System.out.println("The middle point is " + middle_point);
                 // Specify the genome interval range to calculate the coverage
                 interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
+                System.out.println("--- The interval range is: " + interval_range);
+
             } else {
-                if(analysis_type.equals("rnaseq")){
+                if(analysis_type.equals("exon")){
                     // RNA-seq
-                    System.out.println("\n---------");
-                    System.out.println("Performing RNAseq analysis mode!");
-                    System.out.println("---------\n");
+                    System.out.println("--- Performing exon mode! ---");
                     start_pos = ExonModelData.getEnstStart(tid_name);
                     end_pos = ExonModelData.getEnstEnd(tid_name);
                 } else {
                     // broad interval
-                    System.out.println("\n---------");
-                    System.out.println("Performing broad interval analysis mode for chipseq!");
-                    System.out.println("---------\n");
+                    System.out.println("--- Performing broad interval analysis mode for chipseq! ---");
                     start_pos = (int) queryDB_record.get("start");
                     end_pos = (int) queryDB_record.get("end");
                 }
@@ -96,14 +91,13 @@ public class ProcessEachQueryCoorRecord {
                         start_pos, end_pos, flank_size);
             }
             // calculate the physical coverage for each query region
-            System.out.println("\n---------");
-            System.out.println("Starting calculate physical coverage for interval: \n" + interval_range);
+            System.out.println("--- Starting calculate physical coverage for interval: " + interval_range);
             ArrayList<Integer> physical_coverage =
                     PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range,
                             query_strand, paired_mode);
 
             // Filter transcripts whose chromosomes do not match bam file.
-            if(analysis_type.equals("rnaseq")){
+            if(analysis_type.equals("exon")){
                 int query_range_start = interval_range.getStart();
                 int query_range_end = interval_range.getEnd();
                 // integrate exon coverage
@@ -113,9 +107,12 @@ public class ProcessEachQueryCoorRecord {
 
             // remove the buffers from the coverage
             physical_coverage = TrimBuffer.trimBuffer(physical_coverage, buf_size);
+
+            //System.out.println(physical_coverage);
+
+            // ---- debug
             // scale the coverage into the data point for plot
-            DataScaler data_scaler = new DataScaler(physical_coverage);
-            List<Double> coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
+            List<Double> coverage_scaled = DataScaler.getCoverageScaled(physical_coverage, scaler_method, flank_size);
             // if strand is `-` , reverse the coverage
             if(query_strand.equals("-")){
                 System.out.println("query strand: " + query_strand);

@@ -16,12 +16,83 @@ import java.util.Map;
 public class ExonModelData extends DBAtribute {
     public static Map<String, Object> exon_matrix = new HashMap<>();
     public static void main(String [] args){
-        String species = "human";
-        String db_name = "ensembl";
-        String genome = "hg19";
-        getExonModelData(genome, db_name, species);
+        String table_name = "Homo_sapiens_ensembl_GRCh38_113";
+        String analysis_type = "exon";
+        String biotype = "protein_coding";
+        getExonModelData(table_name, analysis_type, biotype);
     }
-    public static void getExonModelData(String genome, String db_name, String species){
+    public static void getExonModelData(String table_name, String analysis_type, String biotype){
+        ResultSet resultSet;
+        //String region = "exonModel";
+        //String table_name = species + region;
+        String tid_name = "";
+        int start_enst = 0;
+        int end_enst = 0;
+        int width_enst = 0;
+        List<Integer> start_list = new ArrayList<Integer>();
+        List<Integer> end_list = new ArrayList<Integer>();
+        List<Integer> width_list = new ArrayList<Integer>();
+        try {
+            statement = initialDB();
+            String query = String.format("SELECT tid,start,end,width FROM %s " +
+                    "WHERE type = '%s' AND biotype = '%s'", table_name, analysis_type, biotype);
+            System.out.println("The query keyword is : " + query);
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                // get item of tid,start,end,width
+                String query_tid = resultSet.getString("tid");
+                int query_start = resultSet.getInt("start");
+                int query_end = resultSet.getInt("end");
+                int query_width = resultSet.getInt("width");
+                if(!tid_name.equals(query_tid)){
+                    // process each enst result
+                    if(!tid_name.equals("")){
+                        OneEnstAllExonCoorClass one_enst = new OneEnstAllExonCoorClass(tid_name, start_enst, end_enst,
+                                width_enst, start_list, end_list, width_list);
+                        exon_matrix.put(tid_name, one_enst);
+                        /*System.out.println(tid_name);
+                        System.out.println(start_enst);
+                        System.out.println(end_enst);
+                        System.out.println(width_enst);
+                        System.out.println(start_list);
+                        System.out.println(end_list);
+                        System.out.println(width_list);*/
+                    }
+                    // new enst
+                    start_list.clear();
+                    end_list.clear();
+                    width_list.clear();
+                    tid_name = query_tid;
+                    start_enst = query_start;
+                    width_enst = query_width;
+                    //
+                    start_list.add(query_start);
+                    end_list.add(query_end);
+                    width_list.add(query_width);
+                } else {
+                    // process new enst result
+                    end_enst = query_end;
+                    width_enst = width_enst + query_width;
+                    //
+                    start_list.add(query_start);
+                    end_list.add(query_end);
+                    width_list.add(query_width);
+                }
+            }
+            // the last result
+            if(!tid_name.equals("")){
+                OneEnstAllExonCoorClass one_enst = new OneEnstAllExonCoorClass(tid_name, start_enst, end_enst,
+                        width_enst, start_list, end_list, width_list);
+                exon_matrix.put(tid_name, one_enst);
+            }
+        } catch (SQLException e) {
+            System.out.println("Database read data error: " + e.getMessage());
+        }
+        exitDB();
+        //return query_res;
+    }
+    /*public static void getExonModelData(String genome, String db_name, String species){
         ResultSet resultSet;
         String region = "exonModel";
         String table_name = species + region;
@@ -84,7 +155,7 @@ public class ExonModelData extends DBAtribute {
         }
         exitDB();
         //return query_res;
-    }
+    }*/
     //
     public static OneEnstAllExonCoorClass getEnstExonRes(String tid){
         OneEnstAllExonCoorClass tid_res = (OneEnstAllExonCoorClass) exon_matrix.get(tid);

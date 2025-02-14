@@ -1,6 +1,5 @@
 package ReadBam;
 
-import configSet.CommonFinalParas;
 import configSet.InputParameterAttributes;
 import htsjdk.samtools.util.Interval;
 

@@ -1,6 +1,5 @@
 package ReadBam;
-
-import configSet.CommonFinalParas;
+import configSet.InputParameterAttributes;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 
@@ -13,13 +12,7 @@ import java.util.List;
  * @function get the library size of bam file which pass the quality control
  */
 public class BamFileLibrarySize {
-    private static String bam_file_path = CommonFinalParas.bam_file;
-    // test
-    public static void main(String[] args) {
-        SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
-        long librarySize = getLibrarySize(bam_reader);
-        System.out.println("The library size of this bam file is : " + librarySize);
-    }
+
     public static long getLibrarySize(SamReader bam_reader) {
         long librarySize = 0;
         // Set filter conditions to only count read segments that pass quality control, are non-repetitive, and have been mapped.

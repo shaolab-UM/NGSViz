@@ -5,25 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="824e6b22-d575-4bcf-bfc6-a8b6da4b01a8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" beforeDir="false" afterPath="$PROJECT_DIR$/ NGSplot2-analysis-modules-20241022.xmind" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ngsplot report.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/ngsplot report.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NGSplot2Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/GetInputParameterValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/SetDefaultOptionParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/configSet/SetDefaultOptionParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/DataScaler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/LargeChIPProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/PintProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/RNAseqProcessRecordGenomeCoordinateDB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/导入数据库数据.R" beforeDir="false" afterPath="$PROJECT_DIR$/导入数据库数据.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/ReadTextFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/~$NGSViz.pptx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +51,9 @@
       </MavenImportingSettings>
     </option>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -79,9 +74,11 @@
     "Application.BamUniqChar.executor": "Run",
     "Application.CheckQueryItemLegal.executor": "Run",
     "Application.Config.executor": "Run",
+    "Application.ConstructDB.executor": "Run",
     "Application.CoverageCalculator.executor": "Run",
     "Application.CreateBamIndex.executor": "Run",
     "Application.DataPointNum.executor": "Run",
+    "Application.DataScaler.executor": "Run",
     "Application.DatabaseConnector.executor": "Run",
     "Application.DatabaseReader.executor": "Run",
     "Application.ExecuteSQLFile.executor": "Run",
@@ -94,8 +91,10 @@
     "Application.ListReverse.executor": "Run",
     "Application.Main (1).executor": "Run",
     "Application.Main.executor": "Run",
+    "Application.MainCalculator.executor": "Run",
     "Application.Matrix2CSV.executor": "Run",
     "Application.NGSplot2Main.executor": "Run",
+    "Application.PhysicalCoverageCalculatorTest.executor": "Run",
     "Application.PhysicalCoverageListObj.executor": "Run",
     "Application.PointInternalMain.executor": "Run",
     "Application.QueryDBUniqueItem.executor": "Run",
@@ -110,6 +109,8 @@
     "Application.TrimBuffer.executor": "Run",
     "Application.coverageCalculator.Main.executor": "Run",
     "Application.coverageCalculator.dataScaler.Main.executor": "Run",
+    "Application.main.executor": "Run",
+    "Application.mergeDB.executor": "Run",
     "Application.test.executor": "Run",
     "Downloaded.Files.Path": "/opt/homebrew/Cellar/maven/3.9.9/libexec/localRepository",
     "Downloaded.Files.Path.Enabled": "true",
@@ -130,7 +131,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.47241378",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -143,16 +144,17 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="coverageCalculator" />
       <recent name="sqldbOperate" />
     </key>
   </component>
   <component name="RunManager" selected="Application.NGSplot2Main">
-    <configuration name="ExonModelData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.exonMode.ExonModelData" />
+    <configuration name="DataScaler" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="coverageCalculator.DataScaler" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="sqldbOperate.exonMode.*" />
+          <option name="PATTERN" value="coverageCalculator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -160,15 +162,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GetExonModelData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.exonMode.GetExonModelData" />
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="NGSPlot2" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="sqldbOperate.exonMode.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -180,12 +176,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="QueryWholeRegionCoordinate" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sqldbOperate.QueryWholeRegionCoordinate" />
+    <configuration name="ReadTextFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="utils.ReadTextFile" />
       <module name="NGSPlot2" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="sqldbOperate.exonMode.*" />
+          <option name="PATTERN" value="utils.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -193,9 +189,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test" />
+    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sqldbOperate.main" />
       <module name="NGSPlot2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="sqldbOperate.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -203,10 +205,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.NGSplot2Main" />
-        <item itemvalue="Application.ExonModelData" />
-        <item itemvalue="Application.test" />
-        <item itemvalue="Application.GetExonModelData" />
-        <item itemvalue="Application.QueryWholeRegionCoordinate" />
+        <item itemvalue="Application.ReadTextFile" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.main" />
+        <item itemvalue="Application.DataScaler" />
       </list>
     </recent_temporary>
   </component>
@@ -237,7 +239,12 @@
       <workItem from="1730775582044" duration="7447000" />
       <workItem from="1730891209319" duration="232390000" />
       <workItem from="1732427409599" duration="25167000" />
-      <workItem from="1732532445488" duration="63440000" />
+      <workItem from="1732532445488" duration="65284000" />
+      <workItem from="1736476165200" duration="1600000" />
+      <workItem from="1736477781328" duration="3148000" />
+      <workItem from="1737615177896" duration="597000" />
+      <workItem from="1738627213776" duration="8445000" />
+      <workItem from="1739083752559" duration="135813000" />
     </task>
     <servers />
   </component>

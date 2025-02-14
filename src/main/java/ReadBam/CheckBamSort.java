@@ -1,6 +1,6 @@
 package ReadBam;
 
-import configSet.CommonFinalParas;
+
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
@@ -13,6 +13,7 @@ import java.io.IOException;
  * @author Benchen Ye
  * @create 2024-11--19:49
  */
+/*
 public class CheckBamSort {
     private static String bam_file_path = CommonFinalParas.bam_file;
     public static void main(String[] args) {
@@ -35,3 +36,4 @@ public class CheckBamSort {
         }
     }
 }
+*/

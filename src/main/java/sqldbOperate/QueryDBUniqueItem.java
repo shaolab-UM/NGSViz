@@ -22,7 +22,7 @@ public class QueryDBUniqueItem extends DBAtribute{
         ResultSet resultSet = null;
         try {
             statement = initialDB();
-            String query = "SELECT DISTINCT " + query_key + " FROM refmappinginfotab";
+            String query = "SELECT DISTINCT " + query_key + " FROM defaultTbl";
             resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
                 String query_res = resultSet.getString(query_key);

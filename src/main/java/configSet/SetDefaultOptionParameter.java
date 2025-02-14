@@ -12,18 +12,19 @@ public class SetDefaultOptionParameter extends InputParameterAttributes {
         System.out.println("start set the default value for option parameter without a input value!");
         System.out.println("---------");
         if (DB_tpye == null){
-            String query_key = "DefaultDB";
-            DB_tpye = QueryDefaultDB.getDefaultDBValue(query_key, genome, region_plot);
+            DB_tpye = "ensembl";
+            //String query_key = "DefaultDB";
+            //DB_tpye = QueryDefaultDB.getDefaultDBValue(query_key, genome, region_plot);
             System.out.println("the usage of DB tpye is : " + DB_tpye);
         }
-        if (fi_subset.size() == 0){
+        /*if (fi_subset.size() == 0){
             DBdefaultValue.getDBdefaultFIValue();
-        }
-        if (analysis_type.equals("chipseq")) {
+        }*/
+        if (analysis_type.equals("RefSeq")) {
             System.out.println("analysis type is : " + analysis_type);
         }
-        if (fi_subset.equals("protein_coding")){
-            System.out.println("the subset of sub is : " + fi_subset);
+        if (biotype.equals("protein_coding")){
+            System.out.println("The biotype is : " + biotype);
         }
         if (flank_region == 0) {
             flank_region = CheckLegal2InputParameter.getFlankRegion(region_plot);
@@ -41,7 +42,7 @@ public class SetDefaultOptionParameter extends InputParameterAttributes {
         if (core_num == 0){
             System.out.println("core_num: " + core_num);
         }
-        if (scaler_method.equals("spline")) {
+        if (scaler_method.equals("bin")) {
             System.out.println("scaler_method: " + scaler_method);
         }
         if (chunk_size == 100){

@@ -15,11 +15,32 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>tech.tablesaw</groupId>
+      <artifactId>tablesaw-core</artifactId>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tech.tablesaw</groupId>
+      <artifactId>tablesaw-excel</artifactId>
+      <version>LATEST</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.samtools/htsjdk -->
     <dependency>
       <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
       <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.30</version> <!-- 替换为最新版本 -->
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
     <dependency>

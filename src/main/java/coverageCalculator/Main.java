@@ -1,7 +1,6 @@
 package coverageCalculator;
 
-import configSet.CommonFinalParas;
-import coverageCalculator.dataScaler.DataScaler;
+
 import htsjdk.samtools.util.Interval;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         // Input
         //String workDir = "/Users/bencheye/myProj/ngsPlot/";
-        String bam_file_path = CommonFinalParas.bam_file;
+        String bam_file_path = "/Users/bencheye/myProj/ngsPlot/example.bam/hesc.H3k27me3.1M.bam";
         // chromosome start end
         String chr_name = "chrX";
         //int start = 74273115;
@@ -23,7 +22,7 @@ public class Main {
         int qStart = 72270115;
         int qEnd = 72271115;
         String query_strand = "+";
-        String scaler_method = CommonFinalParas.scaler_method;
+        String scaler_method = "bin";
         boolean paired_mode = false;
         // Specify the genome interval range to calculate the coverage
         Interval interval_range = new Interval(chr_name, qStart, qEnd);
@@ -38,8 +37,6 @@ public class Main {
         // remove the bufsize
 
         // scale the coverage into the data point for plot
-        DataScaler data_scaler = new DataScaler(physical_coverage);
-        List<Double> coverage_scaled = data_scaler.getCoverageScaled(scaler_method);
-        System.out.println(coverage_scaled);
+
     }
 }

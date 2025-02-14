@@ -37,5 +37,9 @@ build/
 ### Mac OS ###
 .DS_Store
 
+database/ngsplot2_Mus_musculus_ensembl_GRCm38_102.db
+database/ngsplot2_refCordinate.db
+genomeCoordinate.db
+
 /Users/bencheye/myProj/ngsPlot/NGSPlot2/genomeCoordinate.db
 /Users/bencheye/myProj/ngsPlot/NGSPlot2/coordinate_db.db

@@ -14,22 +14,46 @@ import java.util.List;
 public class Matrix2CSV {
     // test
     public static void main(String[] args) {
-        double[][] matrix = {
-                {1.0, 2.0, 3.0},
-                {4.0, 5.0, 6.0},
-                {7.0, 8.0, 9.0}
-        };
+        double[][] matrix_df = {
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0},
+            {7.0, 8.0, 9.0}
+    };
+        double [] matrix = {1.0, 2.0, 3.0};
 
         List<String> rowNames = Arrays.asList("Row1", "Row2", "Row3");
         String filePath = "/Users/bencheye/myProj/ngsPlot/Output/matrix_with_row_names.csv";
-        saveMatrix2CSV(matrix, rowNames, filePath);
+        //saveMatrix2CSV(matrix, rowNames, filePath);
+        //List<String> col_names = Arrays.asList("col1", "col2", "col3");
+        String col_names = "col1";
+        saveMatrix2CSV(filePath, matrix_df, rowNames);
     }
-    // save the coverage marix data with the rownames (heatmap)
-    public static void saveMatrix2CSV(double[][] matrix_data, List<String> row_names, String file_path) {
+
+    public static int getNumColumns(double[][] matrix) {
+        if (matrix.length > 0) {
+            return matrix[0].length;
+        } else {
+            return 0;
+        }
+    }
+
+    public static void saveMatrix2CSV(String file_path, double[][] matrix_data, List<String> row_names) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {
+            // Write column names
+                writer.write(",");
+                int col_num = getNumColumns(matrix_data);
+                for (int j = 0; j < col_num; j++) {
+                    writer.write("X" + j);
+                    if (j < col_num - 1) {
+                    writer.write(",");
+                    }
+                }
+                writer.newLine();
+            // Write matrix data with row names
             for (int i = 0; i < matrix_data.length; i++) {
-                // write the row name
-                writer.write(row_names.get(i) + ",");
+                if (row_names != null) {
+                    writer.write(row_names.get(i) + ",");
+                }
                 for (int j = 0; j < matrix_data[i].length; j++) {
                     writer.write(Double.toString(matrix_data[i][j]));
                     if (j < matrix_data[i].length - 1) {
@@ -38,11 +62,29 @@ public class Matrix2CSV {
                 }
                 writer.newLine();
             }
-            System.out.println("Coverage matrix with row names saved to " + file_path);
+            System.out.println("Coverage matrix with row and column names saved to " + file_path);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public static void saveMatrix2CSV(String file_path, double[] matrix_data, String col_names) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {
+            // Write column names
+            writer.write(col_names);
+            writer.newLine();
+            // Write matrix data with row names
+            for (double value : matrix_data) {
+                writer.write(Double.toString(value));
+                writer.newLine();
+            }
+
+            System.out.println("Coverage matrix with row and column names saved to " + file_path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // save the average coverage data without the rownames
     public static void saveMatrix2CSV(double[] matrix_data, String file_path) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {

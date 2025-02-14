@@ -28,7 +28,7 @@ public class PhysicalCoverageCalculator {
         int query_range_end = interval_range.getEnd();
         // use the MultiValueMap to save the alignment information
         // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
-        System.out.println("Get all reads fully included in the query interval region!");
+        //System.out.println("Get all reads fully included in the query interval region!");
         SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
         // gene range (length in the genome)
@@ -44,7 +44,7 @@ public class PhysicalCoverageCalculator {
             // paired mood
             if(paired_mode){
                 if (paired_lab) {
-                    System.out.println("\n---------");
+                    System.out.println("--- paired mode ---");
                     System.out.println("paired bam, there exists insert region!");
                     boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(bam_record);
                     filterRes = filterRes & !paired_filter;
@@ -62,7 +62,7 @@ public class PhysicalCoverageCalculator {
                     read_align_info = ReadRecordProcess.getReadAlignmentInfo(bam_record, interval_range);
                 }
                 if (read_align_info.get(0) != 0) {
-                    System.out.println("Processing a read: " + read_align_info);
+                    System.out.println("--- Processing a read: " + read_align_info);
                     int align_pos_start = read_align_info.get(0);
                     int align_width = read_align_info.get(1);
                     // read start position in the search range
@@ -82,19 +82,20 @@ public class PhysicalCoverageCalculator {
                     } else if(align_width > range_len){
                         align_width = range_len;
                     }
-                    System.out.println("the width of align segment: " + align_width);
+                    //System.out.println("the width of align segment: " + align_width);
                     if((align_width + pos_start_difference) > range_len){
                         align_width = range_len - pos_start_difference;
                     }
                     // calculate the physical coverage
-                    System.out.println("\nthe coverage start position for this alignment: " + pos_start_difference);
-                    System.out.println("the width of align segment: " + align_width);
+                    System.out.println("the coverage start position for this alignment: " + pos_start_difference);
+                    //System.out.println("the width of align segment: " + align_width);
                     System.out.println("Query length for interval region is: " + range_len);
                     coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
                 }
             }
         }
         System.out.println("Finish calculating physical coverage in query region: " + interval_range);
+        ReadBam.closeBamReader (bam_reader);
         // calculate the data point coverage
         return coverage;
     }

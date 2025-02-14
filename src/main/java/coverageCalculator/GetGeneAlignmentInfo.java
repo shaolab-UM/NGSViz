@@ -1,6 +1,5 @@
 package coverageCalculator;
 
-import configSet.CommonFinalParas;
 import htsjdk.samtools.util.Interval;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.Collections;
  */
 
 
-// attribute: intervalRange, refer to a genome region to query the coverage based on the bam file
+/*// attribute: intervalRange, refer to a genome region to query the coverage based on the bam file
 public class GetGeneAlignmentInfo{
     private int flank_size = CommonFinalParas.flanking_size;
     // class attributes
@@ -34,7 +33,7 @@ public class GetGeneAlignmentInfo{
         ArrayList<Integer> x = new ArrayList<>(Collections.nCopies(1, 0));;
         return x;
     }
-}
+}*/
 
 
 

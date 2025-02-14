@@ -12,9 +12,24 @@ import java.util.*;
  */
 public class ReadTextFile {
     public static void main(String[] args) {
-        String file_path = "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt";
-        readTxtConfigFile(file_path);
+        String file_path = "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt";
+        List<String> gene_list = readGeneList(file_path);
+        System.out.println(gene_list);
     }
+
+    public static List<String> readGeneList(String file_path) {
+        List<String> gene_list = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file_path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                gene_list.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gene_list;
+    }
+
     public static Map<String, Object> readTxtConfigFile(String file_path) {
         Map<String, Object> out_list = new HashMap<>();
         List<String> bam_list = new ArrayList<>();

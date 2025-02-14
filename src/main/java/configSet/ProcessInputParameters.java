@@ -1,6 +1,7 @@
 package configSet;
 
 import sqldbOperate.GetRefDB;
+import sqldbOperate.QueryWholeRegionCoordinateCP;
 import sqldbOperate.QueryWholeRegionCoordinate;
 
 import java.util.List;
@@ -31,21 +32,33 @@ public class ProcessInputParameters extends InputParameterAttributes {
         // process the input text file
         ProcessInputFile.processInputFile();
         // get the coordinate database will be used
-        refname = GetRefDB.getDBFISubset(fi_subset, genome, region_plot, DB_tpye);
-        // get the species name for database's table
-        species = GetRefDB.getSpeciesName(genome, region_plot, DB_tpye);
+        refname = GetRefDB.getDBTableName(genome, DB_tpye);
+        // get the species name
+        species = GetRefDB.getSpeciesName(genome, DB_tpye);
+        // get the table name of genome coordinate information
+        tbl_name = GetRefDB.getTblName(genome, DB_tpye);
+
         // get the whole coordinate
-        QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
+        //QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
+        QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
+
+        //refname = GetRefDB.getDBFISubset(fi_subset, genome, region_plot, DB_tpye);
+        //species = GetRefDB.getSpeciesName(genome, region_plot, DB_tpye);
+        //QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
+        // get the whole coordinate
+        //QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(species, refname);
+
         List<Double> width_list = QueryWholeRegionCoordinate.width_list;
         // get the interval type
         interval_type = SetIntervalType.setIntervalTypeValue(width_list, region_labels, flank_region);
+
         // get data points
         DataPointNum.getDataPointNum();
         // exonModel for rnaseq
-        if(analysis_type.equals("rnaseq")){
+        /*if(analysis_type.equals("rnaseq")){
             //GetExonModelData.getExonModelData();
         }
-        //
+        //*/
         GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
 }

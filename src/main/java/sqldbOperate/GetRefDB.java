@@ -10,16 +10,35 @@ import java.util.*;
  */
 public class GetRefDB extends DBAtribute {
     public static void main(String[] args) {
-        String query_genome = "hg19";
+        String query_genome = "GRCh38";
         String query_region = "genebody";
         String query_db = "ensembl";
-        List<String> query_fi_subset;
-        List<String> query_list = new ArrayList<>(Arrays.asList("protein_coding"));
-        String res = getDBFISubset(query_list, query_genome, query_region, query_db);
+        String res = getDBTableName(query_genome, query_db);
         //String res = getSpeciesName(query_genome, query_region, query_db);
         System.out.println("query result is : " + res);
+        getSpeciesName( query_genome,  query_db);
     }
-    public static String getDBFISubset(List<String> query_list, String genome, String region2plot, String DB){
+    public static String getDBTableName(String genome, String DB){
+        String query_refname = null;
+        try {
+            initialDB();
+            String query = String.format("SELECT DISTINCT CoordinateTblName FROM defaultTbl " +
+                    "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
+            System.out.println("query key is: " + query);
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                query_refname = resultSet.getString("CoordinateTblName");
+            }
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        System.out.println("the usage of genome coordinate database by query will be : " + query_refname);
+        System.out.println("---------");
+        exitDB();
+        return query_refname;
+    }
+    // --- delete ---
+    /*public static String getDBFISubset2(List<String> query_list, String genome, String region2plot, String DB){
         String query_refname = null;
         int max_count = 0;
         int max_db_score = 0;
@@ -53,19 +72,38 @@ public class GetRefDB extends DBAtribute {
         } catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());
         }
-        System.out.println("the usage of coordinate database by query will be : " + query_refname);
+        System.out.println("the usage of genome coordinate database by query will be : " + query_refname);
         exitDB();
         return query_refname;
-    }
+    }*/
 
-    public static int getRefDBName(List<String> query_list, List<String> db_list){
+    /*public static int getRefDBName(List<String> query_list, List<String> db_list){
             long count = db_list.stream()
                     .filter(query_list::contains)
                     // Calculate the number of intersections
                     .count();
             return (int) count;
+    }*/
+    public static String getSpeciesName(String genome, String DB){
+        String species_name = null;
+        try {
+            initialDB();
+            String query = String.format("SELECT DISTINCT Species FROM defaultTbl " +
+                    "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
+            System.out.println("query key is: " + query);
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                species_name = resultSet.getString("Species");
+            }
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        System.out.println("the usage of species is : " + species_name);
+        System.out.println("---------");
+        exitDB();
+        return species_name;
     }
-    public static String getSpeciesName(String genome, String region2plot, String DB){
+    /*public static String getSpeciesName(String genome, String region2plot, String DB){
         String species_name = null;
         try {
             initialDB();
@@ -82,5 +120,24 @@ public class GetRefDB extends DBAtribute {
         System.out.println("the usage of table name for species is : " + species_name);
         exitDB();
         return species_name;
+    }*/
+    public static String getTblName(String genome, String DB){
+        String tbl_name = null;
+        try {
+            initialDB();
+            String query = String.format("SELECT DISTINCT CoordinateTblName FROM defaultTbl " +
+                    "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
+            System.out.println("query key is: " + query);
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                tbl_name = resultSet.getString("CoordinateTblName");
+            }
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        System.out.println("the usage of table name is : " + tbl_name);
+        System.out.println("---------");
+        exitDB();
+        return tbl_name;
     }
 }

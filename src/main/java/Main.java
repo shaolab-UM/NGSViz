@@ -1,20 +1,32 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-import configSet.CommonFinalParas;
-import configSet.GetConfigParaValue;
+import configSet.*;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import sqldbOperate.QueryWholeRegionCoordinate;
+import sqldbOperate.Transcript;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Benchen Ye
  * @create 2024-09--16:08
  */
 
-public class Main {
+public class Main extends InputParameterAttributes {
     public static void main(String[] args) {
-        //GetConfigParaValue config_obj = new GetConfigParaValue();
 
     }
+
+
+
+
+
+
+
+
+
+
 }
 
 

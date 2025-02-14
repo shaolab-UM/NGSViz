@@ -2,10 +2,19 @@ package coverageCalculator;
 
 import ReadBam.ReadBam;
 import configSet.InputParameterAttributes;
+import configSet.ProcessInputParameters;
 import htsjdk.samtools.SamReader;
+import sqldbOperate.ProcessEachQueryCoorRecord;
+import sqldbOperate.QueryWholeRegionCoordinate;
+import sqldbOperate.Transcript;
 import utils.CalculateLog2Matrix;
+import utils.DirectoryChecker;
 import utils.Matrix2CSV;
 import ReadBam.BamFileLibrarySize;
+import utils.ReadTextFile;
+
+import java.io.File;
+import java.util.*;
 
 
 /**
@@ -17,10 +26,18 @@ public class MainCalculator extends InputParameterAttributes {
     private static String gene_subset;
     private static String title_subset;
     private static double trim_ratio = InputParameterAttributes.robust;
-    private static String heatmap_data_path = "/Users/bencheye/myProj/ngsPlot/Output/coverage_matrix_heatmap.csv";
-    private static String average_coverage_path = "/Users/bencheye/myProj/ngsPlot/Output/average_coverage_matrix.csv";
+    private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
+    private static String average_cov_name = "average_coverage_matrix.csv";
+    private static String sem_name = "sem.csv";
     private static boolean paired_mode = false;
     private static String paired_bam = null;
+    private static List<String> query_gene_list;
+    private static List<String> DB_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
+
+    // remove the '\' in the end of path
+    private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
+
+
     public static void mainCalculator(){
         for (int i=0; i<bam_list.size(); i++) {
             String[] bam_file_list = bam_list.get(i).split(":", 2);
@@ -29,28 +46,42 @@ public class MainCalculator extends InputParameterAttributes {
             if (bam_file_list.length == 2) {
                 paired_mode = true;
                 paired_bam = bam_file_list[1];
-                System.out.println("---------");
-                System.out.println("paired pattern is available, the pair-end bam file is : " + bam_file_list[1]);
-                System.out.println("---------\n");
+                System.out.println("--- paired pattern is available, the pair-end bam file is : " + bam_file_list[1]);
             }
-            System.out.println("---------");
-            System.out.println("The bam file will be analysing: " + bam_file);
+            System.out.println("--- The bam file will be analysing: " + bam_file);
             gene_subset = gene_list.get(i);
             System.out.println("The gene subset will be analysing: " + gene_subset);
+
+            // debug
+
+            if (gene_subset.equals("-1")){
+                query_gene_list = DB_gene_list;
+            } else {
+                System.out.println("\n-------");
+                System.out.println("gene list name is: " + gene_subset);
+                query_gene_list = ReadTextFile.readGeneList(gene_subset);
+                // read gene list
+                //query_gene_list.add("CDKN2C");
+            }
             title_subset = analysis_title.get(i);
             System.out.println("The title subset will be analysing: " + title_subset);
-            // check whether bam file exist
-            // split bam file
-            System.out.println("\n---------");
-            System.out.println("Start coverage matrix calculation!");
+            System.out.println("--- Start coverage matrix calculation! ---");
+
             // coverage_scaled_matrix is data matrix for heatmap
-            double[][] coverage_scaled_matrix = EachQueryRegionProcess.processEachQueryRegion(bam_file, paired_mode);
-            //RNAseqIntervalMain.rnaseqIntervalMain(bam_file);
+            //HashMap<String, Object> mat_res = EachQueryRegionProcess.processEachQueryRegion(bam_file, paired_mode);
+            HashMap<String, Object> mat_res = EachGeneRegionProcess.processEachQueryRegion(bam_file, query_gene_list, paired_mode);
+            //HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
+            List<String> row_names = (List<String>) mat_res.get("row_names");
+            double[][] coverage_scaled_matrix = (double[][]) mat_res.get("coverage_matrix");
 
             if(paired_mode){
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
-                double[][] bkg_coverage_scaled_matrix = EachQueryRegionProcess.processEachQueryRegion(paired_bam, paired_mode);
+                // bkg_coverage_scaled_matrix
+                //HashMap<String, Object> bkg_mat_res = EachQueryRegionProcess.processEachQueryRegion(paired_bam, paired_mode);
+                HashMap<String, Object> bkg_mat_res = EachGeneRegionProcess.processEachQueryRegion(bam_file, query_gene_list, paired_mode);
+                //List<String> row_names = (List<String>) mat_res.get("row_names");
+                double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("coverage_matrix");
                 // libsize
                 // get the library size of bam file
                 SamReader bam_reader = ReadBam.getBamReader(bam_file);
@@ -77,8 +108,20 @@ public class MainCalculator extends InputParameterAttributes {
             // save the data
             // Book-keep this matrix for heatmap.
 
+            File bam_path = new File(bam_file);
+            String bam_name = bam_path.getName();
+            bam_name = bam_name.substring(0, bam_name.lastIndexOf('.'));
+
+            String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name;
+            String average_coverage_path = cleaned_path + "/" + bam_name + "_" + average_cov_name;
+            String sem_path = cleaned_path + "/" + bam_name + "_" + sem_name;
+
             //Matrix2CSV.saveMatrix2CSV(coverage_scaled_matrix, row_names, heatmap_data_path);
-            Matrix2CSV.saveMatrix2CSV(average_coverage_matrix, average_coverage_path);
+            //Matrix2CSV.saveMatrix2CSV(average_coverage_matrix, average_coverage_path);
+
+            Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
+            Matrix2CSV.saveMatrix2CSV(average_coverage_path, average_coverage_matrix, title_subset);
+            Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);
         }
     }
 }
