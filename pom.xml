@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>NGSPlot2</groupId>
-  <artifactId>NGSPlot2</artifactId>
+  <groupId>NGSVir</groupId>
+  <artifactId>NGSVir</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>NGSPlot2</name>
+  <name>NGSVir</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.30</version> <!-- 替换为最新版本 -->
+      <version>1.7.30</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
     <dependency>
@@ -59,19 +59,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
       <version>2.18.0-rc1</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
-    <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <version>9.0.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.3.232</version>
-      <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
     <dependency>
@@ -92,4 +79,20 @@
           <scope>compile</scope>
       </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.NGSVir.NGSVir</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -126,13 +126,15 @@ buildDBMain(gtf_file, DB_name)
 # db_info
 db_file <- 'DB/ngsplot2_Rattus_norvegicus_ensembl_mRatBN7_2.db'
 db_file <- 'DB/ngsplot2_Mus_musculus_ensembl_GRCm38_102.db'
-db_file <- 'DB/ngsplot2_Homo_sapiens_ensembl_GRCh38_113.db'
+db_file <- 'DB/NGSVir_hg19_RefSeq.db'
 con <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = db_file)
 # get the tables of DB
 dbListTables(con)
 # Close database connection
 query_key <- "SELECT * FROM Rattus_norvegicus_ensembl_mRatBN7_2"
 query_key <- "SELECT * FROM Mus_musculus_ensembl_GRCm38_102"
-query_key <- "SELECT * FROM Homo_sapiens_ensembl_GRCh38_113"
+query_key <- "SELECT * FROM hg19_RefSeq"
 results <- dbGetQuery(con, query_key)
 #RSQLite::dbDisconnect(con)
+query_key <- "SELECT * FROM defaultTbl"
+results1 <- dbGetQuery(con, query_key)
