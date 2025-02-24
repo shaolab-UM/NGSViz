@@ -1,0 +1,9 @@
+{
+    "versionNum": {
+        "version": "1.0"
+    },
+    "toolParas": {
+        "tool_path": "/Users/bencheye/myProj/ngsPlot/NGSViz",
+        "db_path": "/database/genomeCoordinate.db"
+    }
+}

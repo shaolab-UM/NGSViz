@@ -1,0 +1,28 @@
+Single-threaded Test:
+      107.08 real       161.35 user        19.79 sys
+Multi-threaded Test:
+      127.09 real       163.85 user        22.43 sys
+Single-threaded Test:
+      108.02 real       159.68 user        20.67 sys
+Multi-threaded Test:
+      107.05 real       167.31 user        19.90 sys
+Single-threaded Test:
+      139.79 real       178.41 user        29.76 sys
+Multi-threaded Test:
+      127.86 real       173.54 user        27.20 sys
+Single-threaded Test:
+       59.69 real        57.72 user         2.97 sys
+Multi-threaded Test:
+       55.07 real        60.43 user         4.04 sys
+Single-threaded Test:
+       63.81 real        57.12 user         2.39 sys
+Multi-threaded Test:
+       61.06 real        55.45 user         2.24 sys
+Single-threaded Test:
+      121.71 real       161.71 user        20.13 sys
+Multi-threaded Test:
+      138.10 real       160.77 user        20.31 sys
+Single-threaded Test:
+      116.33 real       165.83 user        22.07 sys
+Multi-threaded Test:
+       57.64 real       190.92 user        54.01 sys

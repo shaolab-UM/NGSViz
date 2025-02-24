@@ -5,51 +5,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ConfigReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/JsonConfigPath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSVir.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/buildRefDB.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/buildRefDB.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/NGSVir.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/BamFileLibrarySize.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/QueryGenomeRange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/ReadBam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/CheckLegal2InputParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/CheckLegal2InputParameter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/DBdefaultValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/DBdefaultValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/DataPointNum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/GenerateJsonConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/GetInputParameterValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/InputParameterAttributes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/ProcessInputFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/ProcessInputParameters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/SetDefaultOptionParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/SetDefaultOptionParameter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/configSet/SetIntervalType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/SetIntervalType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/AverageCoverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/AverageCoverage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/DataScaler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/EachQueryRegionProcess.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/SEMCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/SEMCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/coverageCalculator/TrimBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/TrimBuffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/DBAtribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/DBAtribute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/GetRefDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/GetRefDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDBUniqueItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryDBUniqueItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryDefaultDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryDefaultDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/Transcript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/Transcript.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/CoverageExonSubset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/CoverageExonSubset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/ExonModelData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/ExonModelData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/CalculateLog2Matrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/CalculateLog2Matrix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/CurrentTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/CurrentTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/DirectoryChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/DirectoryChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/Matrix2CSV.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/ReadTextFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/mergeDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/mergeDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/NGSVir.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/QueryGenomeRange.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/ReadBam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadBam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/CheckLegal2InputParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/CheckLegal2InputParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/DBdefaultValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DBdefaultValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/SetDefaultOptionParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetDefaultOptionParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/configSet/SetIntervalType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetIntervalType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/AverageCoverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/AverageCoverage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/SEMCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/SEMCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/coverageCalculator/TrimBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/TrimBuffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/DBAtribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/DBAtribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/GetRefDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/GetRefDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryDBUniqueItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/QueryDBUniqueItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryDefaultDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/QueryDefaultDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/Transcript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/Transcript.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/CoverageExonSubset.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/exonMode/CoverageExonSubset.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/ExonModelData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/exonMode/ExonModelData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/CalculateLog2Matrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/CalculateLog2Matrix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/CurrentTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/CurrentTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/DirectoryChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/DirectoryChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSVir/utils/mergeDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/mergeDB.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,35 +69,51 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2t4Ebxp3Zyf8VTuF7IttBA5rzBF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.NGSVir.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.JsonConfigPath.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NGSVir.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NGSViz.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bencheye/myProj/ngsPlot/NGSViz&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.NGSVir" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.NGSVir">
+  <component name="RunManager" selected="Application.JsonConfigPath">
+    <configuration name="JsonConfigPath" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.JsonConfigPath" />
+      <module name="NGSVir" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.NGSViz.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="NGSVir" />
@@ -107,7 +126,20 @@
       <module name="NGSVir" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.NGSVir.*" />
+          <option name="PATTERN" value="com.NGSViz.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NGSViz" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.NGSViz" />
+      <module name="NGSVir" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.NGSViz.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -117,6 +149,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.JsonConfigPath" />
+        <item itemvalue="Application.NGSViz" />
         <item itemvalue="Application.NGSVir" />
         <item itemvalue="Application.Main" />
       </list>
@@ -139,6 +173,8 @@
       <option name="presentableId" value="Default" />
       <updated>1739603023585</updated>
       <workItem from="1739603024739" duration="24984000" />
+      <workItem from="1739781367644" duration="26793000" />
+      <workItem from="1739953999636" duration="4564000" />
     </task>
     <servers />
   </component>
