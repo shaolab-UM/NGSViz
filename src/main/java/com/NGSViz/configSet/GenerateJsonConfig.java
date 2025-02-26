@@ -34,12 +34,37 @@ public class GenerateJsonConfig extends InputParameterAttributes {
             e.printStackTrace();
         }
     }
+
+    public static void generateJsonConfig2(String out_path, String config_name, JSONObject config_obj) {
+        // check whether the directory of out path exist
+        DirectoryChecker.checkDirectoryExist(out_path);
+        //Path config_path = Paths.get(out_path, config_name);
+        // remove the '\' in the end of path
+        String cleaned_path = DirectoryChecker.removeTrailingSlash(out_path);
+        String config_path = cleaned_path + "/" + config_name;
+        System.out.println("config_path: " + config_path);
+        //JSONObject config_obj = transformParas2JsonConfig();
+        try {
+            // identify config file path and name
+            FileWriter config_file = new FileWriter(config_path);
+            // transform the JSONObject into character and write in file
+            // // Indentation is four spaces.
+            config_file.write(config_obj.toString(4));
+            config_file.close();
+            System.out.println(config_path + " : JSON config file has been generated!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static JSONObject transformParas2JsonConfig() {
         // create JSONObject to save config
         JSONObject config = new JSONObject();
         // create "version"
         JSONObject versionParameters = new JSONObject();
         versionParameters.put("version", version_num);
+        config.put("versionParameters", versionParameters);
         // create "mandatory_parameters" JSONObject
         JSONObject mandatoryParameters = new JSONObject();
         JSONArray bam_array = new JSONArray();

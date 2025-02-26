@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+
   <dependencies>
     <dependency>
       <groupId>tech.tablesaw</groupId>
@@ -31,12 +32,6 @@
       <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
       <version>4.1.2</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.github.broadinstitute/picard -->
-    <dependency>
-      <groupId>com.github.broadinstitute</groupId>
-      <artifactId>picard</artifactId>
-      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

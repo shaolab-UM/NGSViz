@@ -1,6 +1,7 @@
 package com.NGSViz.coverageCalculator;
 
 import com.NGSViz.ReadBam.ReadBam;
+import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
 import htsjdk.samtools.SamReader;
 import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
@@ -9,6 +10,9 @@ import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
 import com.NGSViz.ReadBam.BamFileLibrarySize;
 import com.NGSViz.utils.ReadTextFile;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.*;
 
@@ -30,9 +34,11 @@ public class MainCalculator extends InputParameterAttributes {
     private static List<String> query_gene_list;
     private static List<String> DB_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
+    private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
 
 
     public static void mainCalculator(){
+        JSONArray jsonArray = new JSONArray();
         for (int i=0; i<bam_list.size(); i++) {
             String[] bam_file_list = bam_list.get(i).split(":", 2);
             bam_file = bam_file_list[0];
@@ -102,13 +108,23 @@ public class MainCalculator extends InputParameterAttributes {
             String bam_name = bam_path.getName();
             bam_name = bam_name.substring(0, bam_name.lastIndexOf('.'));
 
+            //
+            JSONObject OutFileList = new JSONObject();
             String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name;
             String average_coverage_path = cleaned_path + "/" + bam_name + "_" + average_cov_name;
             String sem_path = cleaned_path + "/" + bam_name + "_" + sem_name;
+            OutFileList.put("heatmapDataFile", heatmap_data_path);
+            OutFileList.put("avgPlotDataFile", average_coverage_path);
+            OutFileList.put("semDataFile", sem_path);
+            jsonArray.put(OutFileList);
+
+
             // output the result
             Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
             Matrix2CSV.saveMatrix2CSV(average_coverage_path, average_coverage_matrix, title_subset);
             Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);
         }
+        config_obj.put("OutputFile", jsonArray);
+        GenerateJsonConfig.generateJsonConfig2(output_path, config_name, config_obj);
     }
 }

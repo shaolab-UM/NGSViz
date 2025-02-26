@@ -52,6 +52,6 @@ public class ProcessInputParameters extends InputParameterAttributes {
         interval_type = SetIntervalType.setIntervalTypeValue(width_list, region_labels, flank_region);
         // get data points
         DataPointNum.getDataPointNum();
-        GenerateJsonConfig.generateJsonConfig(output_path, config_name);
+        //GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
 }

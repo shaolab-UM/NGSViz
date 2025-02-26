@@ -13,7 +13,7 @@ public class NGSViz {
     public static void main(String[] args) {
         /*args = new String[]{
                 "-G", "hg19",
-                "-R", "genebody",
+                "-R", "tss",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
                 //"-R", "tss",
@@ -22,13 +22,13 @@ public class NGSViz {
                 "-I", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
-                "-O", "/Users/bencheye/myProj/ngsPlot/Output/Result",
+                "-O", ".",
                 //"-F", "protein_coding",
                 "-A", "transcript",
                 //"-M", "bin",
                 //"-F", "2000"
-        };*/
-
+        };
+*/
         ProcessInputParameters.processInputParameter(args);
         // exonMode for exon
         if(InputParameterAttributes.analysis_type.equals("exon")){

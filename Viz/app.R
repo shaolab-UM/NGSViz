@@ -6,6 +6,9 @@ library(plotly)
 library(leaflet)
 library(DT)
 library(fresh)
+library(future)
+library(promises)
+plan(multisession)
 
 plot_colour <- "#8965CD"
 
@@ -46,6 +49,16 @@ getBiotype <- function(db_file, genome){
   sorted_res <- c(protein_coding, non_protein_coding)
   return(sorted_res)
 }
+
+
+# run java ----------------------------------------------------------------
+# temp file
+log_file <- tempfile(fileext = ".txt")
+result_file <- tempfile(fileext = ".txt")brary(shiny)
+plan(multisession)  # Enable asynchronous execution
+# Temporary file path
+log_file <- tempfile(fileext = ".txt")
+result_file <- tempfile(fileext = ".txt")
 
 db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
 result <- getGenomeName(db_file)
@@ -129,6 +142,25 @@ ui <- dashboardPage(
           column(6,textInput("dashO", "Type Output directory:", value = ""),)
         ),
         
+
+        # run java ----------------------------------------------------------------
+        
+        sidebarPanel(
+          textInput("java_path", "Java路径", value = "java"),
+          textInput("jar_path", "JAR文件路径", value = "your_program.jar"),
+          actionButton("run", "运行脚本"),
+          actionButton("stop", "停止脚本"),
+          hr(),
+          verbatimTextOutput("status")
+        ),
+        mainPanel(
+          h4("实时日志"),
+          verbatimTextOutput("log"),
+          h4("最终结果"),
+          verbatimTextOutput("results")
+        ),
+        
+        
         # optional parameters -----------------------------------------------------
         h3("Optional parameters"),
         fluidRow(
@@ -191,6 +223,70 @@ server <- function(input, output) {
   output$selected_value <- renderText({
     paste("You selected:", input$dashB)
   })
+
+# Run Java ----------------------------------------------------------------
+  #  reactive values
+  rv <- reactiveValues(
+    process = NULL,
+    running = FALSE,
+    start_time = NULL
+  )
+  # Real-time log monitoring
+  output$log <- renderText({
+    invalidateLater(1000)  # Refresh every second
+    if(file.exists(log_file)) readLines(log_file) else "Waiting log..."
+  })
+  # Start Java process
+  observeEvent(input$run, {
+    req(!rv$running)
+    # Clear old files
+    if(file.exists(log_file)) file.remove(log_file)
+    if(file.exists(result_file)) file.remove(result_file)
+    # Build command
+    cmd <- paste(
+      input$java_path,
+      "-jar",
+      shQuote(input$jar_path),
+      ">", log_file,
+      "2>&1",  # Capture standard error and standard output
+      "&& echo 'PROCESS_COMPLETED' >", result_file
+    )
+    # 异步执行
+    rv$running <- TRUE
+    rv$start_time <- Sys.time()
+    future({
+      system(cmd, intern = FALSE, wait = TRUE)
+    }) %...>% 
+      {
+        rv$running <- FALSE
+      } %...!% 
+      {
+        rv$running <- FALSE
+        showNotification("Execution error!", type = "error")
+      }
+  })
+  # Stop process
+  observeEvent(input$stop, {
+    if(rv$running && !is.null(rv$process)){
+      tools::pskill(rv$process$get_pid())
+      rv$running <- FALSE
+    }
+  })
+  # Display status information
+  output$status <- renderText({
+    if(rv$running){
+      elapsed <- difftime(Sys.time(), rv$start_time, units = "secs")
+      paste("Running... Time elapsed:", round(elapsed), "s")
+    } else {
+      "Ready state"
+    }
+  })
+  # Display the final result
+  output$results <- renderText({
+    req(file.exists(result_file))
+    readLines(result_file)
+  })
+  
 }
 
   
