@@ -11,7 +11,7 @@ import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
  */
 public class NGSViz {
     public static void main(String[] args) {
-        /*args = new String[]{
+        args = new String[]{
                 "-G", "hg19",
                 "-R", "tss",
                 //"-T", "GeneName",
@@ -19,7 +19,8 @@ public class NGSViz {
                 //"-R", "tss",
                 "-D", "RefSeq",
                 //"-R", "tes",
-                "-I", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+                //"-I", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+                "-I", "/Users/bencheye/myProj/ngsPlot/Data/input_para2.txt",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
                 "-O", ".",
@@ -28,7 +29,6 @@ public class NGSViz {
                 //"-M", "bin",
                 //"-F", "2000"
         };
-*/
         ProcessInputParameters.processInputParameter(args);
         // exonMode for exon
         if(InputParameterAttributes.analysis_type.equals("exon")){

@@ -110,9 +110,9 @@ public class MainCalculator extends InputParameterAttributes {
 
             //
             JSONObject OutFileList = new JSONObject();
-            String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name;
-            String average_coverage_path = cleaned_path + "/" + bam_name + "_" + average_cov_name;
-            String sem_path = cleaned_path + "/" + bam_name + "_" + sem_name;
+            String heatmap_data_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + heatmap_file_name;
+            String average_coverage_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + average_cov_name;
+            String sem_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + sem_name;
             OutFileList.put("heatmapDataFile", heatmap_data_path);
             OutFileList.put("avgPlotDataFile", average_coverage_path);
             OutFileList.put("semDataFile", sem_path);

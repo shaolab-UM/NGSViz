@@ -10,7 +10,10 @@ library(future)
 library(promises)
 library(RSQLite)
 library(processx)
-
+library(jsonlite)
+library(ggplot2)
+library(markdown)
+library(tidyr)
 
 plot_colour <- "#8965CD"
 
@@ -27,70 +30,13 @@ theme <- create_theme(
 )
 
 
-# Load and wrangle data ---------------------------------------------------
+# load Rscript ------------------------------------------------------------
+source("lib/plot/averagePlot.R")
+source("lib/processDB.R")
+source("lib/processJSON.R")
+source("lib/pages/aboutUS.R")
 
-getGenomeName <- function(db_file){
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = db_file)
-  query_key <- "SELECT DISTINCT Genome FROM defaultTbl"
-  results <- dbGetQuery(con, query_key)
-  dbDisconnect(con)
-  return(results)
-}
-
-getBiotype <- function(db_file, genome){
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = db_file)
-  query_key <- sprintf("SELECT DISTINCT CoordinateTblName FROM defaultTbl WHERE Genome = '%s'", genome)
-  result <- dbGetQuery(con, query_key)
-  query_key2 <- paste0("SELECT DISTINCT biotype FROM ", result$CoordinateTblName)
-  print(result$CoordinateTblName)
-  results <- dbGetQuery(con, query_key2)
-  dbDisconnect(con)
-  result <- results$biotype
-  protein_coding <- result[grep("protein_coding", result)]
-  non_protein_coding <- result[!grepl("protein_coding", result)]
-  sorted_res <- c(protein_coding, non_protein_coding)
-  return(sorted_res)
-}
-
-getToolJsonPara <- function(json_file){
-  # Read and parse the JSON file
-  json_data <- fromJSON(json_file)
-  # Access specific fields
-  version <- json_data$versionNum$version
-  tool_path <- json_data$toolParas$tool_path
-  db_path <- json_data$toolParas$db_path
-  tool_name <- json_data$toolParas$tool_name
-  java_path <- json_data$toolParas$java_path
-  jar_path <- file.path(tool_path, tool_name)
-  args <- c("-jar", jar_path)
-  res <- c(java_path, args)
-  return(res)
-}
-
-getJavaParameter <- function(paras){
-  cmd_text <- sprintf("-G %s -R %s -I %s -O %s -X %s -T %s -A %s -B %s -F %d -N %d -RB %d -S %d -M %s -CZ %d -MQ %d -FL %d -SS %s -P %d -D %s",
-                      paras$dashG, paras$dashR,
-                      paras$dashI, paras$dashO, paras$dashX, paras$dashT,
-                      paras$dashA, paras$dashB, paras$dashF, paras$dashN,
-                      paras$dashRB, paras$dashS, paras$dashM, paras$dashCZ,
-                      paras$dashMQ, paras$dashFL, paras$dashSS, paras$dashP,
-                      paras$dashD)
-  print(paste0("Input the java parameters is: ", cmd_text))
-  return(cmd_text)
-}
-generateJavaCommand <- function(paras){
-  args <- c("-G", paras$dashG, "-R", paras$dashR, "-I",paras$dashI,
-            "-O", paras$dashO, "-X", paras$dashX, "-T", paras$dashT,
-            "-A", paras$dashA, "-B", paras$dashB, "-F", paras$dashF,
-            "-N", paras$dashN, "-RB", paras$dashRB, "-S", paras$dashS,
-            "-M", paras$dashM, "-CZ", paras$dashCZ, "-MQ", paras$dashMQ,
-            "-FL", paras$dashFL, "-SS", paras$dashSS, "-P", paras$dashP,
-            "-D", paras$dashD)
-  # args <- c("-G", paras$dashG, "-R", paras$dashR, "-I",paras$dashI, 
-  #           "-O", paras$dashO)
-  #print(paste0("Input the java parameters is: ", cmd_text))
-  return(args)
-}
+# Load data ---------------------------------------------------
 
 # Input parameters --------------------------------------------------------
 json_file <- "NGSViz_setting.json"
@@ -101,13 +47,8 @@ log_name <- "NGSViz_java_running.log"
 java_res <- getToolJsonPara(json_file)
 cmd <- java_res[1]
 args <- c(java_res[2], java_res[3])
-# temp file
-# log_file <- tempfile(fileext = ".txt")
-# result_file <- tempfile(fileext = ".txt")brary(shiny)
-plan(multisession)  # Enable asynchronous execution
-# Temporary file path
-# log_file <- tempfile(fileext = ".txt")
-# result_file <- tempfile(fileext = ".txt")
+# Enable asynchronous execution
+plan(multisession)  
 
 # get the genome info from db
 result <- getGenomeName(db_file)
@@ -132,11 +73,14 @@ ui <- dashboardPage(
     ),
     controlbarIcon = NULL,
     fixed = TRUE,
-    rightUi = NULL
+    rightUi = NULL,
+    h4("    NGSViz | Coverage Calculation & Visualization")
   ),
   
   # Sidebar ----
   sidebar = dashboardSidebar(
+    # Default collapse sidebar
+    collapsed = FALSE,
     sidebarMenu(
       id = "sidebarMenuid",
       menuItem("Home", tabName = "home", icon = icon("home")),
@@ -157,7 +101,7 @@ ui <- dashboardPage(
   # Footer ----
   footer = dashboardFooter(
     left = "FHS | University of Macau",
-    right = "Copyright: Benchen Ye"
+    right = "NGSViz"
   ),
   
   # Body ----
@@ -174,89 +118,159 @@ ui <- dashboardPage(
         )
       ),
 
+      # aboutUS -----------------------------------------------------------------
+      aboutUS(),
+
+      # helpMe ------------------------------------------------------------------
+      
+      
+      
       # CalculationMode ---------------------------------------------------------
       tabItem(
         tabName = "CalculationMode",
 
         # required parameters -----------------------------------------------------
-        h3("Required parameters"),
-        fluidRow(
-          column(6, selectInput("dashG", "choose a Genome type", 
-                                choices = result$Genome)),
-          column(6, textInput("dashI", "choose the input a bam/txt file!:", value = "")),
-        ),
-        fluidRow(
-          column(6, selectInput("dashR", "choose a region type", 
-                             choices = c("tss", "tes", "genebody"))),
-          column(6,textInput("dashO", "Type Output directory:", value = "."))
+        #h3("Required parameters"),
+        box(
+          title = " | Required parameters",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          icon = icon("tools"),
+          fluidRow(
+            column(6, selectInput("dashG", "Choose a Genome type", 
+                                  choices = result$Genome)),
+            column(6, textInput("dashI", "Input a bam/txt file!:", value = "")),
+          ),
+          fluidRow(
+            column(6, selectInput("dashR", "Choose a region type", 
+                                  choices = c("tss", "tes", "genebody"))),
+            column(6,textInput("dashO", "Type Output directory:", value = "."))
+          )
         ),
         
-
         # run java ----------------------------------------------------------------
         hr(),
-        h3("Run java script"),
-        fluidRow(
-          column(6, actionButton("run_java", "Start analysis"))
-          #column(6, actionButton("stop_java", "Stop script"))
+        box(
+          title = " | Run CalculationMode jar script",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          icon = icon("play"),
+          fluidRow(
+            column(4, actionButton("run_java", "Start analysis")),
+            #column(6, actionButton("stop_java", "Stop script"))
+            # column(4,textOutput("static_text")),
+            column(4,verbatimTextOutput("status"))
+          )
         ),
-        hr(),
-        # h3("Input parameter: "),
-        # verbatimTextOutput("result_para"),
-        h3("status"),
-        verbatimTextOutput("status"),
         
         
         # optional parameters -----------------------------------------------------
-        hr(),
-        h3("Optional parameters"),
-        fluidRow(
-          column(3, selectInput("dashA", "choose a analysis type", 
-                                choices = c("transcript", "exon"))),
-          column(3, uiOutput("dynamic_ui")), # dashB
-          column(6, numericInput("dashF", "input the flanking region size:", 
-                                 value = 2000, min = 1, max = 3000))
-        ),
-        fluidRow(
-          column(3, selectInput("dashM", "choose the scale method", 
-                                choices = c("bin", "spline"))),
-          column(3, textInput("dashT", "Input title of plot:", value = "AverageCoverage")),
-          column(6, textInput("dashX", "Input a gene list file:", value = "all"))
-        ),
-        fluidRow(
-          column(3, numericInput("dashMQ", "MAPQ", 
-                                 value = 20, min = 0, max = 100)),
-          column(3, numericInput("dashP", "number of core", 
-                                 value = 1, min = 1, max = 100)),
-          column(6, numericInput("dashFL", "Fragment length", 
-                                 value = 150, min = 50, max = 1000))
-        ),
-        fluidRow(
-          column(3, numericInput("dashN", "Flanking size factor", 
-                                 value = 0, min = 0, max = 1)),
-          column(3, numericInput("dashRB", "both ends trimmed (%)", 
-                                 value = 0, min = 0, max = 1)),
-          column(6, selectInput("dashSS", "choose the read strand in bam file!",
-                                choices = c("both", "+", "-")))
-        ),
-        fluidRow(
-          column(3, numericInput("dashS", "random sampling rate", 
-                                 value = 0, min = 0, max = 1)),
-          column(3, numericInput("dashCZ", "Gene chunk size", 
-                                 value = 100, min = 0, max = 1000)),
-          column(6, selectInput("dashD", "Reference sequence database", 
-                                choices = c("RefSeq")))
-        )
-
-      ) # CalculationMode end
+        box(
+          title = " | Optional parameters",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          icon = icon("wrench"),
+          fluidRow(
+            column(3, selectInput("dashA", "Choose a analysis type", 
+                                  choices = c("transcript", "exon"))),
+            column(3, uiOutput("dynamic_ui")), # dashB
+            column(6, numericInput("dashF", "Input the flanking region size:", 
+                                   value = 2000, min = 1, max = 3000))
+          ),
+          fluidRow(
+            column(3, selectInput("dashM", "Choose the scale method", 
+                                  choices = c("bin", "spline"))),
+            column(3, textInput("dashT", "Input title of plot:", value = "AverageCoverage")),
+            column(6, textInput("dashX", "Group: gene list file:", value = "all"))
+          ),
+          fluidRow(
+            column(3, numericInput("dashMQ", "MAPQ", 
+                                   value = 20, min = 0, max = 100)),
+            column(3, numericInput("dashP", "Number of core", 
+                                   value = 1, min = 1, max = 100)),
+            column(6, numericInput("dashFL", "Fragment length", 
+                                   value = 150, min = 50, max = 1000))
+          ),
+          fluidRow(
+            column(3, numericInput("dashN", "Flanking size factor", 
+                                   value = 0, min = 0, max = 1)),
+            column(3, numericInput("dashRB", "Both ends trimmed (%)", 
+                                   value = 0, min = 0, max = 1)),
+            column(6, selectInput("dashSS", "Choose the read strand in bam file!",
+                                  choices = c("both", "+", "-")))
+          ),
+          fluidRow(
+            column(3, numericInput("dashS", "Random sampling rate", 
+                                   value = 0, min = 0, max = 1)),
+            column(3, numericInput("dashCZ", "Gene chunk size", 
+                                   value = 100, min = 0, max = 1000)),
+            column(6, selectInput("dashD", "Reference sequence database", 
+                                  choices = c("RefSeq")))
+          )
+        ) # end for box
+      ), # CalculationMode end
       
-    )
-  )
-)
+      # CoveragePlot --------------------------------------------------------------------
+      tabItem(
+        tabName = "CoveragePlot",
+          fluidRow(
+              column(3,
+                     box(
+                       title = " | Parse Paras",
+                       width = 12,
+                       solidHeader = TRUE,
+                       status = "primary",
+                       icon = icon("cog"),
+                       textInput("outputdir", "calculation result path", value = ""),
+                       textInput("calcuJson", "calculation result json", 
+                                 value = "NGSVir_running_config.json"),
+                       textInput("plotJson", "json - plot parameters", 
+                                 value = "NGSViz_plotParameters.json"),
+                       hr(),
+                       h4("Start Parsing"),
+                       actionButton("parse_covPlot", "Parsing parameters")
+                       
+                     ) # end for box
+            ),
+              column(9, 
+                     box(
+                       title = " | Average Plot Result",
+                       width = 12,
+                       solidHeader = TRUE,
+                       status = "primary",
+                       icon = icon("chart-line"),
+                       plotOutput("covagePlot")
+                     )
+            ),
+            column(3,
+                   box(
+                     title = " | Plot Paras",
+                     width = 12,
+                     solidHeader = TRUE,
+                     status = "primary",
+                     icon = icon("cog"),
+                     actionButton("run_covPlot", "Start to plot"),
+                     uiOutput("dynamic_sample")
+                   ) # end for box
+            )
+            
+          ) # end for fluidRow
+      ) # end for tabItem
+      
+    ) # tabItems
+  ) # body
+) # UI
 
 
 # Server ------------------------------------------------------------------
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  # shared value
+  shared_values <- reactiveValues(plot_paras = NULL, sample_df = NULL)
+
   cat("Processing begins...\n")
 # dynamically generate options for dashB based on the value of das --------
   output$dynamic_ui <- renderUI({
@@ -265,10 +279,14 @@ server <- function(input, output) {
                 choices = result)
   })
   
-  # Display the selected value
-  output$selected_value <- renderText({
-    paste("You selected:", input$dashB)
+  output$static_text <- renderText({
+    "\nRunning status: "
   })
+  
+  # # Display the selected value
+  # output$selected_value <- renderText({
+  #   paste("You selected:", input$dashB)
+  # })
 
 # Run Java ----------------------------------------------------------------
   rv <- reactiveValues(
@@ -278,7 +296,6 @@ server <- function(input, output) {
   )
   observeEvent(input$run_java, {
     req(!rv$running)
-    
     para_list <- list(dashG=input$dashG, dashR=input$dashR,
       dashI=input$dashI, dashO=input$dashO, dashX=input$dashX, dashT=input$dashT,
       dashA=input$dashA, dashB=input$dashB, dashF=input$dashF, dashN=input$dashN,
@@ -328,8 +345,8 @@ server <- function(input, output) {
     rv$start_time <- Sys.time()
     
     future({
-      # system2(cmd, args) #, stdout = TRUE, stderr = TRUE
-      system2(cmd, args)
+      cat("Start running java script to calculate the coverage!\n")
+      system2(cmd, args) #, stdout = TRUE, stderr = TRUE
     }) %...>% 
       {
         rv$running <- FALSE
@@ -361,16 +378,75 @@ server <- function(input, output) {
       "Ready state"
     }
   })
-  
-  # # Display the final result
-  # output$result <- renderText({
-  #   req(file.exists(result_file))
-  #   readLines(result_file)
-  # })
+
+# Run plot Coverage -------------------------------------------------------
+
+# Parse configuration file ------------------------------------------------
+  observeEvent(input$parse_covPlot, {
+    cat("Process the json parameters!\n")
+    # check
+    if(is.null(input$outputdir) || input$outputdir == ""){
+      showNotification("Please input the path of calculation result!", type = "error")
+      return()
+    }else{
+      if (!dir.exists(input$outputdir)) {
+        showNotification("The folder does not exist!", type = "error")
+        return()
+      }
+    }
+    #shared_values$outputdir <- input$outputdir
+    calcu_json <- file.path(input$outputdir, input$calcuJson)
+    if(!file.exists(calcu_json)){
+      showNotification("The json file of calculation parameters not exist!", type = "error")
+      return()
+    }
     
+    # get calculationMode result json
+    calcu_res <- getCalcuJsonRes(calcu_json)
+    uniq_sample <- calcu_res[["uniq_sample"]]
+    shared_values$sample_df <- calcu_res[["sample_df"]]
+    plot_paras <- calcu_res[["plot_paras"]]
+    plot_paras[["out_dir"]] <- input$outputdir
+    plot_paras[["uniq_sample"]] <- uniq_sample
+    shared_values$plot_paras <- plot_paras
+    output$dynamic_sample <- renderUI({
+      selectInput("samples", "Choose the samples", 
+                  choices = uniq_sample, multiple = TRUE)
+    })
+    
+  }) # end for observeEvent parse_covPlot
+  
+  
+
+# plot coverage -----------------------------------------------------------
+  observeEvent(input$run_covPlot, { 
+    cat("Average plot!\n")
+    # parameters
+    plot_paras <- shared_values$plot_paras
+    sample_df <- shared_values$sample_df
+    selected_samples <- input$samples
+    
+    if (is.null(selected_samples)) {
+      shinyalert("No samples selected", type = "error")
+      return()
+    } 
+    
+    # Parse configuration file
+    output$covagePlot <- renderPlot({
+      
+      p <- avgCovPlot(sample_df, plot_paras)
+      p
+      
+      #plot(1:input$param1, 1:input$param2, main = "")
+      
+    }) # end for covagePlot
+    
+    })  # end for observeEvent run_Covplot
+  
+  
   
 }
 
-  
+
 
 shinyApp(ui, server)
