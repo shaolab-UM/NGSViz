@@ -5,13 +5,15 @@ getCalcuJsonRes <- function(json_file_path){
   file_names <- basename(json_data$OutputFile$heatmapDataFile) 
   df <- data.frame(file_path = file_names, stringsAsFactors = FALSE)
   sample_df <- df %>%
-    separate(file_path, into = c("sampleName", "tittle", "suffix"), sep = "__")
+    separate(file_path, into = c("sampleName", "group", "suffix"), sep = "__")
   uniq_sample <- sample_df$sampleName[!duplicated(sample_df)]
   plot_paras <- list("region_labels" = json_data$coverage_calculator$region_labels,
                      "flank_size" = json_data$coverage_calculator$flank_size,
                      "middle_point" = json_data$plot_parameters$middle_datapoints,
-                     "flank_point" = json_data$plot_parameters$flanking_region_datapoints
-  )
+                     "flank_point" = json_data$plot_parameters$flanking_region_datapoints,
+                     "sample_list" = json_data$plot_parameters$sample_list,
+                     "plot_title" = json_data$plot_parameters$plot_title
+                  )
   res <- list(
     "uniq_sample" = uniq_sample,
     "sample_df" = sample_df,
@@ -60,4 +62,29 @@ generateJavaCommand <- function(paras){
   #           "-O", paras$dashO)
   #print(paste0("Input the java parameters is: ", cmd_text))
   return(args)
+}
+
+# Parse drawing JSON parameters and return
+getPlotJsonParas <- function(plot_para_file){
+  parsed_data <- fromJSON(plot_para_file)
+  # build the plot_paras list
+  plot_paras <- list(
+    border_size = parsed_data$theme_paras$border_size,
+    border_color = parsed_data$theme_paras$border_color,
+    axis_text_x_size = parsed_data$theme_paras$axis_text_x_size,
+    axis_text_x_color = parsed_data$theme_paras$axis_text_x_color,
+    axis_text_y_size = parsed_data$theme_paras$axis_text_y_size,
+    axis_text_y_color = parsed_data$theme_paras$axis_text_y_color,
+    title_size = parsed_data$theme_paras$title_size,
+    title_color = parsed_data$theme_paras$title_color,
+    title_hjust = parsed_data$theme_paras$title_hjust,
+    # legend
+    legend_text_size = parsed_data$theme_paras$legend_text_size,
+    legend_text_color = parsed_data$theme_paras$legend_text_color,
+    # avg_plot
+    line_size = parsed_data$avgCov_paras$line_size,
+    dash_size = parsed_data$avgCov_paras$dash_size,
+    dash_color = parsed_data$avgCov_paras$dash_color
+  )
+  return(plot_paras)
 }

@@ -31,6 +31,8 @@ public class InputParameterAttributes {
     public static String sys_config_path = "";
     public static List<String> gene_list = new ArrayList<>(); // -E
     public static List<String> analysis_title = new ArrayList<>();
+    public static List<String> sample_list = new ArrayList<>();
+    public static List<String> group_list = new ArrayList<>();
     public static String db_path = "";
     public static String input_db_path = "";
     //public static String avg_mat_file = "";

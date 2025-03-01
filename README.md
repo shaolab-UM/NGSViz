@@ -2,6 +2,10 @@
 
 ## Introduction
 
+## Quick Start
+
+
+
 ## Feature
 
 We integrate commonly used variables together to facilitate code maintenance and invocation, reducing redundancy.

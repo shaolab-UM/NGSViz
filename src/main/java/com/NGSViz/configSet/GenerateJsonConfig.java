@@ -113,7 +113,12 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         JSONArray plotTitle_array = new JSONArray();
         plotTitle_array = buildJsonListConfig(plotTitle_array, analysis_title);
         plotParameters.put("plot_title", plotTitle_array);
+        // create JSONArray to save list data
+        JSONArray sample_array = new JSONArray();
+        sample_array = buildJsonListConfig(sample_array, sample_list);
+        plotParameters.put("sample_list", sample_array);
         config.put("plot_parameters", plotParameters);
+
         return config;
     }
     public static JSONArray buildJsonListConfig(JSONArray list_array, List<String> str_list) {

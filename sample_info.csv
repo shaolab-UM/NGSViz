@@ -1,0 +1,3 @@
+sampleName,BamFile,GeneListFile,Group,Title
+H3k27me3,hesc.H3k27me3.1M.bam,all,High,H3k27me3
+H3k27me3,hesc.H3k4me3.1M.bam,all,Med,H3k27me3

@@ -12,9 +12,8 @@ import java.util.*;
  */
 public class ReadTextFile {
     public static void main(String[] args) {
-        String file_path = "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt";
-        List<String> gene_list = readGeneList(file_path);
-        System.out.println(gene_list);
+        String csvFile = "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv";
+        System.out.println(readCsvConfigFile(csvFile));
     }
 
     public static List<String> readGeneList(String file_path) {
@@ -58,9 +57,12 @@ public class ReadTextFile {
         return out_list;
     }
     public static Map<String, Object> readCsvConfigFile(String file_path) {
+
         Map<String, Object> out_list = new HashMap<>();
+        List<String> sample_list = new ArrayList<>();
         List<String> bam_list = new ArrayList<>();
         List<String> gene_list = new ArrayList<>();
+        List<String> group_list = new ArrayList<>();
         List<String> title_list = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(file_path);
@@ -69,14 +71,22 @@ public class ReadTextFile {
             String line;
             int i = 0;
             while ((line = reader.readLine())!= null) {
-                bam_list.add(line.split(",")[0]);
-                gene_list.add(line.split(",")[1]);
-                title_list.add(line.split(",")[2]);
+                if (i==0){
+                    i++;
+                    continue;
+                }
+                sample_list.add(line.split(",")[0]);
+                bam_list.add(line.split(",")[1]);
+                gene_list.add(line.split(",")[2]);
+                group_list.add(line.split(",")[3]);
+                title_list.add(line.split(",")[4]);
                 i++;
             }
             out_list.put("bam_list", bam_list);
             out_list.put("gene_list", gene_list);
             out_list.put("title_list", title_list);
+            out_list.put("group_list", group_list);
+            out_list.put("sample_list", sample_list);
             System.out.println(out_list);
             reader.close();
         } catch (IOException e) {

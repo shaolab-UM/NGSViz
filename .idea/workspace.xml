@@ -5,12 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/.Rhistory" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSVir_running_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSVir_running_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/modules/Home.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/modules/aboutUS.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/modules/calculation.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/modules/tutorial.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/modules/visualization.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viz/R/plot/mutli-sample.R" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/R/plot/mutli-sample.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/averagePlot.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/averagePlot.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/processJSON.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processJSON.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" afterPath="$PROJECT_DIR$/main.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$cture#6_Introductions(Exercises).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,24 +47,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.JsonConfigPath.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NGSVir.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NGSViz.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/bencheye/myProj/ngsPlot/NGSViz&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.JsonConfigPath.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.NGSVir.executor": "Run",
+    "Application.NGSViz.executor": "Run",
+    "Application.ReadTextFile.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSViz",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.NGSVir" />
@@ -105,9 +118,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ReadTextFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.ReadTextFile" />
+      <module name="NGSVir" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.NGSViz.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.NGSViz" />
+        <item itemvalue="Application.ReadTextFile" />
         <item itemvalue="Application.JsonConfigPath" />
         <item itemvalue="Application.NGSVir" />
         <item itemvalue="Application.Main" />
@@ -133,6 +160,7 @@
       <workItem from="1739603024739" duration="24984000" />
       <workItem from="1739781367644" duration="26793000" />
       <workItem from="1739953999636" duration="18081000" />
+      <workItem from="1740745125128" duration="4350000" />
     </task>
     <servers />
   </component>

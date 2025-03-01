@@ -14,6 +14,7 @@ library(jsonlite)
 library(ggplot2)
 library(markdown)
 library(tidyr)
+library(ggsci)
 
 plot_colour <- "#8965CD"
 
@@ -35,6 +36,7 @@ source("lib/plot/averagePlot.R")
 source("lib/processDB.R")
 source("lib/processJSON.R")
 source("lib/pages/aboutUS.R")
+source("lib/plot/mainPlot.R")
 
 # Load data ---------------------------------------------------
 
@@ -42,6 +44,8 @@ source("lib/pages/aboutUS.R")
 json_file <- "NGSViz_setting.json"
 db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
 log_name <- "NGSViz_java_running.log"
+color_panel_list <- c("NPG" = "npg", "AAAS" = "aaas", "NEJM" = "nejm",
+                      "Lancet" = "lancet", "JAMA" = "jama")
 
 # run java ----------------------------------------------------------------
 java_res <- getToolJsonPara(json_file)
@@ -130,7 +134,7 @@ ui <- dashboardPage(
         tabName = "CalculationMode",
 
         # required parameters -----------------------------------------------------
-        #h3("Required parameters"),
+        # Required parameters
         box(
           title = " | Required parameters",
           width = 12,
@@ -150,7 +154,6 @@ ui <- dashboardPage(
         ),
         
         # run java ----------------------------------------------------------------
-        hr(),
         box(
           title = " | Run CalculationMode jar script",
           width = 12,
@@ -173,6 +176,8 @@ ui <- dashboardPage(
           solidHeader = TRUE,
           status = "primary",
           icon = icon("wrench"),
+          collapsible = TRUE,
+          collapsed = TRUE,
           fluidRow(
             column(3, selectInput("dashA", "Choose a analysis type", 
                                   choices = c("transcript", "exon"))),
@@ -216,26 +221,51 @@ ui <- dashboardPage(
       # CoveragePlot --------------------------------------------------------------------
       tabItem(
         tabName = "CoveragePlot",
+        # parse paras -------------------------------------------------------------
+        box(
+          title = " | Parse Paras",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          icon = icon("cog"),
           fluidRow(
-              column(3,
-                     box(
-                       title = " | Parse Paras",
-                       width = 12,
-                       solidHeader = TRUE,
-                       status = "primary",
-                       icon = icon("cog"),
-                       textInput("outputdir", "calculation result path", value = ""),
-                       textInput("calcuJson", "calculation result json", 
-                                 value = "NGSVir_running_config.json"),
-                       textInput("plotJson", "json - plot parameters", 
-                                 value = "NGSViz_plotParameters.json"),
-                       hr(),
-                       h4("Start Parsing"),
-                       actionButton("parse_covPlot", "Parsing parameters")
-                       
-                     ) # end for box
+            column(2, h5(" Start Parsing"),
+                   actionButton("parse_covPlot", "Parsing parameters")),
+            column(3, textInput("outputdir", " Type calculation result path", value = "")),
+            column(3, textInput("calcuJson", "CalculationMode JSON", 
+                                value = "NGSVir_running_config.json")),
+            column(3, textInput("plotJson", "Plot JSON", 
+                                value = "NGSViz_plotSetting.json"))
+          )
+          # fluidRow(column(4,actionButton("parse_covPlot", "Parsing parameters")))
+        ),
+        
+          fluidRow(
+            column(3,
+                   box(
+                     title = " | Run Plot",
+                     width = 12,
+                     solidHeader = TRUE,
+                     status = "primary",
+                     icon = icon("cog"),
+                     actionButton("run_covPlot", "Start to plot"),
+                     uiOutput("dynamic_sample"),
+                     # choose the color
+                     selectizeInput("palette_choice", "Choose color panel:", 
+                                    choices = color_panel_list),
+                     selectizeInput("selected_colors", "choose the colors:", 
+                                    choices = NULL, multiple = TRUE,
+                                    options = list(render = I('{
+                     item: function(item, escape) {
+                       return "<div style=\'background-color:" + escape(item.value) + "; color: white; padding: 5px; border-radius: 3px;\'>" + escape(item.label) + " </div>";
+                     },
+                     option: function(item, escape) {
+                       return "<div style=\'background-color:" + escape(item.value) + "; color: white; padding: 5px; border-radius: 3px;\'>" + escape(item.label) + " </div>";
+                     }
+                   }')))
+                   ) # end for box
             ),
-              column(9, 
+            column(9, 
                      box(
                        title = " | Average Plot Result",
                        width = 12,
@@ -245,17 +275,7 @@ ui <- dashboardPage(
                        plotOutput("covagePlot")
                      )
             ),
-            column(3,
-                   box(
-                     title = " | Plot Paras",
-                     width = 12,
-                     solidHeader = TRUE,
-                     status = "primary",
-                     icon = icon("cog"),
-                     actionButton("run_covPlot", "Start to plot"),
-                     uiOutput("dynamic_sample")
-                   ) # end for box
-            )
+            
             
           ) # end for fluidRow
       ) # end for tabItem
@@ -279,9 +299,9 @@ server <- function(input, output, session) {
                 choices = result)
   })
   
-  output$static_text <- renderText({
-    "\nRunning status: "
-  })
+  # output$static_text <- renderText({
+  #   "\nRunning status: "
+  # })
   
   # # Display the selected value
   # output$selected_value <- renderText({
@@ -403,11 +423,14 @@ server <- function(input, output, session) {
     
     # get calculationMode result json
     calcu_res <- getCalcuJsonRes(calcu_json)
+    plot_setting <- getPlotJsonParas(input$plotJson)
     uniq_sample <- calcu_res[["uniq_sample"]]
     shared_values$sample_df <- calcu_res[["sample_df"]]
     plot_paras <- calcu_res[["plot_paras"]]
     plot_paras[["out_dir"]] <- input$outputdir
     plot_paras[["uniq_sample"]] <- uniq_sample
+    # merge the two paras list
+    plot_paras <- c(plot_paras, plot_setting)
     shared_values$plot_paras <- plot_paras
     output$dynamic_sample <- renderUI({
       selectInput("samples", "Choose the samples", 
@@ -419,6 +442,19 @@ server <- function(input, output, session) {
   
 
 # plot coverage -----------------------------------------------------------
+  observe({
+    palette_func <- switch(input$palette_choice,
+                           "npg" = pal_npg,
+                           "aaas" = pal_aaas,
+                           "nejm" = pal_nejm,
+                           "lancet" = pal_lancet,
+                           "jama" = pal_jama)
+    
+    updateSelectizeInput(session, "selected_colors", 
+                         choices = palette_func()(9), 
+                         server = TRUE)
+  })
+  
   observeEvent(input$run_covPlot, { 
     cat("Average plot!\n")
     # parameters
@@ -426,15 +462,17 @@ server <- function(input, output, session) {
     sample_df <- shared_values$sample_df
     selected_samples <- input$samples
     
+    plot_paras[["selected_colors"]] <- input$selected_colors
+    
     if (is.null(selected_samples)) {
       shinyalert("No samples selected", type = "error")
       return()
     } 
-    
+    print(plot_paras)
     # Parse configuration file
     output$covagePlot <- renderPlot({
       
-      p <- avgCovPlot(sample_df, plot_paras)
+      p <- mainPlot(sample_df, plot_paras)
       p
       
       #plot(1:input$param1, 1:input$param2, main = "")

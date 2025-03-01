@@ -16,6 +16,8 @@ public class ProcessInputFile extends InputParameterAttributes {
             bam_list.add(input_file);
             gene_list.add(genes);
             analysis_title.add(title);
+            group_list.add("GroupName");
+            sample_list.add("SmapleName");
         }else if(file_type.equals("txt")){
             Map<String, Object> res_list = ReadTextFile.readTxtConfigFile(input_file);
             if(res_list != null){
@@ -29,6 +31,8 @@ public class ProcessInputFile extends InputParameterAttributes {
                 bam_list = (List<String>) res_list.get("bam_list");
                 gene_list = (List<String>) res_list.get("gene_list");
                 analysis_title = (List<String>) res_list.get("title_list");
+                group_list = (List<String>) res_list.get("group_list");
+                sample_list = (List<String>) res_list.get("sample_list");
             }
         }else{
             System.out.println("Your input file `" + input_file +  "` is Unknown file type!");
@@ -36,6 +40,8 @@ public class ProcessInputFile extends InputParameterAttributes {
         System.out.println("bam list: " + bam_list);
         System.out.println("gene list: " + gene_list);
         System.out.println("analysis_title: " + analysis_title);
+        System.out.println("Sample name is :" + sample_list);
+        System.out.println("Group name is : " + group_list);
         System.out.println("---------");
     }
     public static String getFileExtensionName(String file_name){

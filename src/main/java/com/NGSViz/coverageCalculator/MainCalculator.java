@@ -25,6 +25,8 @@ public class MainCalculator extends InputParameterAttributes {
     private static String bam_file;
     private static String gene_subset;
     private static String title_subset;
+    private static String sample_subset;
+    private static String group_subset;
     private static double trim_ratio = InputParameterAttributes.robust;
     private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
     private static String average_cov_name = "average_coverage_matrix.csv";
@@ -61,6 +63,9 @@ public class MainCalculator extends InputParameterAttributes {
                 query_gene_list = ReadTextFile.readGeneList(gene_subset);
             }
             title_subset = analysis_title.get(i);
+            group_subset = group_list.get(i);
+            sample_subset = sample_list.get(i);
+
             System.out.println("The title subset will be analysing: " + title_subset);
             System.out.println("--- Start coverage matrix calculation! ---");
 
@@ -110,14 +115,13 @@ public class MainCalculator extends InputParameterAttributes {
 
             //
             JSONObject OutFileList = new JSONObject();
-            String heatmap_data_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + heatmap_file_name;
-            String average_coverage_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + average_cov_name;
-            String sem_path = cleaned_path + "/" + bam_name + "__" + title_subset + "__" + sem_name;
+            String heatmap_data_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + heatmap_file_name;
+            String average_coverage_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + average_cov_name;
+            String sem_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + sem_name;
             OutFileList.put("heatmapDataFile", heatmap_data_path);
             OutFileList.put("avgPlotDataFile", average_coverage_path);
             OutFileList.put("semDataFile", sem_path);
             jsonArray.put(OutFileList);
-
 
             // output the result
             Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
