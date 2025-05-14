@@ -27,6 +27,9 @@ avgCovPlot <- function(cov_df,plot_paras){
     geom_line(aes(color = group), size = plot_paras[["line_size"]]) + 
     scale_fill_manual(values = plot_paras[["selected_colors"]]) +
     scale_x_continuous(name = "", labels = labels_items, breaks = breaks_loc) + 
+    # scale_y_continuous(name = ylab,limits = c(y_min[[z]],y_max[[z]]),
+    #                    breaks = seq(y_min[[z]],y_max[[z]],
+    #                                 round((y_max[[z]]-y_min[[z]])/5,digits = 0)))+ 
     geom_vline(xintercept = middle_loc, linetype = "dashed",
                size = plot_paras[["dash_size"]], color = plot_paras[["dash_color"]]) + 
     labs(title = plot_paras[["plot_title"]]) +

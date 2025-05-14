@@ -15,8 +15,8 @@ import java.util.Set;
  */
 public class mergeDB extends InputParameterAttributes {
     public static void main(String[] args) {
-        String main_db_path = "/Users/bencheye/myProj/ngsPlot/DB/DB/ngsplot2_Homo_sapiens_ensembl_GRCh38_113.db";
-        String input_db_path = "/Users/bencheye/myProj/ngsPlot/DB/DB/ngsplot2_Mus_musculus_ensembl_GRCm38_102.db";
+        String main_db_path = "/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db";
+        String input_db_path = "/Users/bencheye/myProj/ngsPlot/DB/DB/Homo_sapiens/NGSViz_hg19_RefSeq.db";
         merge2DB(main_db_path, input_db_path);
 
     }

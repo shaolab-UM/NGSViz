@@ -2,6 +2,7 @@ package com.NGSViz.configSet;
 
 import com.NGSViz.sqldbOperate.GetRefDB;
 import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
+import com.NGSViz.utils.GeneratePlotParasJson;
 import com.NGSViz.utils.JsonConfigPath;
 import com.NGSViz.utils.mergeDB;
 
@@ -19,7 +20,7 @@ public class ProcessInputParameters extends InputParameterAttributes {
     //public static List<Map<String, Object>> region_coord;
     public static void processInputParameter(String[] args) {
         if (args.length % 2 ==1 || args.length == 0){
-            System.out.println("Unpaired argument and value.");
+            System.err.println("Error: Unpaired argument and value.");
             System.exit(-1);
         }
         // Parse by traversing the command line argument array.
@@ -52,6 +53,8 @@ public class ProcessInputParameters extends InputParameterAttributes {
         interval_type = SetIntervalType.setIntervalTypeValue(width_list, region_labels, flank_region);
         // get data points
         DataPointNum.getDataPointNum();
+        // generate the plot parameters json file
+        GeneratePlotParasJson.generatePlotParasJson(output_path);
         //GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
 }

@@ -4,6 +4,7 @@ import com.NGSViz.configSet.ConfigReader;
 import com.NGSViz.configSet.InputParameterAttributes;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Benchen Ye
@@ -24,16 +25,17 @@ public class JsonConfigPath extends InputParameterAttributes {
         } else {
             config_path = sys_config;
         }
-        System.out.println("system config path is " + config_path);
+        //System.out.println("system config path is " + config_path);
         File config_file = new File(config_path);
-
         // check
         if (config_file.exists()) {
             System.out.println("Config file found at: " + config_file.getAbsolutePath());
             db_path = ConfigReader.ParseSystemJson(config_file.getAbsolutePath());
             System.out.println("Tool's DB path is: " + db_path);
         } else {
-            System.out.println("Config file not found: " + config_file.getAbsolutePath());
+            //System.out.println("Config file not found: " + config_file.getAbsolutePath());
+            System.err.println("Error: The system config file or directory '" + config_file + "' does not exist.");
+            System.exit(1); //
         }
     }
 }

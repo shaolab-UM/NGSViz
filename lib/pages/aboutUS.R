@@ -26,19 +26,28 @@ aboutUS <- function(){
         solidHeader = TRUE,
         status = "primary",
         icon = icon("user"),
-        tags$p(tags$b("Author 1: "), "Benchen-Ye (University of Macua)"),
-        tags$p(tags$b("Email: "), "yc47650@um.edu.mo"),
-        tags$p(tags$b("Person Website: "), 
-               tags$a("https://bencheye.github.io/",
-                      href = "https://bencheye.github.io/",
-                      target = "_blank")),
-        hr(),
-        tags$p(tags$b("Author 2: "), "Ningyi-Shao (University of Macua)"),
+        tags$p(tags$b("Author: "), "Ningyi-Shao (University of Macua)"),
         tags$p(tags$b("Email: "), "nshao@um.edu.mo"),
         tags$p(tags$b("Person Website: "), 
                tags$a("https://fhs.um.edu.mo/zh-hant/staff/ningyi-shao/",
                       href = "https://fhs.um.edu.mo/zh-hant/staff/ningyi-shao/",
+                      target = "_blank")),       
+        hr(),
+        tags$p(tags$b("Author: "), "Benchen-Ye (University of Macua)"),
+        tags$p(tags$b("Email: "), "yc47650@um.edu.mo"),
+        tags$p(tags$b("Person Website: "), 
+               tags$a("https://bencheye.github.io/",
+                      href = "https://bencheye.github.io/",
                       target = "_blank"))
+      ),
+      box(
+        title = "| Acknowledgments",
+        width = 12,
+        solidHeader = TRUE,
+        status = "primary",
+        icon = icon("user"),
+        tags$p(tags$b("FHS"), "University of Macua")     
+        
       )
     )
   )

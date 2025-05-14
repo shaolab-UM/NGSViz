@@ -1,7 +1,7 @@
 
 # process the calculationMode result json
 getCalcuJsonRes <- function(json_file_path){
-  json_data <- fromJSON(json_file_path)
+  json_data <- jsonlite::fromJSON(json_file_path)
   file_names <- basename(json_data$OutputFile$heatmapDataFile) 
   df <- data.frame(file_path = file_names, stringsAsFactors = FALSE)
   sample_df <- df %>%
@@ -25,7 +25,7 @@ getCalcuJsonRes <- function(json_file_path){
 # generate the java running environment
 getToolJsonPara <- function(json_file){
   # Read and parse the JSON file
-  json_data <- fromJSON(json_file)
+  json_data <- jsonlite::fromJSON(json_file)
   # Access specific fields
   version <- json_data$versionNum$version
   tool_path <- json_data$toolParas$tool_path
@@ -33,8 +33,14 @@ getToolJsonPara <- function(json_file){
   tool_name <- json_data$toolParas$tool_name
   java_path <- json_data$toolParas$java_path
   jar_path <- file.path(tool_path, tool_name)
+  if (!file.exists(jar_path)) {
+    stop("Error: The path of NGSViz java excution file is not correct: \n", jar_path)
+  }
+  if (!file.exists(db_path)) {
+    stop("Error: The database path of NGSViz is not correct: \n", db_path)
+  }
   args <- c("-jar", jar_path)
-  res <- c(java_path, args)
+  res <- c(java_path, args, db_path)
   return(res)
 }
 
@@ -66,7 +72,7 @@ generateJavaCommand <- function(paras){
 
 # Parse drawing JSON parameters and return
 getPlotJsonParas <- function(plot_para_file){
-  parsed_data <- fromJSON(plot_para_file)
+  parsed_data <- jsonlite::fromJSON(plot_para_file)
   # build the plot_paras list
   plot_paras <- list(
     border_size = parsed_data$theme_paras$border_size,

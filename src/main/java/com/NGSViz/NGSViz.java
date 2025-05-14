@@ -12,20 +12,21 @@ import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 public class NGSViz {
     public static void main(String[] args) {
         /*args = new String[]{
-                "-G", "hg19",
+                "-G", "hg38",
                 "-R", "tss",
+                "-CP", "/Users/bencheye/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
                 //"-R", "tss",
-                "-D", "RefSeq",
+                //"-D", "RefSeq",
                 //"-R", "tes",
-                //"-I", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+                "-I", "/Users/bencheye/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
-                "-O", ".",
+                "-O", "/Users/bencheye/myProj/ngsPlot/Output",
                 //"-F", "protein_coding",
-                "-A", "transcript",
+                //"-A", "transcript",
                 //"-M", "bin",
                 //"-F", "2000"
         };*/

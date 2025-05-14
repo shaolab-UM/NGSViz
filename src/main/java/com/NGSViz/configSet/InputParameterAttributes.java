@@ -28,16 +28,13 @@ public class InputParameterAttributes {
     public static int flank_points = 0;
     public static String sys_config_name = "NGSViz_setting.json";
     public static String config_name = "NGSVir_running_config.json";
-    public static String sys_config_path = "";
+    public static String sys_config_path = ""; // -CP // /Users/bencheye/myProj/ngsPlot/NGSViz/NGSViz_setting.json
     public static List<String> gene_list = new ArrayList<>(); // -E
     public static List<String> analysis_title = new ArrayList<>();
     public static List<String> sample_list = new ArrayList<>();
     public static List<String> group_list = new ArrayList<>();
     public static String db_path = "";
-    public static String input_db_path = "";
-    //public static String avg_mat_file = "";
-    //public static String avg_mat_file = "";
-    //public static String err_mat_file = "";
+    public static String input_db_path = ""; // merge db for input db path
     // option parameters
     public static String DB_type = null; //-D
     // all is all gene in the database
@@ -57,40 +54,6 @@ public class InputParameterAttributes {
     public static String strand_spec = "both"; //-SS
     public static int fi_tag = 0; // -FI
 
-    //
-    public static Map<String, Integer> getInterParameter2ValueMap (){
-        Map<String, Integer> para_value_map = new HashMap<String, Integer>();
-        para_value_map.put("flank_region", flank_region);
-        para_value_map.put("core_num", core_num);
-        para_value_map.put("chunk_size", chunk_size);
-        para_value_map.put("min_mapq", min_mapq);
-        para_value_map.put("frag_len", frag_len);
-        para_value_map.put("buf_size", buf_size);
-        para_value_map.put("fi_tag", fi_tag);
-        return para_value_map;
-    }
-    public static Map<String, Object> getStringParameter2ValueMap (){
-        Map<String, Object> para_value_map = new HashMap<String, Object>();
-        para_value_map.put("genome", genome);
-        para_value_map.put("region_plot", region_type);
-        para_value_map.put("input_file", input_file);
-        para_value_map.put("output_path", output_path);
-        para_value_map.put("db_tpye", DB_type);
-        para_value_map.put("analysis_type", analysis_type);
-        para_value_map.put("biotype", biotype);
-        para_value_map.put("gene_list", gene_list);
-        para_value_map.put("analysis_title", analysis_title);
-        para_value_map.put("scaler_method", scaler_method);
-        para_value_map.put("strand_spec", strand_spec);
-        return para_value_map;
-    }
-    public static Map<String, Double> getDoubleParameter2ValueMap (){
-        Map<String, Double> para_value_map = new HashMap<String, Double>();
-        para_value_map.put("flank_factor", flank_factor);
-        para_value_map.put("robust", robust);
-        para_value_map.put("random_sampling_rate", random_sampling_rate);
-        return para_value_map;
-    }
     public static String getGenome() {
         return genome;
     }

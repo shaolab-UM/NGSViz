@@ -18,6 +18,8 @@ public class GetInputParameterValue extends InputParameterAttributes {
             input_file = setParameterValue(input_file, "-I", args, i);
             output_path = setParameterValue(output_path, "-O", args, i);
             // Option parameters
+            // system config path
+            sys_config_path = setParameterValue(sys_config_path,"-CP", args, i);
             // Database
             DB_type = setParameterValue(DB_type,"-D", args, i);
             // gene list
@@ -26,10 +28,8 @@ public class GetInputParameterValue extends InputParameterAttributes {
             title = setParameterValue(title,"-T", args, i);
             // analysis type
             analysis_type = setParameterValue(analysis_type,"-A", args, i);
-
             // subset for region - B
             biotype = setParameterValue(biotype,"-B", args, i);
-
             // Flanking region size
             flank_region = setParameterValue(flank_region,"-F", args, i);
             // Flanking size factor

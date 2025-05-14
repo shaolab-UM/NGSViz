@@ -1,20 +1,23 @@
-library(shiny)
-library(bs4Dash)
-library(dplyr)
-library(readr)
-library(plotly)
-library(leaflet)
-library(DT)
-library(fresh)
-library(future)
-library(promises)
-library(RSQLite)
-library(processx)
-library(jsonlite)
-library(ggplot2)
-library(markdown)
-library(tidyr)
-library(ggsci)
+
+
+# 定义需要检查的包列表
+packages <- c(
+  "shiny", "bs4Dash", "dplyr", "readr", "plotly", "leaflet", "DT", 
+  "fresh", "future", "promises", "RSQLite", "processx", "jsonlite", 
+  "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles"
+)
+
+# Check and install missing packages
+for (pkg in packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+    cat(paste("Installed packages:", pkg, "\n"))
+  } 
+}
+
+# Load all packages
+lapply(packages, library, character.only = TRUE)
+
 
 plot_colour <- "#8965CD"
 
@@ -37,12 +40,14 @@ source("lib/processDB.R")
 source("lib/processJSON.R")
 source("lib/pages/aboutUS.R")
 source("lib/plot/mainPlot.R")
+source("lib/plot/plotThemeSet.R")
+source("lib/processCalculateParameters.R")
 
 # Load data ---------------------------------------------------
 
 # Input parameters --------------------------------------------------------
 json_file <- "NGSViz_setting.json"
-db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
+# db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
 log_name <- "NGSViz_java_running.log"
 color_panel_list <- c("NPG" = "npg", "AAAS" = "aaas", "NEJM" = "nejm",
                       "Lancet" = "lancet", "JAMA" = "jama")
@@ -51,6 +56,7 @@ color_panel_list <- c("NPG" = "npg", "AAAS" = "aaas", "NEJM" = "nejm",
 java_res <- getToolJsonPara(json_file)
 cmd <- java_res[1]
 args <- c(java_res[2], java_res[3])
+db_file <- java_res[4]
 # Enable asynchronous execution
 plan(multisession)  
 
@@ -142,7 +148,7 @@ ui <- dashboardPage(
           status = "primary",
           icon = icon("tools"),
           fluidRow(
-            column(6, selectInput("dashG", "Choose a Genome type", 
+            column(6, selectInput("dashG", "Choose a Genome type",
                                   choices = result$Genome)),
             column(6, textInput("dashI", "Input a bam/txt file!:", value = "")),
           ),
@@ -164,7 +170,8 @@ ui <- dashboardPage(
             column(4, actionButton("run_java", "Start analysis")),
             #column(6, actionButton("stop_java", "Stop script"))
             # column(4,textOutput("static_text")),
-            column(4,verbatimTextOutput("status"))
+            column(4,textOutput("statusText"))
+            # column(4,verbatimTextOutput("status"))
           )
         ),
         
@@ -288,6 +295,15 @@ ui <- dashboardPage(
 # Server ------------------------------------------------------------------
 
 server <- function(input, output, session) {
+  
+  # initial state of run java script
+  run_status <- reactiveVal("Ready to run")
+  # Rendering status text
+  output$statusText <- renderText({
+    # When the run_status changes, this output will automatically update.
+    run_status() 
+  })
+  
   # shared value
   shared_values <- reactiveValues(plot_paras = NULL, sample_df = NULL)
 
@@ -315,6 +331,10 @@ server <- function(input, output, session) {
     start_time = NULL
   )
   observeEvent(input$run_java, {
+    # Step 1: Button is clicked, update status to "Running"
+    run_status("Running...")
+    # Disable button, prevent repeated clicks
+    # disable("run_java")
     req(!rv$running)
     para_list <- list(dashG=input$dashG, dashR=input$dashR,
       dashI=input$dashI, dashO=input$dashO, dashX=input$dashX, dashT=input$dashT,
@@ -367,6 +387,8 @@ server <- function(input, output, session) {
     future({
       cat("Start running java script to calculate the coverage!\n")
       system2(cmd, args) #, stdout = TRUE, stderr = TRUE
+      print(cmd)
+      print(args)
     }) %...>% 
       {
         rv$running <- FALSE
@@ -376,7 +398,8 @@ server <- function(input, output, session) {
         showNotification("Execution error!", type = "error")
       }
     
-    
+    run_status("Operation completed")
+    print("Finish the analysis!")
 
   }) # end for observeEvent
   
