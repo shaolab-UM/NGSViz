@@ -2,7 +2,6 @@ package com.NGSViz.configSet;
 
 import com.NGSViz.sqldbOperate.GetRefDB;
 import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
-import com.NGSViz.utils.GeneratePlotParasJson;
 import com.NGSViz.utils.JsonConfigPath;
 import com.NGSViz.utils.mergeDB;
 
@@ -54,7 +53,7 @@ public class ProcessInputParameters extends InputParameterAttributes {
         // get data points
         DataPointNum.getDataPointNum();
         // generate the plot parameters json file
-        GeneratePlotParasJson.generatePlotParasJson(output_path);
-        //GenerateJsonConfig.generateJsonConfig(output_path, config_name);
+        // GeneratePlotParasJson.generatePlotParasJson(output_path);
+        GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
 }

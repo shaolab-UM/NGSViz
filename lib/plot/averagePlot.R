@@ -1,6 +1,6 @@
 
 
-avgCovPlot <- function(cov_df,plot_paras){
+avgCovPlot <- function(cov_df, plot_paras){
   custom_theme <- setPlotTheme(plot_paras)
   legend_theme <- setPlotLegend(plot_paras)
   # lab

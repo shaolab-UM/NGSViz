@@ -4,7 +4,8 @@
 packages <- c(
   "shiny", "bs4Dash", "dplyr", "readr", "plotly", "leaflet", "DT", 
   "fresh", "future", "promises", "RSQLite", "processx", "jsonlite", 
-  "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles"
+  "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles", "circlize",
+  "EnrichedHeatmap"
 )
 
 # Check and install missing packages
@@ -48,15 +49,19 @@ source("lib/processCalculateParameters.R")
 # Input parameters --------------------------------------------------------
 json_file <- "NGSViz_setting.json"
 # db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
-log_name <- "NGSViz_java_running.log"
 color_panel_list <- c("NPG" = "npg", "AAAS" = "aaas", "NEJM" = "nejm",
                       "Lancet" = "lancet", "JAMA" = "jama")
 
 # run java ----------------------------------------------------------------
 java_res <- getToolJsonPara(json_file)
-cmd <- java_res[1]
-args <- c(java_res[2], java_res[3])
+# cmd <- java_res[1]
+# args <- c(java_res[2], java_res[3])
+# db_file <- java_res[4]
+
+java_path <- java_res[1]
+jar_path <- java_res[3]
 db_file <- java_res[4]
+
 # Enable asynchronous execution
 plan(multisession)  
 
@@ -158,24 +163,7 @@ ui <- dashboardPage(
             column(6,textInput("dashO", "Type Output directory:", value = "."))
           )
         ),
-        
-        # run java ----------------------------------------------------------------
-        box(
-          title = " | Run CalculationMode jar script",
-          width = 12,
-          solidHeader = TRUE,
-          status = "primary",
-          icon = icon("play"),
-          fluidRow(
-            column(4, actionButton("run_java", "Start analysis")),
-            #column(6, actionButton("stop_java", "Stop script"))
-            # column(4,textOutput("static_text")),
-            column(4,textOutput("statusText"))
-            # column(4,verbatimTextOutput("status"))
-          )
-        ),
-        
-        
+   
         # optional parameters -----------------------------------------------------
         box(
           title = " | Optional parameters",
@@ -184,11 +172,12 @@ ui <- dashboardPage(
           status = "primary",
           icon = icon("wrench"),
           collapsible = TRUE,
-          collapsed = TRUE,
+          collapsed = FALSE,
           fluidRow(
             column(3, selectInput("dashA", "Choose a analysis type", 
                                   choices = c("transcript", "exon"))),
             column(3, uiOutput("dynamic_ui")), # dashB
+            
             column(6, numericInput("dashF", "Input the flanking region size:", 
                                    value = 2000, min = 1, max = 3000))
           ),
@@ -219,11 +208,30 @@ ui <- dashboardPage(
                                    value = 0, min = 0, max = 1)),
             column(3, numericInput("dashCZ", "Gene chunk size", 
                                    value = 100, min = 0, max = 1000)),
-            column(6, selectInput("dashD", "Reference sequence database", 
-                                  choices = c("RefSeq")))
+            column(6, textInput("dashCP", "System configuration path", 
+                                value = "NGSViz_setting.json"))
           )
-        ) # end for box
+        ), # end for box
+        
+        # run java ----------------------------------------------------------------
+        box(
+          title = " | Run CalculationMode jar script",
+          width = 12,
+          solidHeader = TRUE,
+          status = "primary",
+          icon = icon("play"),
+          fluidRow(
+            column(4, actionButton("run_java", "Start analysis")),
+            #column(6, actionButton("stop_java", "Stop script"))
+            # column(4,textOutput("static_text")),
+            column(4,textOutput("statusText"))
+            # column(4,verbatimTextOutput("status"))
+          )
+        )# end for box
+        
       ), # CalculationMode end
+      
+      
       
       # CoveragePlot --------------------------------------------------------------------
       tabItem(
@@ -296,12 +304,13 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
-  # initial state of run java script
+  # # initial state of run java script
   run_status <- reactiveVal("Ready to run")
-  # Rendering status text
+  
+  # # Rendering status text
   output$statusText <- renderText({
     # When the run_status changes, this output will automatically update.
-    run_status() 
+    run_status()
   })
   
   # shared value
@@ -315,112 +324,38 @@ server <- function(input, output, session) {
                 choices = result)
   })
   
-  # output$static_text <- renderText({
-  #   "\nRunning status: "
-  # })
-  
-  # # Display the selected value
-  # output$selected_value <- renderText({
-  #   paste("You selected:", input$dashB)
-  # })
 
 # Run Java ----------------------------------------------------------------
-  rv <- reactiveValues(
-    process = NULL,
-    running = FALSE,
-    start_time = NULL
-  )
   observeEvent(input$run_java, {
+    # Retrieve the value of the dashB parameter currently selected by the user.
+    selected_dashB <- input$dashB
+    req(selected_dashB)
+    print("Get the parameter")
+    print(sprintf("Select the dasb is %s", selected_dashB))
     # Step 1: Button is clicked, update status to "Running"
     run_status("Running...")
     # Disable button, prevent repeated clicks
     # disable("run_java")
-    req(!rv$running)
-    para_list <- list(dashG=input$dashG, dashR=input$dashR,
-      dashI=input$dashI, dashO=input$dashO, dashX=input$dashX, dashT=input$dashT,
-      dashA=input$dashA, dashB=input$dashB, dashF=input$dashF, dashN=input$dashN,
-      dashRB=input$dashRB, dashS=input$dashS, dashM=input$dashM, dashCZ=input$dashCZ,
-      dashMQ=input$dashMQ, dashFL=input$dashFL, dashSS=input$dashSS, dashP=input$dashP,
-      dashD=input$dashD
+    # req(!rv$running)
+    para_list <- list(
+      G=input$dashG, R=input$dashR, I=input$dashI,
+      O=input$dashO, X=input$dashX, "T"=input$dashT,
+      A=input$dashA, B=selected_dashB, "F"=input$dashF, 
+      N=input$dashN, RB=input$dashRB, S=input$dashS,
+      M=input$dashM, CZ=input$dashCZ, MQ=input$dashMQ, 
+      FL=input$dashFL, SS=input$dashSS, P=input$dashP,
+      CP=input$dashCP
                       )
+
+    excution_res <- execute_ngsviz_jar(java_path, jar_path, para_list)
     
-    cat("check input parameters!\n")
-    if (is.null(input$dashI) || input$dashI == "") {
-      showNotification("Please input the path of bam/txt file!", type = "error")
-      return()
-    }else{
-      if(!file.exists(input$dashI)){
-        showNotification("Please input the path of output directory!", type = "error")
-      }
-    }
-    
-    if (is.null(input$dashO) || input$dashO == "") {
-      showNotification("You must enter the value of dashO!", type = "error")
-      return()
-    }
-    
-    commond_args <- generateJavaCommand(para_list)
-    # # Display input parameters
-    # output$result_para <- renderText({
-    #   paste0("The input parameter is :\n")
-    #   paste(getJavaParameter(para_list))
-    # })
-    
-    # build the command
-    cat("Prepare to run java script!\n")
-    args <- c(args, commond_args)
-    
-    # Update status to running
-    # output$status <- renderText({
-    #   "The program is running...."
-    # })
-    # log file
-    log_file <- file.path(input$dashO, log_name)
-    # Clear old files
-    if(file.exists(log_file)) file.remove(log_file)
-    tail_args <- c(">", log_file, "2>&1", "&& echo 'PROCESS_COMPLETED' ")
-    args <- c(args, tail_args)
-    # Run the jar asynchronously
-    rv$running <- TRUE
-    rv$start_time <- Sys.time()
-    
-    future({
-      cat("Start running java script to calculate the coverage!\n")
-      system2(cmd, args) #, stdout = TRUE, stderr = TRUE
-      print(cmd)
-      print(args)
-    }) %...>% 
-      {
-        rv$running <- FALSE
-      } %...!% 
-      {
-        rv$running <- FALSE
-        showNotification("Execution error!", type = "error")
-      }
+    print(excution_res)
     
     run_status("Operation completed")
     print("Finish the analysis!")
 
-  }) # end for observeEvent
+  }) # end for observeEvent Java run
   
-  
-  # # stop 
-  # observeEvent(input$stop_java, {
-  #   if(rv$running && !is.null(rv$process)){
-  #     tools::pskill(rv$process$get_pid())
-  #     rv$running <- FALSE
-  #   }
-  # })
-  
-  # Display status information
-  output$status <- renderText({
-    if(rv$running){
-      elapsed <- difftime(Sys.time(), rv$start_time, units = "secs")
-      paste("Running... Time elapsed:", round(elapsed), "s")
-    } else {
-      "Ready state"
-    }
-  })
 
 # Run plot Coverage -------------------------------------------------------
 

@@ -129,6 +129,7 @@ public class MainCalculator extends InputParameterAttributes {
             Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);
         }
         config_obj.put("OutputFile", jsonArray);
-        GenerateJsonConfig.generateJsonConfig2(output_path, config_name, config_obj);
+        String plot_json_name = "NGSViz_plotSetting.json";
+        GenerateJsonConfig.generateJsonConfig2(output_path, plot_json_name, config_obj);
     }
 }

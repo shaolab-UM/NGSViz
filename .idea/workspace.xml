@@ -6,35 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_setting.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_setting.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/modules/Home.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/modules/aboutUS.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/modules/calculation.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/modules/tutorial.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/modules/visualization.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/.Rhistory" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/R/plot/未命名.R" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/R/plot/未命名.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/R/utils/未命名.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/Viz.Rproj" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/Viz.Rproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/app.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hesc.H3k27me3.1M__AverageCoverage__average_coverage_matrix.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hesc.H3k27me3.1M__AverageCoverage__coverage_matrix_heatmap.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hesc.H3k4me3.1M_sem.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/aboutUS.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/aboutUS.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/heatmap.R" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/plot/averagePlot.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/averagePlot.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/mainPlot.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/mainPlot.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/processCalculateParameters.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processCalculateParameters.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/processJSON.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processJSON.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" afterPath="$PROJECT_DIR$/main.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ConfigReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ConfigReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/JsonConfigPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/JsonConfigPath.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/mergeDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/mergeDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/custom.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/GeneratePlotParasJson.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +166,7 @@
       <workItem from="1740745125128" duration="5118000" />
       <workItem from="1740970008370" duration="1566000" />
       <workItem from="1747034621762" duration="18396000" />
-      <workItem from="1747139848971" duration="1592000" />
+      <workItem from="1747139848971" duration="15290000" />
     </task>
     <servers />
   </component>
