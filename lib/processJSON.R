@@ -1,31 +1,31 @@
 
 # process the calculationMode result json
-getCalcuJsonRes <- function(json_file_path){
-  json_data <- jsonlite::fromJSON(json_file_path)
-  # file_names <- basename(json_data$OutputFile$heatmapDataFile) 
-  # df <- data.frame(file_path = file_names, stringsAsFactors = FALSE)
-  # sample_df <- df %>%
-  #   separate(file_path, into = c("sampleName", "group", "suffix"), sep = "__")
-  # uniq_sample <- sample_df$sampleName[!duplicated(sample_df)]
-  plot_paras <- list(
-                     "middle_point" = json_data$plot_parameters$middle_datapoints,
-                     "flank_point" = json_data$plot_parameters$flanking_region_datapoints,
-                     "sample_list" = json_data$plot_parameters$sample_list,
-                     "plot_title" = json_data$plot_parameters$plot_title,
-                     "num_datapoints"=json_data$plot_parameters$num_datapoints+1,
-                     "sub_gene_list"=json_data$basis_parameters$gene_list,
-                     "interval_type"=json_data$coverage_calculator$interval_type,
-                     "region_labels" = json_data$coverage_calculator$region_labels,
-                     "flank_size" = json_data$coverage_calculator$flank_size,
-                     "output_name"=json_data$mandatory_parameters$output_name
-                  )
-  # res <- list(
-  #   "uniq_sample" = uniq_sample,
-  #   "sample_df" = sample_df,
-  #   "plot_paras" = plot_paras
-  # )
-  return(plot_paras)
-}
+# getCalcuJsonRes <- function(json_file_path){
+#   json_data <- jsonlite::fromJSON(json_file_path)
+#   # file_names <- basename(json_data$OutputFile$heatmapDataFile) 
+#   # df <- data.frame(file_path = file_names, stringsAsFactors = FALSE)
+#   # sample_df <- df %>%
+#   #   separate(file_path, into = c("sampleName", "group", "suffix"), sep = "__")
+#   # uniq_sample <- sample_df$sampleName[!duplicated(sample_df)]
+#   plot_paras <- list(
+#                      "middle_point" = json_data$plot_parameters$middle_datapoints,
+#                      "flank_point" = json_data$plot_parameters$flanking_region_datapoints,
+#                      "sample_list" = json_data$plot_parameters$sample_list,
+#                      "plot_title" = json_data$plot_parameters$plot_title,
+#                      "num_datapoints"=json_data$plot_parameters$num_datapoints+1,
+#                      "sub_gene_list"=json_data$basis_parameters$gene_list,
+#                      "interval_type"=json_data$coverage_calculator$interval_type,
+#                      "region_labels" = json_data$coverage_calculator$region_labels,
+#                      "flank_size" = json_data$coverage_calculator$flank_size,
+#                      "output_name"=json_data$mandatory_parameters$output_name
+#                   )
+#   # res <- list(
+#   #   "uniq_sample" = uniq_sample,
+#   #   "sample_df" = sample_df,
+#   #   "plot_paras" = plot_paras
+#   # )
+#   return(plot_paras)
+# }
 
 # generate the java running environment
 getToolJsonPara <- function(json_file){
