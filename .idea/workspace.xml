@@ -6,17 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSVir_running_config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz_plotSetting.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/.Rhistory" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/heatmap.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/averagePlot.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/averagePlot.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/processCalculateParameters.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processCalculateParameters.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/processJSON.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processJSON.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" afterPath="$PROJECT_DIR$/main.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/GeneratePlotParasJson.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cv23v2no7p5g856g25sg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_backup_20250518.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_backup_20250519.R" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +161,7 @@
       <workItem from="1740745125128" duration="5118000" />
       <workItem from="1740970008370" duration="1566000" />
       <workItem from="1747034621762" duration="18396000" />
-      <workItem from="1747139848971" duration="15290000" />
+      <workItem from="1747139848971" duration="16335000" />
     </task>
     <servers />
   </component>
