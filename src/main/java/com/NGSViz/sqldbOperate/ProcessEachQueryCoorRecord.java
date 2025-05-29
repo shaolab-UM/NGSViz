@@ -8,6 +8,7 @@ import com.NGSViz.coverageCalculator.DataScaler;
 import htsjdk.samtools.util.Interval;
 import com.NGSViz.sqldbOperate.exonMode.CoverageExonSubset;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
+import htsjdk.samtools.SamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,8 +30,106 @@ public class ProcessEachQueryCoorRecord {
         private static int flank_size;
         private static Interval interval_range;
 
+    public static double[] processRecord(Map<String, Object> queryDB_record, String bam_file_path,
+                                             String chr_name, boolean paired_mode) {
+        System.out.println("--- Start processing queryDB region record! ---");
+        // genome coordinate information
+        String query_strand = (String) queryDB_record.get("strand");
+        String record_name = (String) queryDB_record.get("record_name");
+        int start_pos = (int)queryDB_record.get("start");
+        int end_pos = (int)queryDB_record.get("end");
+        // get the exon tid name
+        String[] parts = record_name.split(":");
+        String tid_name = parts.length > 1 ? parts[1] : "";
 
-        public static List<Double> processRecord(Map<String, Object> queryDB_record, String bam_file_path,
+        // config code need to change when flank_factor exist
+        if (flank_factor > 0){
+            System.out.println("Processing the flank size with flanking factor: " + flank_factor);
+            if(analysis_type.equals("exon")){
+                // exon specific
+                double calculate_res = ExonModelData.getEnstExonWidth(tid_name)*flank_factor;
+                flank_size = (int) calculate_res;
+            } else {
+                double calculate_res = (end_pos - start_pos + 1)*flank_factor;
+                flank_size = (int) calculate_res;
+            }
+        } else {
+            flank_size = flanking_size;
+        }
+        System.out.println("flank_size is : " + flank_size);
+        // Specify the genome interval range to calculate the coverage
+        // process the start and end position
+        if(interval_type.equals("point_interval")){
+            // point interval
+            System.out.println("--- Performing point interval analysis mode for chipseq! ---");
+            int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
+            System.out.println("The middle point is " + middle_point);
+            // Specify the genome interval range to calculate the coverage
+            interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
+            System.out.println("--- The interval range is: " + interval_range);
+
+        } else {
+            if(analysis_type.equals("exon")){
+                // RNA-seq
+                System.out.println("--- Performing exon mode! ---");
+                start_pos = ExonModelData.getEnstStart(tid_name);
+                end_pos = ExonModelData.getEnstEnd(tid_name);
+            } else {
+                // broad interval
+                System.out.println("--- Performing broad interval analysis mode for chipseq! ---");
+                start_pos = (int) queryDB_record.get("start");
+                end_pos = (int) queryDB_record.get("end");
+            }
+            interval_range = QueryGenomeRange.getQueryBamGranges(chr_name,
+                    start_pos, end_pos, flank_size);
+        }
+        // calculate the physical coverage for each query region
+        System.out.println("--- Starting calculate physical coverage for interval: " + interval_range);
+        ArrayList<Integer> physical_coverage =
+                PhysicalCoverageCalculator.calculatePhysicalCoverage(bam_file_path, interval_range,
+                        query_strand, paired_mode);
+
+        // Filter transcripts whose chromosomes do not match bam file.
+        if(analysis_type.equals("exon")){
+            int query_range_start = interval_range.getStart();
+            int query_range_end = interval_range.getEnd();
+            // integrate exon coverage
+            physical_coverage = CoverageExonSubset.getCoverageExonSubset(physical_coverage, tid_name,
+                    query_range_start, query_range_end);
+        }
+
+        // remove the buffers from the coverage
+        physical_coverage = TrimBuffer.trimBuffer(physical_coverage, buf_size);
+        // scale the coverage into the data point for plot
+        double[] coverage_scaled = DataScaler.getCoverageScaled(physical_coverage, scaler_method, flank_size);
+        // if strand is `-` , reverse the coverage
+        if(query_strand.equals("-")){
+            System.out.println("query strand: " + query_strand);
+            System.out.println("reverse the scaled coverage. " );
+            reverseDoubleArray(coverage_scaled);
+        }
+        // (done in the spline method) Floor negative values which are caused by spline.
+        System.out.println(coverage_scaled);
+        System.out.println("finishing record: " + queryDB_record);
+        return coverage_scaled;
+    }
+
+    public static void reverseDoubleArray(double[] array) {
+        if (array == null || array.length <= 1) {
+            return;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            double temp = array[left];
+            array[left] = array[right];
+            array[right] = temp;
+            left++;
+            right--;
+        }
+    }
+
+        /*public static List<Double> processRecord2(Map<String, Object> queryDB_record, String bam_file_path,
                                                  String chr_name, boolean paired_mode) {
             System.out.println("--- Start processing queryDB region record! ---");
             // genome coordinate information
@@ -112,7 +211,7 @@ public class ProcessEachQueryCoorRecord {
             System.out.println(coverage_scaled);
             System.out.println("finishing record: " + queryDB_record);
             return coverage_scaled;
-        }
+        }*/
         // identify the middle point coordinate for the point interval of query gene
         private static int getMiddlePointPos(int start_pos, int end_pos, String strand) {
             int middle_point;

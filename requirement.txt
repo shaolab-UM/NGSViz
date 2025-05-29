@@ -1,0 +1,2 @@
+java 22
+Conda install -c conda-forge openjdk=22

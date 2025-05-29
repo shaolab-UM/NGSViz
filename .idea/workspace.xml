@@ -6,12 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSVir_running_config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_plotSetting.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz_setting.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_setting.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/.Rhistory" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cv23v2no7p5g856g25sg.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_backup_20250518.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_backup_20250519.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +32,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -47,15 +55,17 @@
     "Application.mergeDB.executor": "Run",
     "Maven.NGSViz [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/bencheye/myProj/ngsPlot/NGSViz",
+    "last_opened_file_path": "/Users/benche/myProj/ngsPlot/NGSViz",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.NGSViz.executor": "Run"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -63,7 +73,7 @@
       <recent name="com.NGSVir" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.NGSViz">
+  <component name="RunManager" selected="应用程序.NGSViz">
     <configuration name="GeneratePlotParasJson" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.GeneratePlotParasJson" />
       <module name="NGSVir" />
@@ -92,7 +102,7 @@
     </configuration>
     <configuration name="NGSViz" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.NGSViz" />
-      <module name="NGSVir" />
+      <module name="NGSViz" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.NGSViz.*" />
@@ -131,19 +141,15 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.NGSViz" />
-        <item itemvalue="Application.GeneratePlotParasJson" />
-        <item itemvalue="Application.mergeDB" />
-        <item itemvalue="Application.ReadTextFile" />
-        <item itemvalue="Application.JsonConfigPath" />
+        <item itemvalue="应用程序.NGSViz" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.300" />
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.300" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -162,6 +168,7 @@
       <workItem from="1740970008370" duration="1566000" />
       <workItem from="1747034621762" duration="18396000" />
       <workItem from="1747139848971" duration="16335000" />
+      <workItem from="1748394283561" duration="24121000" />
     </task>
     <servers />
   </component>

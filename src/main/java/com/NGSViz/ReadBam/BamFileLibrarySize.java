@@ -27,14 +27,16 @@ public class BamFileLibrarySize {
         System.out.println("The library size of this bam file is : " + librarySize);
         return librarySize;
     }
-    public static List<Double> bamSizeNormalization(List<Double> integer_list,
+    public static double[] bamSizeNormalization(double[] coverage_scaled,
                                                     long library_size)
     {
-        List<Double> result_list = new ArrayList<>();
+        double[] result_list = new double[coverage_scaled.length];
         // normalize to RPM
-        for (Double num : integer_list) {
-            double result = (double) num / library_size * 1e6;
-            result_list.add(result);
+        for (int i = 0; i < coverage_scaled.length; i++) {
+            double num = coverage_scaled[i];
+            // num / library_size * 1e6
+            double result = num / library_size * 1_000_000.0;
+            result_list[i] = result;
         }
         return result_list;
     }

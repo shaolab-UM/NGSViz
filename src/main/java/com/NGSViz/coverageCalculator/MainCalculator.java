@@ -72,7 +72,14 @@ public class MainCalculator extends InputParameterAttributes {
             // coverage_scaled_matrix is data matrix for heatmap
             //HashMap<String, Object> mat_res = EachGeneRegionProcess.processEachQueryRegion(bam_file, query_gene_list, paired_mode);
 
-            HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene2(bam_file, query_gene_list, paired_mode);
+
+
+            // !!! Start of Modification !!!
+            HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
+            // !!! End of Modification !!!
+            //HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene2(bam_file, query_gene_list, paired_mode);
+
+
             //HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
             List<String> row_names = (List<String>) mat_res.get("row_names");
             double[][] coverage_scaled_matrix = (double[][]) mat_res.get("coverage_matrix");
@@ -81,7 +88,7 @@ public class MainCalculator extends InputParameterAttributes {
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
                 // bkg_coverage_scaled_matrix
-                HashMap<String, Object> bkg_mat_res = EachGeneRegionProcess.processEachQueryRegion(bam_file, query_gene_list, paired_mode);
+                HashMap<String, Object> bkg_mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
                 double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("coverage_matrix");
                 // libsize
                 // get the library size of bam file
