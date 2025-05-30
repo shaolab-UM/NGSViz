@@ -173,6 +173,33 @@ buildDBMain <- function(gtf_file, DB_name, species, file_name=NULL){
   constructDB(gtf_name_list, DB_name, default_tbl, ucsc_df, species)
 }
 
+addDefaultTid <- function(gtf_file, DB_name){
+  gtf_name_list <- extractGTFName(gtf_file)
+  species <- strsplit(gtf_file, "/")[[1]][2]
+  genome_version <- gtf_name_list[1]
+  db_path <- sprintf("DB/%s/NGSViz_%s_RefSeq.db", species, genome_version)
+  con <- dbConnect(RSQLite::SQLite(), dbname = db_path)
+  query_key <- sprintf("SELECT * FROM %s_RefSeq", genome_version)
+  print(sprintf("Query key is : %s", query_key))
+  tab_res <- dbGetQuery(con, query_key)
+  tab_res["DefaultChoose"] <- 0
+  result_df <- tab_res %>%
+    filter(type == "transcript") %>%
+    group_by(gname) %>%
+    slice_max(n = 1, order_by = width, with_ties = FALSE) %>%
+    ungroup()
+  tab_res$DefaultChoose[tab_res$type == "transcript" & (tab_res$tid %in% result_df$tid)] <- 1
+  # default tabel
+  default_tbl <- buildDefaultTbl(gtf_name_list, DB_name, species)
+  name_prefix <- paste(gtf_name_list[1], DB_name, sep = '_')
+  # constructDB
+  RSQLite::dbWriteTable(con, name_prefix, tab_res, 
+                        overwrite = TRUE, row.names = FALSE)
+  # Close database connection
+  RSQLite::dbDisconnect(con)
+}
+
+
 
 check_and_install_package('rtracklayer')
 check_and_install_package('RSQLite')
@@ -181,75 +208,92 @@ library(rtracklayer)
 library(dplyr)
 library(biomaRt)
 #proj_path <- '/Users/bencheye/myProj/ngsPlot/DB'
-proj_path <- "/Users/bencheye/myProj/ngsPlot/DB"
+proj_path <- "/Users/benche/myProj/ngsPlot/DB"
 setwd(proj_path)
 DB_name <- 'RefSeq'
 
 # human
 species <- "Homo_sapiens"
-# mm39
+# hg38
 gtf_file <- "gtf/Homo_sapiens/hg38/hg38.ncbiRefSeq.gtf"
 file_name <- "gtf/Homo_sapiens/hg38/refseq_element.bed"
 buildDBMain(gtf_file, DB_name, species, file_name=file_name)
+addDefaultTid(gtf_file, DB_name)
 # t2t
 gtf_file <- "gtf/Homo_sapiens/t2ths1/hs1.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 # hg19
 gtf_file <- "gtf/Homo_sapiens/hg19/hg19.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
+
 
 # Mus_musculus
 species <- "Mus_musculus"
 # mm39
 gtf_file <- "gtf/Mus_musculus/mm39.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species, file_name=file_name)
 
 # mm10 -ucsc error
 gtf_file <- "gtf/Mus_musculus/mm10/mm10.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 file_name <- "gtf/Mus_musculus/mm10/RefSeq_Func_Elems.txt"
 buildDBMain(gtf_file, DB_name, species)
 # mm9
 gtf_file <- "gtf/Mus_musculus/mm9.refGene.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 
 # Papio
 species <- "Papio"
 # mm39
 gtf_file <- "gtf/Papio/mm39.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species, file_name=file_name)
 
 # Danio_rerio
 species <- "Danio_rerio"
 # danRer11
 gtf_file <- "gtf/Danio_rerio/danRer11.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 gtf_file <- "gtf/Danio_rerio/danRer10.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 gtf_file <- "gtf/Danio_rerio/danRer7.refGene.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 
 # Drosophila_melanogaster
 species <- "Drosophila_melanogaster"
 # danRer11
 gtf_file <- "gtf/Drosophila_melanogaster/dm6.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 gtf_file <- "gtf/Drosophila_melanogaster/dm3.refGene.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 
 # Felis_catus
 species <- "Felis_catus"
 # danRer11
 gtf_file <- "gtf/Felis_catus/felCat9.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 gtf_file <- "gtf/Felis_catus/felCat8.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 gtf_file <- "gtf/Felis_catus/felCat5.refGene.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 
 # Canis_familiaris
 species <- "Canis_familiaris"
 # danRer11
 gtf_file <- "gtf/Canis_familiaris/canFam6.ncbiRefSeq.gtf"
+addDefaultTid(gtf_file, DB_name)
 buildDBMain(gtf_file, DB_name, species)
 
 
@@ -257,14 +301,14 @@ buildDBMain(gtf_file, DB_name, species)
 # db_info
 db_file <- 'DB/ngsplot2_Rattus_norvegicus_ensembl_mRatBN7_2.db'
 db_file <- 'DB/ngsplot2_Mus_musculus_ensembl_GRCm38_102.db'
-db_file <- 'DB/Homo_sapiens/NGSViz_hg38_RefSeq.db'
+db_file <- 'DB/Homo_sapiens/NGSViz_hg19_RefSeq.db'
 con <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = db_file)
 # get the tables of DB
 dbListTables(con)
 # Close database connection
 query_key <- "SELECT * FROM Rattus_norvegicus_ensembl_mRatBN7_2"
-query_key <- "SELECT * FROM Mus_musculus_ensembl_GRCm38_102"
-query_key <- "SELECT * FROM hg38_RefSeq"
+query_key <- "SELECT * FROM defaultTbl"
+query_key <- "SELECT * FROM hg19_RefSeq"
 results <- dbGetQuery(con, query_key)
 #RSQLite::dbDisconnect(con)
 query_key <- "SELECT * FROM defaultTbl"

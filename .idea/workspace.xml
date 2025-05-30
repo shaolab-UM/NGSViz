@@ -5,18 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/.Rhistory" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_setting.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_setting.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/.Rhistory" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/buildRefDB.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/buildRefDB.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetIntervalType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetIntervalType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/DBAtribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/DBAtribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/GetRefDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/GetRefDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +54,7 @@
     "Application.NGSViz.executor": "Run",
     "Application.ReadTextFile.executor": "Run",
     "Application.mergeDB.executor": "Run",
+    "Maven.NGSViz [install].executor": "Run",
     "Maven.NGSViz [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -64,8 +66,10 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings",
     "vue.rearranger.settings.migration": "true",
-    "应用程序.NGSViz.executor": "Run"
+    "应用程序.NGSViz.executor": "Run",
+    "应用程序.ReadTextFile.executor": "Run"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -115,7 +119,7 @@
     </configuration>
     <configuration name="ReadTextFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.ReadTextFile" />
-      <module name="NGSVir" />
+      <module name="NGSViz" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.NGSViz.utils.*" />
@@ -142,6 +146,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="应用程序.NGSViz" />
+        <item itemvalue="应用程序.ReadTextFile" />
       </list>
     </recent_temporary>
   </component>
@@ -168,7 +173,7 @@
       <workItem from="1740970008370" duration="1566000" />
       <workItem from="1747034621762" duration="18396000" />
       <workItem from="1747139848971" duration="16335000" />
-      <workItem from="1748394283561" duration="24121000" />
+      <workItem from="1748394283561" duration="35899000" />
     </task>
     <servers />
   </component>

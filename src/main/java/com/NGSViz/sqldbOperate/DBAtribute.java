@@ -20,7 +20,7 @@ public class DBAtribute extends InputParameterAttributes {
     public static Statement statement = null;
 
     public static Statement initialDB() {
-        System.out.println("--- Link the DB path is: " + DATABASE_URL);
+        //System.out.println("--- Link the DB path is: " + DATABASE_URL);
         try {
             connection = DriverManager.getConnection(DATABASE_URL);
             statement = connection.createStatement();

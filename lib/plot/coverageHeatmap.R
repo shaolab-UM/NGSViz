@@ -167,6 +167,7 @@ coverageHeatmap <- function(sorted_df, plot_paras, bg_col = "#Cb648b"){
   axis_name <- names(axis_pos)
   # positon of vertical reference line
   line_pos <- axis_pos[-c(1, length(axis_pos))]
+  #print(line_pos)
   split_num <- length(unique(sorted_df$Split))
   # process the Outlier
   # Calculate the 0th percentile (minimum value) and the 99th percentile
@@ -237,6 +238,9 @@ averageCovPlot <- function(sorted_df, plot_paras, sample_name){
     summarise(Density = mean(Coverage, na.rm = TRUE), .groups = 'drop')
   axis_pos <- getXAxisCoor(plot_paras)
   line_pos <- axis_pos[-c(1, length(axis_pos))]
+  line_pos[1] <- line_pos[1]-1
+  line_pos[2] <- line_pos[2]+1
+  print(line_pos)
   split_num <- length(unique(sorted_df$Split))
   # plot the average plot
   ptop <- ggplot(mat_df) +
@@ -300,7 +304,7 @@ plotMain <- function(plot_paras){
 # setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
 # source("lib/processJSON.R")
 # #json_file_path <- plot_para_file
-# plot_para_file <- "/Users/benche/myProj/ngsPlot/Output/NGSViz_plotSetting.json"
+# plot_para_file <- "/Users/benche/myProj/ngsPlot/Output/Test/NGSViz_plotSetting.json"
 # plot_paras <- getPlotJsonParas(plot_para_file)
 # # running_paras <- getCalcuJsonRes(json_file_path)
 # p <- plotMain(plot_paras)

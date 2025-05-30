@@ -8,11 +8,54 @@
 
 ## Quick Start
 
+You can filter the transcripts of interest based on Gene name or NCBI's Ref seq ID.
+
+### Input file
+
+#### Single file input
+
+parameter `-I` is provided to input the **absolute path** for preparing to analyze bam files.
+
+parameter `-X` is provided to input the **absolute path** for preparing to analyze  the gene set of interest (Optional). The default value is `all`, indicating the selection of all genes in the database.
+
+parameter `-T` is provided to input the **analysis title**.
+
+#### Multi-file input
+
+Support input of multiple file paths specified through text files (txt, csv), format as follows:
+
+The elements need to be input in the specified order, with the first column used to specify the sample name, the second column used to specify the path of the bam file, the third column used to specify the path of the file containing the list of genes of interest. If it is expected to analyze all genes based on the system's default selection, input "all". Group can specify the grouping of samples, and Title specifies the title used for display during visualization.
+
+| sampleName | BamFile              | GeneListFile | Group | Title    |
+| ---------- | -------------------- | ------------ | ----- | -------- |
+| H3k27me3   | hesc.H3k27me3.1M.bam | all          | High  | H3k27me3 |
+| H3k27me3   | hesc.H3k4me3.1M.bam  | all          | Med   | H3k27me3 |
+
 
 
 ## Database
 
 ### Database structure
+
+The database contains a `defaultTbl` table and multiple installed database tables CoordinateTblName, formatted as: **{genome_version}_RefSeq**, such as: `hg19_RefSeq`.
+
+The table `defaultTbl` stores information about the installed database and some default parameters that the program can use. Specifically:
+
+| Species      | CoordinateTblName | DB     | Genome | Region   | AnalysisType | Biotype        | PointLab       | FlankSize |
+| ------------ | ----------------- | ------ | ------ | -------- | ------------ | -------------- | -------------- | --------- |
+| Homo_sapiens | hg19_RefSeq       | RefSeq | hg19   | exon     | exon         | protein_coding | Acceptor-Donor | 500       |
+| Homo_sapiens | hg19_RefSeq       | RefSeq | hg19   | genebody | transcript   | protein_coding | TES            | 2000      |
+| Homo_sapiens | hg19_RefSeq       | RefSeq | hg19   | tss      | transcript   | protein_coding | TSS            | 2000      |
+| Homo_sapiens | hg19_RefSeq       | RefSeq | hg19   | tes      | transcript   | protein_coding | TSS-TES        | 2000      |
+
+The `CoordinateTblName` contains the program to obtain the interested genomic elements and their coordinate information. Among them, `DefaultChoose` is used for the default analysis case where a gene contains multiple transcripts, and it defaults to the first longest transcript.
+
+| chrom | start     | end       | width | strand | type       | biotype        | gname | tid          | DefaultChoose |
+| ----- | --------- | --------- | ----- | ------ | ---------- | -------------- | ----- | ------------ | ------------- |
+| chr1  | 249200434 | 249213345 | 12912 | +      | transcript | protein_coding | PGBD2 | NM_001017434 | 1             |
+| chr1  | 249200434 | 249200541 | 108   | +      | exon       | protein_coding | PGBD2 | NM_001017434 | 0             |
+| chr1  | 249208015 | 249208078 | 64    | +      | exon       | protein_coding | PGBD2 | NM_001017434 | 0             |
+| chr1  | 249200434 | 249213345 | 12912 | +      | transcript | protein_coding | PGBD2 | NM_170725    | 0             |
 
 
 

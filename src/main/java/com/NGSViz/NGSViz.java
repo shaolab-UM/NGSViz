@@ -12,8 +12,8 @@ import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 public class NGSViz {
     public static void main(String[] args) {
         args = new String[]{
-                "-G", "hg38",
-                "-R", "tss",
+                "-G", "hg19",
+                "-R", "genebody",
                 "-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",

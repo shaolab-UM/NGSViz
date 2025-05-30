@@ -24,6 +24,8 @@ public class ProcessInputFile extends InputParameterAttributes {
                 bam_list = (List<String>) res_list.get("bam_list");
                 gene_list = (List<String>) res_list.get("gene_list");
                 analysis_title = (List<String>) res_list.get("title_list");
+                group_list = (List<String>) res_list.get("group_list");
+                sample_list = (List<String>) res_list.get("sample_list");
             }
         }else if(file_type.equals("csv")){
             Map<String, Object> res_list = ReadTextFile.readCsvConfigFile(input_file);

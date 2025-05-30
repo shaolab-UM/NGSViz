@@ -15,7 +15,7 @@ public class GetRefDB extends DBAtribute {
             initialDB();
             String query = String.format("SELECT DISTINCT CoordinateTblName FROM defaultTbl " +
                     "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
-            System.out.println("query key is: " + query);
+            //System.out.println("query key is: " + query);
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 query_refname = resultSet.getString("CoordinateTblName");
@@ -24,7 +24,7 @@ public class GetRefDB extends DBAtribute {
             System.out.println("Database error: " + e.getMessage());
         }
         System.out.println("the usage of genome coordinate database by query will be : " + query_refname);
-        System.out.println("---------");
+        //System.out.println("---------");
         exitDB();
         return query_refname;
     }
@@ -35,7 +35,7 @@ public class GetRefDB extends DBAtribute {
             initialDB();
             String query = String.format("SELECT DISTINCT Species FROM defaultTbl " +
                     "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
-            System.out.println("query key is: " + query);
+            //System.out.println("query key is: " + query);
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 species_name = resultSet.getString("Species");
@@ -44,7 +44,7 @@ public class GetRefDB extends DBAtribute {
             System.out.println("Database error: " + e.getMessage());
         }
         System.out.println("the usage of species is : " + species_name);
-        System.out.println("---------");
+        //System.out.println("---------");
         exitDB();
         return species_name;
     }
@@ -55,7 +55,7 @@ public class GetRefDB extends DBAtribute {
             initialDB();
             String query = String.format("SELECT DISTINCT CoordinateTblName FROM defaultTbl " +
                     "WHERE Genome = '%s' AND DB = '%s' ", genome, DB);
-            System.out.println("query key is: " + query);
+            //System.out.println("query key is: " + query);
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 tbl_name = resultSet.getString("CoordinateTblName");
