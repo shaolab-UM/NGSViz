@@ -16,10 +16,10 @@ public class DataPointNum extends InputParameterAttributes{
             middle_points = num_datapoints/100*40+1;
             flank_points = num_datapoints/100*30;
         }
-//        else {
-//            middle_points = num_datapoints/5+1;
-//            flank_points = num_datapoints/5*2;
-//        }
+        /* else {
+            middle_points = num_datapoints/5+1;
+            flank_points = num_datapoints/5*2;
+        }*/
         System.out.println("The number of middle point is " + middle_points);
         System.out.println("The number of flank points is " + flank_points);
     }

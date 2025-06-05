@@ -46,14 +46,16 @@ public class ProcessInputParameters extends InputParameterAttributes {
         // get the table name of genome coordinate information
         tbl_name = GetRefDB.getTblName(genome, DB_type);
 
+        // !!! Start of Modification !!!
         // get the whole coordinate
-        QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
-        List<Double> width_list = QueryWholeRegionCoordinate.width_list;
+        /*QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
+        List<Double> width_list = QueryWholeRegionCoordinate.width_list;*/
+        // !!! End of Modification !!!
+
         // get the interval type
         interval_type = SetIntervalType.setIntervalTypeValue(region_labels);
         // get data points
         DataPointNum.getDataPointNum();
-
         // generate the plot parameters json file
         // GeneratePlotParasJson.generatePlotParasJson(output_path);
         GenerateJsonConfig.generateJsonConfig(output_path, config_name);

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @author Benchen Ye
  * @create 2024-11--19:32
@@ -62,6 +63,5 @@ public class QueryWholeRegionCoordinate extends DBAtribute{
             System.out.println("Database error: " + e.getMessage());
         }
         exitDB();
-
     }
 }

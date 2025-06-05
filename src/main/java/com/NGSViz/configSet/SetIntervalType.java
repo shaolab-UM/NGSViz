@@ -18,9 +18,9 @@ public class SetIntervalType{
         } else { // if(width_median > flank_region)
             interval_type = "broad_interval";
         }
-//        else {
-//            interval_type = "mid_interval";
-//        }
+        /*else {
+            interval_type = "mid_interval";
+        }*/
         System.out.println("interval type is " + interval_type);
         return interval_type;
     };

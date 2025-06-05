@@ -5,18 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/.Rhistory" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/CoverageCalculator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageResult.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/buildRefDB.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/buildRefDB.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz-1.0-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputFile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetIntervalType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/SetIntervalType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/DBAtribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/DBAtribute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/GetRefDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/GetRefDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/TrimBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/TrimBuffer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/QueryWholeRegionCoordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/QueryWholeRegionCoordinate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/Transcript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/Transcript.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ReadTextFile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +76,10 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "MavenSettings",
     "vue.rearranger.settings.migration": "true",
+    "应用程序.GeneCoverageProcessor.executor": "Run",
     "应用程序.NGSViz.executor": "Run",
+    "应用程序.ParallelGeneDbProcessor.executor": "Run",
+    "应用程序.PhysicalCoverageCalculator.executor": "Run",
     "应用程序.ReadTextFile.executor": "Run"
   }
 }]]></component>
@@ -78,25 +89,12 @@
     </key>
   </component>
   <component name="RunManager" selected="应用程序.NGSViz">
-    <configuration name="GeneratePlotParasJson" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.GeneratePlotParasJson" />
-      <module name="NGSVir" />
+    <configuration name="GeneCoverageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.coverageCalculator.GeneCoverageProcessor" />
+      <module name="NGSViz" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.NGSViz.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="JsonConfigPath" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.JsonConfigPath" />
-      <module name="NGSVir" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.NGSViz.utils.*" />
+          <option name="PATTERN" value="com.NGSViz.coverageCalculator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -117,6 +115,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ParallelGeneDbProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.sqldbOperate.ParallelGeneDbProcessor" />
+      <module name="NGSViz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.NGSViz.sqldbOperate.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PhysicalCoverageCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.coverageCalculator.PhysicalCoverageCalculator" />
+      <module name="NGSViz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.NGSViz.coverageCalculator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ReadTextFile" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.ReadTextFile" />
       <module name="NGSViz" />
@@ -130,22 +154,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mergeDB" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.NGSViz.utils.mergeDB" />
-      <module name="NGSVir" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.NGSViz.utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="应用程序.NGSViz" />
+        <item itemvalue="应用程序.PhysicalCoverageCalculator" />
+        <item itemvalue="应用程序.GeneCoverageProcessor" />
+        <item itemvalue="应用程序.ParallelGeneDbProcessor" />
         <item itemvalue="应用程序.ReadTextFile" />
       </list>
     </recent_temporary>
@@ -173,7 +187,8 @@
       <workItem from="1740970008370" duration="1566000" />
       <workItem from="1747034621762" duration="18396000" />
       <workItem from="1747139848971" duration="16335000" />
-      <workItem from="1748394283561" duration="35899000" />
+      <workItem from="1748394283561" duration="99975000" />
+      <workItem from="1749030687592" duration="32635000" />
     </task>
     <servers />
   </component>

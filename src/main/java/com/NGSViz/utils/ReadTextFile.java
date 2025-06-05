@@ -16,7 +16,19 @@ public class ReadTextFile {
         System.out.println(readCsvConfigFile(csvFile));
     }
 
-    public static List<String> readGeneList(String file_path) {
+    public static Set<String> readGeneList(String file_path) {
+        Set<String> gene_list= new HashSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file_path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                gene_list.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gene_list;
+    }
+    public static List<String> readGeneList2(String file_path) {
         List<String> gene_list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file_path))) {
             String line;

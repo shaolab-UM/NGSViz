@@ -34,15 +34,15 @@ public class ReadRecordProcess {
         //System.out.println("The align start pos of this read is " + align_start_pos);
         // Negative Strand Flag
         boolean strand_flag = bam_record.getReadNegativeStrandFlag();
-        System.out.println("The strand flag of this read is " + strand_flag);
+        //System.out.println("The strand flag of this read is " + strand_flag);
         if (strand_flag){
             // if strand's direction is "-", adjust the start position of read
             align_start_pos = align_start_pos - frag_len + read_width;
         }
         int align_end_pos = align_start_pos + read_width;
         if (align_start_pos < query_range_start || align_end_pos > query_range_end){
-            System.out.println("The adjusted - read is not in the query range!");
-            System.out.println("The adjusted - read read is " + align_start_pos + " - " + align_end_pos);
+            //System.out.println("The adjusted - read is not in the query range!");
+            //System.out.println("The adjusted - read read is " + align_start_pos + " - " + align_end_pos);
             return Arrays.asList(0);
         }
         List<Integer> read_align_info;
@@ -65,8 +65,8 @@ public class ReadRecordProcess {
             align_start_pos = pos;
         }
         read_width = Math.abs(tlen);
-        System.out.println("The align start pos of this paired read is " + align_start_pos);
-        System.out.println("The align start pos of this paired insert size is " + read_width);
+        //System.out.println("The align start pos of this paired read is " + align_start_pos);
+        //System.out.println("The align start pos of this paired insert size is " + read_width);
         List<Integer> read_align_info;
         read_align_info = Arrays.asList(align_start_pos, read_width);
         return read_align_info;
@@ -76,7 +76,7 @@ public class ReadRecordProcess {
         boolean paired_mood = false;
         // the length of insert
         int tlen = bam_record.getInferredInsertSize();
-        System.out.println("--- the tlen is: " + tlen);
+        //System.out.println("--- the tlen is: " + tlen);
         if(tlen != 0){
             paired_mood  = true;
         }
@@ -141,10 +141,11 @@ public class ReadRecordProcess {
                 filter_res = query_strand == read_strand;
             }
         }
-        if (filter_res) {
-            System.out.println("This bam read do not pass the quality, will be filted!");
-            System.out.println("This bam read is: ");
-        }
+        /*if (filter_res) {
+            //System.out.println("This bam read do not pass the quality, will be filted!");
+            //System.out.println(record.getReadName());
+            //System.out.println("This bam read is: ");
+        }*/
         return filter_res;
     }
 }
