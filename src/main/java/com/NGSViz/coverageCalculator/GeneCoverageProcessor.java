@@ -7,11 +7,15 @@ import com.NGSViz.sqldbOperate.ProcessEachQueryCoorRecord;
 import com.NGSViz.sqldbOperate.Transcript;
 import htsjdk.samtools.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
+
+import static java.lang.System.in;
 
 
 public class GeneCoverageProcessor {
@@ -29,6 +33,29 @@ public class GeneCoverageProcessor {
         this.record_name_list = record_name_list;
     }
 
+    public static List<Set<String>> splitSet(Set<String> originalSet, int binSize) {
+        List<Set<String>> result = new ArrayList<>();
+        Set<String> currentBin = new LinkedHashSet<>();
+        int count = 0;
+
+        for (String record : originalSet) {
+            currentBin.add(record);
+            count++;
+            if (count == binSize) {
+                result.add(currentBin);
+                currentBin = new LinkedHashSet<>();
+                count = 0;
+            }
+        }
+
+        // Add the last bin
+        if (!currentBin.isEmpty()) {
+            result.add(currentBin);
+        }
+
+        return result;
+    }
+
     // Chunk the list of query genes.
     public static List<Set<String>> partitionGenes(Set<String> genes, int batchSize) {
         Iterator<String> iterator = genes.iterator();
@@ -44,6 +71,24 @@ public class GeneCoverageProcessor {
         }
         return batches;
     }
+
+    /**
+     * Builds a coverage matrix from a BAM file for specified genomic regions.
+     * Returns a map containing record names and normalized coverage matrix.
+     */
+
+    public static List<List<String>> partition(Set<String> set, int numGroups) {
+        List<List<String>> partitions = new ArrayList<>();
+        List<String> list = new ArrayList<>(set);
+        for (int i = 0; i < numGroups; i++) {
+            partitions.add(new ArrayList<>());
+        }
+        for (int i = 0; i < list.size(); i++) {
+            partitions.get(i % numGroups).add(list.get(i));
+        }
+        return partitions;
+    }
+
 
     // Calculate the coverage matrix
     public Map<String, Object> buildCoverageMatrix() {
@@ -67,31 +112,37 @@ public class GeneCoverageProcessor {
                                 .validationStringency(ValidationStringency.SILENT)
                                 .open(new File(bam_file_path))) {
                             Transcript gene_coord = DB_GENES.get(query_record_name);
-                            if (gene_coord != null) {
-                                String chr_name = gene_coord.getChrLab();
-                                String nochr_name = gene_coord.getNoChrLab();
-                                chr_name = ReadBam.checkChromosomeInBam(bam_chromosomes_list, chr_name, nochr_name);
-                                if (chr_name != null) {
-                                    // Calculate the coverage for each queryDB region
-                                    EachCoverageResult CoverageScaled = ProcessEachQueryCoorRecord.processRecord2(
-                                            gene_coord, reader, chr_name, paired_mode);
-                                    // Normalize to RPM
-                                    CoverageScaled.bamSizeNormalization(library_size);
-                                    // Obtain gene index
-                                    int index = gene_coord.getIndex();
-                                    if (index >= 0 && index < coverage_scaled_matrix.length) {
-                                        // Write coverage data
-                                        synchronized (coverage_scaled_matrix[index]) {
-                                            System.arraycopy(CoverageScaled.getScaledCoverage(), 0,
-                                                    coverage_scaled_matrix[index], 0,
-                                                    CoverageScaled.getScaledCoverage().length);
-                                        }
-                                        // Write gene name
-                                        record_names.set(index, query_record_name);
-                                    } else {
-                                        System.err.println("Warning: the index of Gene is out of range: " + query_record_name + " - " + index);
-                                    }
+                            if (gene_coord == null) {
+                                System.err.println("Warning: No coordinates found for record: " + query_record_name);
+                                return;
+                            }
+
+                            String chr_name = gene_coord.getChrLab();
+                            String nochr_name = gene_coord.getNoChrLab();
+                            chr_name = ReadBam.checkChromosomeInBam(bam_chromosomes_list, chr_name, nochr_name);
+                            if (chr_name == null) {
+                                System.err.println("Warning: Chromosome not found in BAM for record: " + query_record_name);
+                                return;
+                            }
+
+                            // Calculate the coverage for each queryDB region
+                            EachCoverageResult CoverageScaled = ProcessEachQueryCoorRecord.processRecord2(
+                                    gene_coord, reader, chr_name, paired_mode);
+                            // Normalize to RPM
+                            CoverageScaled.bamSizeNormalization(library_size);
+                            // Obtain gene index
+                            int index = gene_coord.getIndex();
+                            if (index >= 0 && index < coverage_scaled_matrix.length) {
+                                // Write coverage data
+                                synchronized (coverage_scaled_matrix[index]) {
+                                    System.arraycopy(CoverageScaled.getScaledCoverage(), 0,
+                                            coverage_scaled_matrix[index], 0,
+                                            CoverageScaled.getScaledCoverage().length);
                                 }
+                                // Write gene name
+                                record_names.set(index, query_record_name);
+                            } else {
+                                System.err.println("Warning: the index of Gene is out of range: " + query_record_name + " - " + index);
                             }
                         } catch (Exception e) {
                             throw new RuntimeException("Processing failed for " + query_record_name + ": " + e.getMessage());

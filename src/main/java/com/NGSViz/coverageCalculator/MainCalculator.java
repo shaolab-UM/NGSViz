@@ -120,7 +120,6 @@ public class MainCalculator extends InputParameterAttributes {
                     System.out.println("--- Run all DB gene list!");
                     record_name_list = GenesBInfo.getRecordName();
                     DB_GENES = GenesBInfo.getGeneMap();
-
                 } else {
                     System.out.println("--- Run subset gene list!");
                     System.out.println("subset gene list name is: " + gene_subset);

@@ -125,7 +125,7 @@ ui <- dashboardPage(
         icon = icon("chart-line"),
         startExpanded = TRUE,
         menuSubItem("CoveragePlot", tabName = "CoveragePlot", icon = icon("chart-line")),
-        menuSubItem("PCA", tabName = "PCA", icon = icon("chart-line"))
+        menuSubItem("EnrichedHeatmap", tabName = "EnrichedHeatmap", icon = icon("chart-line"))
       ),
       menuItem("Help", tabName = "Help", icon = icon("question-circle")),
       menuItem("AboutUs", tabName = "AboutUs", icon = icon("info-circle"))
@@ -147,7 +147,7 @@ ui <- dashboardPage(
         jumbotron(
           title = "Welcome to use NGSViz!",
           status = "info",
-          lead = "Calculate and visualize coverage of NGS data",
+          lead = "Exploring Signal Enrichment of Functional Elements in Genomic Regions of Interest",
           # href = "",
         )
       ),

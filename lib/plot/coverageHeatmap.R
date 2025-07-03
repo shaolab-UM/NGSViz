@@ -304,7 +304,7 @@ plotMain <- function(plot_paras){
 # setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
 # source("lib/processJSON.R")
 # #json_file_path <- plot_para_file
-# plot_para_file <- "/Users/benche/myProj/ngsPlot/Output/Test/NGSViz_plotSetting.json"
+# plot_para_file <- "/Users/benche/myProj/ngsPlot/Output/Test/ngsViz/NGSViz_plotSetting.json"
 # plot_paras <- getPlotJsonParas(plot_para_file)
 # # running_paras <- getCalcuJsonRes(json_file_path)
 # p <- plotMain(plot_paras)
