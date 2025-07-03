@@ -83,23 +83,23 @@ public class PhysicalCoverageCalculator {
     }
 
     // calculate the physical coverage for each query region
-    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path,
-                                                               Interval interval_range,
-                                                               String query_strand,
-                                                               boolean paired_mode)
+    public static int[] calculatePhysicalCoverageOptimized(String bam_file_path,
+                                                           Interval interval_range,
+                                                           String query_strand,
+                                                           boolean paired_mode)
     {
         String chr_name = interval_range.getContig();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
-        // use the MultiValueMap to save the alignment information
-        // Get the alignment results. `queryContained` conduct stricter query, only the reads fully included in the region
-        //System.out.println("Get all reads fully included in the query interval region!");
+        
         SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
         SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end);
+        
         // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;
-        // create a list (length = rangeLen, value = 0)
-        ArrayList<Integer> coverage = new ArrayList<>(Collections.nCopies(range_len, 0));
+        // create a primitive array (length = rangeLen, value = 0)
+        int[] coverage = new int[range_len]; // Automatically initialized to zeros
+        
         System.out.println("Start to calculate physical coverage for all reads in query interval region!");
         while (iterator.hasNext()) {
             SAMRecord bam_record = iterator.next();
@@ -155,7 +155,7 @@ public class PhysicalCoverageCalculator {
                     System.out.println("the coverage start position for this alignment: " + pos_start_difference);
                     //System.out.println("the width of align segment: " + align_width);
                     System.out.println("Query length for interval region is: " + range_len);
-                    coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
+                    coverage = physicalCoverageCalculateOptimized(coverage, pos_start_difference, align_width);
                 }
             }
         }
@@ -165,12 +165,37 @@ public class PhysicalCoverageCalculator {
         return coverage;
     }
 
-    // calculate the physical coverage for a reads in query range
-    // Input:
-    //   physical_coverage, physical coverage of query region
-    //   align_start_pos: the start position of read
-    //   read_width: the width of read
-    // Output: physical_coverage, the value of each the query range covered by read will add 1
+    // OPTIMIZED: calculate the physical coverage for a reads in query range using primitive array
+    public static int[] physicalCoverageCalculateOptimized(int[] physical_coverage,
+                                                          int align_start_pos,
+                                                          int read_width) {
+        if (align_start_pos < 0 || align_start_pos + read_width > physical_coverage.length) {
+            throw new IllegalArgumentException("Invalid range: align_start_pos=" + align_start_pos +
+                    ", read_width=" + read_width + ", array length=" + physical_coverage.length);
+        }
+        
+        // Direct array access - no boxing/unboxing overhead
+        for (int i = align_start_pos; i < align_start_pos + read_width; i++) {
+            physical_coverage[i]++;
+        }
+        return physical_coverage;
+    }
+    
+    // Legacy method for backward compatibility
+    public static ArrayList<Integer> calculatePhysicalCoverage(String bam_file_path,
+                                                               Interval interval_range,
+                                                               String query_strand,
+                                                               boolean paired_mode)
+    {
+        int[] coverageArray = calculatePhysicalCoverageOptimized(bam_file_path, interval_range, query_strand, paired_mode);
+        ArrayList<Integer> coverage = new ArrayList<>(coverageArray.length);
+        for (int value : coverageArray) {
+            coverage.add(value);
+        }
+        return coverage;
+    }
+    
+    // Legacy method for backward compatibility
     public static ArrayList<Integer> physicalCoverageCalculate(ArrayList<Integer> physical_coverage,
                                                         int align_start_pos,
                                                         int read_width) {
@@ -181,15 +206,9 @@ public class PhysicalCoverageCalculator {
         }
         return physical_coverage;
     }
+    
+    // Legacy method for backward compatibility
     public static int[] physicalCoverageCalculate2(int[] physical_coverage, int align_start_pos, int read_width) {
-        if (align_start_pos < 0 || align_start_pos + read_width > physical_coverage.length) {
-            throw new IllegalArgumentException("Invalid range: align_start_pos=" + align_start_pos +
-                    ", read_width=" + read_width +
-                    ", array length=" + physical_coverage.length);
-        }
-        for (int i = align_start_pos; i < align_start_pos + read_width; i++) {
-            physical_coverage[i]++;
-        }
-        return physical_coverage;
+        return physicalCoverageCalculateOptimized(physical_coverage, align_start_pos, read_width);
     }
 }

@@ -7,8 +7,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 性能监控工具类
- * 用于监控内存使用、线程状态和性能指标
+ * Performance monitoring utility class
+ * Used for monitoring memory usage, thread status and performance metrics
  */
 public class PerformanceMonitor {
     
@@ -16,7 +16,7 @@ public class PerformanceMonitor {
     private static final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
     
     /**
-     * 获取当前内存使用情况
+     * Get current memory usage information
      */
     public static MemoryInfo getMemoryInfo() {
         long heapUsed = memoryBean.getHeapMemoryUsage().getUsed();
@@ -28,7 +28,7 @@ public class PerformanceMonitor {
     }
     
     /**
-     * 检查内存使用是否超过阈值
+     * Check if memory usage exceeds threshold
      */
     public static boolean isMemoryUsageHigh(double thresholdPercent) {
         MemoryInfo info = getMemoryInfo();
@@ -37,7 +37,7 @@ public class PerformanceMonitor {
     }
     
     /**
-     * 获取线程池状态信息
+     * Get thread pool status information
      */
     public static ThreadPoolInfo getThreadPoolInfo(ThreadPoolExecutor executor) {
         return new ThreadPoolInfo(
@@ -51,33 +51,33 @@ public class PerformanceMonitor {
     }
     
     /**
-     * 打印性能监控信息
+     * Print performance monitoring information
      */
     public static void printPerformanceInfo(ThreadPoolExecutor executor) {
         MemoryInfo memoryInfo = getMemoryInfo();
         ThreadPoolInfo threadInfo = getThreadPoolInfo(executor);
         
-        System.out.println("=== 性能监控信息 ===");
-        System.out.printf("堆内存使用: %.2f MB / %.2f MB (%.1f%%)\n", 
+        System.out.println("=== Performance Monitoring Information ===");
+        System.out.printf("Heap Memory Usage: %.2f MB / %.2f MB (%.1f%%)\n", 
             memoryInfo.heapUsed / 1024.0 / 1024.0,
             memoryInfo.heapMax / 1024.0 / 1024.0,
             (double) memoryInfo.heapUsed / memoryInfo.heapMax * 100);
         
-        System.out.printf("非堆内存使用: %.2f MB / %.2f MB\n",
+        System.out.printf("Non-Heap Memory Usage: %.2f MB / %.2f MB\n",
             memoryInfo.nonHeapUsed / 1024.0 / 1024.0,
             memoryInfo.nonHeapMax / 1024.0 / 1024.0);
         
-        System.out.printf("线程池状态: 活跃=%d, 池大小=%d, 队列=%d, 已完成=%d\n",
+        System.out.printf("Thread Pool Status: Active=%d, Pool Size=%d, Queue=%d, Completed=%d\n",
             threadInfo.activeCount,
             threadInfo.poolSize,
             threadInfo.queueSize,
             threadInfo.completedTaskCount);
         
-        System.out.println("==================");
+        System.out.println("==========================================");
     }
     
     /**
-     * 内存信息类
+     * Memory information class
      */
     public static class MemoryInfo {
         public final long heapUsed;
@@ -94,7 +94,7 @@ public class PerformanceMonitor {
     }
     
     /**
-     * 线程池信息类
+     * Thread pool information class
      */
     public static class ThreadPoolInfo {
         public final int corePoolSize;
@@ -116,7 +116,7 @@ public class PerformanceMonitor {
     }
     
     /**
-     * 性能计时器
+     * Performance timer
      */
     public static class PerformanceTimer {
         private final long startTime;
@@ -130,7 +130,7 @@ public class PerformanceMonitor {
         public void stop() {
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
-            System.out.printf("操作 '%s' 耗时: %d ms\n", operationName, duration);
+            System.out.printf("Operation '%s' took: %d ms\n", operationName, duration);
         }
         
         public long getElapsedTime() {

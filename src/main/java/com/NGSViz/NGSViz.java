@@ -13,14 +13,14 @@ public class NGSViz {
     public static void main(String[] args) {
         args = new String[]{
                 "-G", "hg19",
-                "-R", "genebody",
+                "-R", "tss",
                 "-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
                 //"-R", "tss",
                 "-P", "8",
                 //"-R", "tes",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",

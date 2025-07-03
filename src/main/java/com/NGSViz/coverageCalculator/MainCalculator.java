@@ -82,15 +82,17 @@ public class MainCalculator extends InputParameterAttributes {
                     System.out.println("subset gene list name is: " + gene_subset);
                     query_gene_list = ReadTextFile.readGeneList2(gene_subset);
                 }
-                HashMap<String, Object> mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
+                
+                // Use optimized processor instead of old method
+                HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file, query_gene_list, paired_mode);
                 List<String> row_names = (List<String>) mat_res.get("row_names");
                 coverage_scaled_matrix = (double[][]) mat_res.get("coverage_matrix");
 
                 if(paired_mode){
                     // calculate background
                     System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix
-                    HashMap<String, Object> bkg_mat_res = EachGeneRegionProcess.parallelProcessEachGene(bam_file, query_gene_list, paired_mode);
+                    // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
+                    HashMap<String, Object> bkg_mat_res = OptimizedGeneProcessor.optimizedParallelProcess(paired_bam, query_gene_list, paired_mode);
                     double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("coverage_matrix");
                     // libsize
                     // get the library size of bam file
@@ -130,6 +132,7 @@ public class MainCalculator extends InputParameterAttributes {
                     DB_GENES = subDBGeneInfo.getGeneMap();
                 }
 
+                // Use optimized processor instead of old method
                 GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
                 Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
                 row_names = (List<String>) coverage_map.get("record_names");
@@ -138,10 +141,10 @@ public class MainCalculator extends InputParameterAttributes {
                 if(paired_mode){
                     // calculate background
                     System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix
-                    GeneCoverageProcessor genesBkgProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
+                    // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
+                    GeneCoverageProcessor genesBkgProcess = new GeneCoverageProcessor(paired_bam, DB_GENES, record_name_list, paired_mode);
                     Map<String, Object> bkg_mat_res = genesBkgProcess.buildCoverageMatrix();
-                    double[][] bkg_coverage_scaled_matrix = (double[][]) coverage_map.get("cov_mat");
+                    double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("cov_mat");
                     // libsize
                     // get the library size of bam file
                     SamReader bam_reader = ReadBam.getBamReader(bam_file);

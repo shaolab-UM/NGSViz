@@ -131,14 +131,14 @@ public class ReadRecordProcess {
         if (record.getReadUnmappedFlag()) {
             filter_res = true;
         }
-        // filter strand
-        if(strand_spec != "both"){
-            if(strand_spec == "same"){
+        // filter strand - OPTIMIZED: use equals() instead of ==
+        if(!"both".equals(strand_spec)){
+            if("same".equals(strand_spec)){
                 // the direction of strand is not same will be filtered (True)
-                filter_res = query_strand != read_strand;
+                filter_res = !query_strand.equals(read_strand);
             } else {
                 // the direction of strand is same will be filtered (True)
-                filter_res = query_strand == read_strand;
+                filter_res = query_strand.equals(read_strand);
             }
         }
         /*if (filter_res) {

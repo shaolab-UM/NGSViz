@@ -6,13 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/Viz/.Rhistory" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" afterPath="$PROJECT_DIR$/main.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PERFORMANCE_OPTIMIZATION_GUIDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/PERFORMANCE_OPTIMIZATION_GUIDE.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/PerformanceMonitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/PerformanceMonitor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +185,7 @@
       <workItem from="1750670193435" duration="3753000" />
       <workItem from="1750682739185" duration="6731000" />
       <workItem from="1750984216740" duration="13000" />
-      <workItem from="1750984301907" duration="605000" />
+      <workItem from="1750984301907" duration="3693000" />
     </task>
     <servers />
   </component>
