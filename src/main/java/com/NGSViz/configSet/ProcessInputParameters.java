@@ -24,15 +24,16 @@ public class ProcessInputParameters extends InputParameterAttributes {
         }
         // Parse by traversing the command line argument array.
         GetInputParameterValue.getInputParametersValue(args);
+        //
+        JsonConfigPath.getJsonConfigPath();
         if(!input_db_path.isEmpty()){
-            mergeDB.mergeDB();
+            mergeDB.merge2DB(db_path, input_db_path);
             System.out.println("Finish merging DB. Quit the program!");
             System.exit(0);
         }
         // set and print the default value for option parameters
         SetDefaultOptionParameter.setDefaultOptionParameter();
-        //
-        JsonConfigPath.getJsonConfigPath();
+
         // check whether is legal value for input parameter
         CheckLegal2InputParameter.checkLegal2InputParameter();
         // get default point label value
@@ -58,6 +59,6 @@ public class ProcessInputParameters extends InputParameterAttributes {
         DataPointNum.getDataPointNum();
         // generate the plot parameters json file
         // GeneratePlotParasJson.generatePlotParasJson(output_path);
-        GenerateJsonConfig.generateJsonConfig(output_path, config_name);
+        //GenerateJsonConfig.generateJsonConfig(output_path, config_name);
     }
 }

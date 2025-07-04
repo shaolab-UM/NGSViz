@@ -15,28 +15,17 @@ import java.util.Set;
  */
 public class mergeDB extends InputParameterAttributes {
     public static void main(String[] args) {
-        String main_db_path = "/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db";
-        String input_db_path = "/Users/bencheye/myProj/ngsPlot/DB/DB/Homo_sapiens/NGSViz_hg19_RefSeq.db";
+        String main_db_path = "/Users/benche/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db";
+        String input_db_path = "/Users/benche/myProj/ngsPlot/DB/DB/Mus_musculus/NGSViz_mm9_RefSeq.db";
         merge2DB(main_db_path, input_db_path);
 
     }
-    public static String dbFilePath = DBAtribute.class.getResource(db_path).getFile();
-    public static final String DATABASE_URL = "jdbc:sqlite::" + dbFilePath;
-    public static void mergeDB(){
-        System.out.println("Input the SQL DB is: " + input_db_path);
-        String tbl_name = checkUniqueTbl(DATABASE_URL, input_db_path);
-        if (tbl_name != null) {
-            dbTransfer(DATABASE_URL, input_db_path, tbl_name);
-            System.out.println("Have finished merging DB!");
-        } else {
-            System.out.println("Table already exists!");
-        }
-    }
+
     public static void merge2DB(String main_db_path, String input_db_path){
         String tbl_name = checkUniqueTbl(main_db_path, input_db_path);
         if (tbl_name != null) {
-            dbTransfer(main_db_path, input_db_path, tbl_name);
             System.out.println("Creating tables...");
+            dbTransfer(main_db_path, input_db_path, tbl_name);
         } else {
             System.out.println("Table already exists!");
         }

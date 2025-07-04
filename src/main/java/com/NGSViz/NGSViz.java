@@ -15,6 +15,7 @@ public class NGSViz {
                 "-G", "hg19",
                 "-R", "tss",
                 "-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
+                //"-DB", "/Users/benche/myProj/ngsPlot/DB/DB/Mus_musculus/NGSViz_mm9_RefSeq.db",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
                 //"-R", "tss",
