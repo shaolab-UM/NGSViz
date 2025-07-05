@@ -15,6 +15,7 @@ import com.NGSViz.configSet.InputParameterAttributes;
  */
 public class PhysicalCoverageCalculator {
     private static final int core_num = InputParameterAttributes.core_num;
+    private static int frag_len = InputParameterAttributes.frag_len;
 
     public static int[] calculatePhysicalCoverage2(SamReader bam_reader,
                                                                Interval interval_range,
@@ -34,50 +35,76 @@ public class PhysicalCoverageCalculator {
             // filter the bam alignment for each read, true filter, false not filter
             boolean filterRes = ReadRecordProcess.filterOneReadAlign(bam_record, query_strand);
             boolean paired_lab = ReadRecordProcess.checkPairedRecord(bam_record);
+            boolean isPairedEnd = bam_record.getReadPairedFlag();
+
             // paired mood
-            if(paired_mode){
+            /*if(paired_mode){
                 if (paired_lab) {
                     boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(bam_record);
                     filterRes = filterRes & !paired_filter;
                 } else {
                     System.out.println("paired bam error, there not exists insert region!");
                 }
+            }*/
+
+            if (isPairedEnd) {
+                boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(bam_record);
+                filterRes = filterRes & !paired_filter;
+            } else {
+                System.out.println("paired bam error, there not exists insert region!");
             }
+
+            if (bam_record.getReadUnmappedFlag()) continue;
+            if (filterRes) continue;
+
             // bam filter
-            if (! filterRes) {
-                // get the alignment read information
-                List<Integer> read_align_info;
-                if(paired_mode & paired_lab){
-                    read_align_info = ReadRecordProcess.getPairedReadAlignmentInfo(bam_record);
-                } else {
-                    read_align_info = ReadRecordProcess.getReadAlignmentInfo(bam_record, interval_range);
-                }
-                if (read_align_info.get(0) != 0) {
-                    //System.out.println("--- Processing a read: " + read_align_info);
-                    int align_pos_start = read_align_info.get(0);
-                    int align_width = read_align_info.get(1);
-                    int align_pos_end = align_pos_start + align_width -1;
-                    // read start position in the search range
-                    // index start from zero, so no add 1
-                    int pos_start_difference = align_pos_start - query_range_start;
-                    if(align_pos_start >= query_range_start){
-                        if(align_pos_start >= query_range_end){
-                            align_width = 0;
-                        }else if(align_pos_end >= query_range_end){
-                            align_width = query_range_end - align_pos_start + 1;
-                        }else if(align_pos_end < query_range_end){
-                            align_width = align_width;
-                        }
-                    }else{
-                        if(align_pos_end <= query_range_start){
-                            align_width = 0;
-                        }else{
-                            align_width = align_pos_end - query_range_start + 1;
-                        }
-                    }
-                    coverage = physicalCoverageCalculate2(coverage, pos_start_difference, align_width);
-                }
+
+            // get the alignment read information
+            List<Integer> read_align_info;
+            if(isPairedEnd){
+                if (!bam_record.getFirstOfPairFlag()) continue;
+                if (!bam_record.getProperPairFlag()) continue;
+                read_align_info = ReadRecordProcess.getPairedReadAlignmentInfo(bam_record);
+            } else {
+                read_align_info = ReadRecordProcess.getReadAlignmentInfo(bam_record, interval_range);
             }
+            if (read_align_info.get(0) != 0) {
+                //System.out.println("--- Processing a read: " + read_align_info);
+                int align_pos_start = read_align_info.get(0);
+                int align_width = read_align_info.get(1);
+                int align_pos_end = align_pos_start + align_width -1;
+                // read start position in the search range
+                // index start from zero, so no add 1
+                /*System.out.println("align_pos_start: " + align_pos_start);
+                System.out.println("align_pos_end: " + align_pos_end);
+                System.out.println("align_width: " + align_width);*/
+
+                int pos_start_difference = align_pos_start - query_range_start;
+                if(pos_start_difference<0){
+                    align_width = align_width + pos_start_difference;
+                    pos_start_difference = 0;
+                }
+                if(align_pos_start >= query_range_start){
+                    if(align_pos_start >= query_range_end){
+                        align_width = 0;
+                    }else if(align_pos_end >= query_range_end){
+                        align_width = query_range_end - align_pos_start + 1;
+                    }else if(align_pos_end < query_range_end){
+                        align_width = align_width;
+                    }
+                }else{
+                    if(align_pos_end <= query_range_start){
+                        align_width = 0;
+                    }else{
+                        align_width = align_pos_end - query_range_start + 1;
+                    }
+                }
+                //System.out.println("align start is : " + pos_start_difference);
+                coverage = physicalCoverageCalculateOptimized(coverage, pos_start_difference, align_width);
+
+
+            }
+
         }
         return coverage;
     }

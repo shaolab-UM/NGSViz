@@ -28,6 +28,17 @@ public class ReadRecordProcess {
     public static List<Integer> getReadAlignmentInfo(SAMRecord bam_record, Interval interval_range){
         // get the alignment value, the start position and width of read
         int align_start_pos = bam_record.getAlignmentStart();
+        boolean isPairedEnd = bam_record.getReadPairedFlag();
+        if (isPairedEnd) {
+            int insertSize = bam_record.getInferredInsertSize();
+
+            //int insertSize = Math.abs(bam_record.getInferredInsertSize());
+            System.out.println("Insert size: " + insertSize);
+
+        }else {
+
+        }
+
         int read_width = bam_record.getReadLength();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
@@ -59,6 +70,8 @@ public class ReadRecordProcess {
         // get the alignment value, the start position and width of read
         int pos = bam_record.getAlignmentStart();
         int mpos = bam_record.getMateAlignmentStart();
+
+
         if(tlen<0){
             align_start_pos = mpos;
         }else{
@@ -68,6 +81,8 @@ public class ReadRecordProcess {
         //System.out.println("The align start pos of this paired read is " + align_start_pos);
         //System.out.println("The align start pos of this paired insert size is " + read_width);
         List<Integer> read_align_info;
+
+
         read_align_info = Arrays.asList(align_start_pos, read_width);
         return read_align_info;
     }

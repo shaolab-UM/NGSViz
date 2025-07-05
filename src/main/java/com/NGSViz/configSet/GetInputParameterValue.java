@@ -35,9 +35,11 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Flanking size factor
             flank_factor = setParameterValue(flank_factor,"-N", args, i);
             // Robust statistics
-            robust = setParameterValue(robust,"-RB", args, i);
+            //robust = setParameterValue(robust,"-RB", args, i);
             // Random sampling rate
-            random_sampling_rate = setParameterValue(random_sampling_rate,"-S", args, i);
+            //random_sampling_rate = setParameterValue(random_sampling_rate,"-S", args, i);
+            // number of datapoint
+            num_datapoints = setParameterValue(num_datapoints,"-DP", args, i);
             // Set cores number
             core_num = setParameterValue(core_num,"-P", args, i);
             // Algorithm for coverage vector normalization (scale data)
@@ -51,7 +53,7 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Strand-specific coverage
             strand_spec = setParameterValue(strand_spec,"-SS", args, i);
             // Image output forbidden tag
-            fi_tag = setParameterValue(fi_tag,"-FI", args, i);
+            //fi_tag = setParameterValue(fi_tag,"-FI", args, i);
         }
     }
 

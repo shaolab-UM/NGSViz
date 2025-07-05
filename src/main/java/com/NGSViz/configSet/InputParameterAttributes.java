@@ -45,7 +45,7 @@ public class InputParameterAttributes {
     public static int flank_region = 0; //-L
     public static double flank_factor = 0.0; // -N
     public static double robust = 0.0; //-RB
-    public static double random_sampling_rate =0.0; //-S
+    public static double random_sampling_rate =0.0;//-S
     public static int core_num = 1; //-P
     public static String scaler_method = "bin"; //-AL
     public static int chunk_size = 100; //-CS

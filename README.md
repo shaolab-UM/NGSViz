@@ -122,29 +122,30 @@ conda install conda-forge::openjdk
 
 
 
-| Parameter Name |    Variable Name     |  Default Value   |           Describtion            |
-| :------------: | :------------------: | :--------------: | :------------------------------: |
-|      -DB       |    input_db_path     |        -         |  Import database path to merge   |
-|      -CP       |   sys_config_path    |        -         |                                  |
-|       -G       |        genome        |        -         |  the reference genome database   |
-|       -R       |     region_type      |        -         |   the region type for analysis   |
-|       -I       |      input_file      |        -         |         Input file path          |
-|       -O       |     output_path      |        -         |           output path            |
-|       -D       |       DB_tpye        |      RefSeq      |   Reference sequence database    |
-|       -X       |      **gene**s       |     **all**      |      gene list for analysis      |
-|       -T       |      **title**       | Average Coverage |          analysis title          |
-|       -A       |    analysis_type     |    transcript    |          analysis type           |
-|       -B       |       biotype        |  protein_coding  |            gene type             |
-|       -F       |     flank_region     |       2000       |       Flanking region size       |
-|       -N       |     flank_factor     |       0.0        |       Flanking size factor       |
-|      -RB       |        robust        |       0.0        | Percentage of both ends trimmed  |
-|       -S       | random_sampling_rate |       0.0        |       random sampling rate       |
-|       -M       |    scaler_method     |       bin        | method to scale the query region |
-|      -CZ       |      chunk_size      |       100        |         Gene chunk size          |
-|      -MQ       |       min_mapq       |        20        |     threshold to filter read     |
-|      -FL       |       frag_len       |       150        |         Fragment length          |
-|      -SS       |     strand_spec      |       both       |     read strand in bam file      |
-|       -P       |       core_num       |                  |                                  |
+| Parameter Name |  Variable Name  |  Default Value   |           Describtion            |
+| :------------: | :-------------: | :--------------: | :------------------------------: |
+|      -DB       |  input_db_path  |        -         |  Import database path to merge   |
+|      -CP       | sys_config_path |        -         |                                  |
+|       -G       |     genome      |        -         |  the reference genome database   |
+|       -R       |   region_type   |        -         |   the region type for analysis   |
+|       -I       |   input_file    |        -         |         Input file path          |
+|       -O       |   output_path   |        -         |           output path            |
+|       -D       |     DB_tpye     |      RefSeq      |   Reference sequence database    |
+|       -X       |    **gene**s    |     **all**      |      gene list for analysis      |
+|       -T       |    **title**    | Average Coverage |          analysis title          |
+|       -A       |  analysis_type  |    transcript    |          analysis type           |
+|       -B       |     biotype     |  protein_coding  |            gene type             |
+|       -F       |  flank_region   |       2000       |       Flanking region size       |
+|       -N       |  flank_factor   |       0.0        |       Flanking size factor       |
+|                |                 |                  |                                  |
+|                |                 |                  |                                  |
+|       -M       |  scaler_method  |       bin        | method to scale the query region |
+|      -DP       | num_datapoints  |       100        |   number of data point to plot   |
+|                |                 |                  |                                  |
+|      -MQ       |    min_mapq     |        20        |     threshold to filter read     |
+|      -FL       |    frag_len     |       150        |         Fragment length          |
+|      -SS       |   strand_spec   |       both       |     read strand in bam file      |
+|       -P       |    core_num     |                  |                                  |
 
 ## Database
 
