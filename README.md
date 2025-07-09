@@ -12,26 +12,13 @@ You can filter the transcripts of interest based on Gene name or NCBI's Ref seq 
 
 ### Input file
 
-#### Single file input
-
 parameter `-I` is provided to input the **absolute path** for preparing to analyze bam files.
 
-parameter `-X` is provided to input the **absolute path** for preparing to analyze  the gene set of interest (Optional). The default value is `all`, indicating the selection of all genes in the database.
+parameter (Optional) `-X` is provided to input the **absolute path** for preparing to analyze  the gene set of interest . The default value is `all`, indicating the selection of all genes in the database.
 
-parameter `-T` is provided to input the **analysis title**.
+parameter (Optional) `-T` is provided to input the **analysis title**.
 
-#### Multi-file input
-
-Support input of multiple file paths specified through text files (txt, csv), format as follows:
-
-The elements need to be input in the specified order, with the first column used to specify the sample name, the second column used to specify the path of the bam file, the third column used to specify the path of the file containing the list of genes of interest. If it is expected to analyze all genes based on the system's default selection, input "all". Group can specify the grouping of samples, and Title specifies the title used for display during visualization.
-
-| sampleName | BamFile              | GeneListFile | Group | Title    |
-| ---------- | -------------------- | ------------ | ----- | -------- |
-| H3k27me3   | hesc.H3k27me3.1M.bam | all          | High  | H3k27me3 |
-| H3k27me3   | hesc.H3k4me3.1M.bam  | all          | Med   | H3k27me3 |
-
-
+#### 
 
 ## Database
 

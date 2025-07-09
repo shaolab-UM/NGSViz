@@ -20,7 +20,7 @@ public class EachCoverageResult {
     public void bamSizeNormalization(long library_size)
     {
         //double[] result_list = new double[scaled_coverage.length];
-        // normalize to RPM
+        // normalize to CPM
         for (int i = 0; i < scaled_coverage.length; i++) {
             double num = scaled_coverage[i];
             // num / library_size * 1e6

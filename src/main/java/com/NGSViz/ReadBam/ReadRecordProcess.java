@@ -52,8 +52,6 @@ public class ReadRecordProcess {
         }
         int align_end_pos = align_start_pos + read_width;
         if (align_start_pos < query_range_start || align_end_pos > query_range_end){
-            //System.out.println("The adjusted - read is not in the query range!");
-            //System.out.println("The adjusted - read read is " + align_start_pos + " - " + align_end_pos);
             return Arrays.asList(0);
         }
         List<Integer> read_align_info;
@@ -70,19 +68,13 @@ public class ReadRecordProcess {
         // get the alignment value, the start position and width of read
         int pos = bam_record.getAlignmentStart();
         int mpos = bam_record.getMateAlignmentStart();
-
-
         if(tlen<0){
             align_start_pos = mpos;
         }else{
             align_start_pos = pos;
         }
         read_width = Math.abs(tlen);
-        //System.out.println("The align start pos of this paired read is " + align_start_pos);
-        //System.out.println("The align start pos of this paired insert size is " + read_width);
         List<Integer> read_align_info;
-
-
         read_align_info = Arrays.asList(align_start_pos, read_width);
         return read_align_info;
     }
@@ -156,11 +148,6 @@ public class ReadRecordProcess {
                 filter_res = query_strand.equals(read_strand);
             }
         }
-        /*if (filter_res) {
-            //System.out.println("This bam read do not pass the quality, will be filted!");
-            //System.out.println(record.getReadName());
-            //System.out.println("This bam read is: ");
-        }*/
         return filter_res;
     }
 }

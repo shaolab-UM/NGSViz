@@ -46,13 +46,6 @@ public class ProcessInputParameters extends InputParameterAttributes {
         species = GetRefDB.getSpeciesName(genome, DB_type);
         // get the table name of genome coordinate information
         tbl_name = GetRefDB.getTblName(genome, DB_type);
-
-        // !!! Start of Modification !!!
-        // get the whole coordinate
-        /*QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
-        List<Double> width_list = QueryWholeRegionCoordinate.width_list;*/
-        // !!! End of Modification !!!
-
         // get the interval type
         interval_type = SetIntervalType.setIntervalTypeValue(region_labels);
         // get data points

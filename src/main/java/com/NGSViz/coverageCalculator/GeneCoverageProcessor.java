@@ -91,7 +91,7 @@ public class GeneCoverageProcessor {
 
 
     // Calculate the coverage matrix
-    public Map<String, Object> buildCoverageMatrix() {
+    public Map<String, Object> buildCoverageMatrix() throws IOException {
         // Create result matrix
         double[][] coverage_scaled_matrix = new double[record_name_list.size()][num_datapoints+1];
         // Initialize gene name list
@@ -105,8 +105,11 @@ public class GeneCoverageProcessor {
         } else {
             System.out.println("This BAM file is single-end.");
         }
+        bam_reader2.close();
         long library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
-        ReadBam.closeBamReader(bam_reader);
+        //ReadBam.closeBamReader(bam_reader);
+        // close the bam
+        bam_reader.close();
         // Get the chromosome list in bam file
         Set<String> bam_chromosomes_list = ReadBam.getChromosomesInBam(bam_file_path);
         // Create a parallel stream with custom thread pool

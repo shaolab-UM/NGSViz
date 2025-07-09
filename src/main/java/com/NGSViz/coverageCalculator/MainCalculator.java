@@ -1,21 +1,17 @@
 package com.NGSViz.coverageCalculator;
 
-import com.NGSViz.ReadBam.ReadBam;
 import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.ParallelGeneDbProcessor;
 import com.NGSViz.sqldbOperate.Transcript;
-import htsjdk.samtools.SamReader;
 import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
-import com.NGSViz.utils.CalculateLog2Matrix;
 import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
-import com.NGSViz.ReadBam.BamFileLibrarySize;
 import com.NGSViz.utils.ReadTextFile;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -46,7 +42,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static List<String> row_names;
 
 
-    public static void mainCalculator(){
+    public static void mainCalculator() throws IOException {
         JSONArray jsonArray = new JSONArray();
         for (int i=0; i<bam_list.size(); i++) {
             String[] bam_file_list = bam_list.get(i).split(":", 2);
@@ -87,26 +83,6 @@ public class MainCalculator extends InputParameterAttributes {
                 HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file, query_gene_list, paired_mode);
                 List<String> row_names = (List<String>) mat_res.get("row_names");
                 coverage_scaled_matrix = (double[][]) mat_res.get("coverage_matrix");
-
-                if(paired_mode){
-                    // calculate background
-                    System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
-                    HashMap<String, Object> bkg_mat_res = OptimizedGeneProcessor.optimizedParallelProcess(paired_bam, query_gene_list, paired_mode);
-                    double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("coverage_matrix");
-                    // libsize
-                    // get the library size of bam file
-                    SamReader bam_reader = ReadBam.getBamReader(bam_file);
-                    double library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
-                    double result_pseudo_rpm = (1e6 / library_size);
-                    // get the library size of paired bam file
-                    SamReader paired_bam_reader = ReadBam.getBamReader(paired_bam);
-                    double paired_library_size = BamFileLibrarySize.getLibrarySize(paired_bam_reader);
-                    double bkg_pseudo_rpm = (1e6 / paired_library_size);
-                    coverage_scaled_matrix = CalculateLog2Matrix.calculateLog2Matrix(coverage_scaled_matrix,
-                            bkg_coverage_scaled_matrix, result_pseudo_rpm, bkg_pseudo_rpm);
-                }
-
             }else{
                 // get the subset of gene list
                 ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
@@ -131,32 +107,11 @@ public class MainCalculator extends InputParameterAttributes {
                     record_name_list = subDBGeneInfo.getRecordName();
                     DB_GENES = subDBGeneInfo.getGeneMap();
                 }
-
                 // Use optimized processor instead of old method
                 GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
                 Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
                 row_names = (List<String>) coverage_map.get("record_names");
                 coverage_scaled_matrix = (double[][]) coverage_map.get("cov_mat");
-
-                if(paired_mode){
-                    // calculate background
-                    System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
-                    GeneCoverageProcessor genesBkgProcess = new GeneCoverageProcessor(paired_bam, DB_GENES, record_name_list, paired_mode);
-                    Map<String, Object> bkg_mat_res = genesBkgProcess.buildCoverageMatrix();
-                    double[][] bkg_coverage_scaled_matrix = (double[][]) bkg_mat_res.get("cov_mat");
-                    // libsize
-                    // get the library size of bam file
-                    SamReader bam_reader = ReadBam.getBamReader(bam_file);
-                    double library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
-                    double result_pseudo_rpm = (1e6 / library_size);
-                    // get the library size of paired bam file
-                    SamReader paired_bam_reader = ReadBam.getBamReader(paired_bam);
-                    double paired_library_size = BamFileLibrarySize.getLibrarySize(paired_bam_reader);
-                    double bkg_pseudo_rpm = (1e6 / paired_library_size);
-                    coverage_scaled_matrix = CalculateLog2Matrix.calculateLog2Matrix(coverage_scaled_matrix,
-                            bkg_coverage_scaled_matrix, result_pseudo_rpm, bkg_pseudo_rpm);
-                }
             }
 
             // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
@@ -170,7 +125,6 @@ public class MainCalculator extends InputParameterAttributes {
             double[] average_coverage_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
             // save the data
             // Book-keep this matrix for heatmap.
-
             File bam_path = new File(bam_file);
             String bam_name = bam_path.getName();
             bam_name = bam_name.substring(0, bam_name.lastIndexOf('.'));

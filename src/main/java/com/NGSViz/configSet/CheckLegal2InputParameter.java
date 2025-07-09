@@ -147,7 +147,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
 
     // default value of option parameters
     public static Map<String, Integer> getRegion2FRMap() {
-        int[] flank_region = {2000, 2000, 2000, 500, 500, 1500, 1000, 1000};
+        int[] flank_region = {2000, 2000, 2000, 2000, 2000, 1500, 1000, 1000};
         String[] region_plot = {"tss", "tes", "genebody", "exon", "cgi", "enhancer", "dhs", "bed"};
         Map<String, Integer> data_map = new HashMap<>();
         for (int i = 0; i < flank_region.length; i++) {

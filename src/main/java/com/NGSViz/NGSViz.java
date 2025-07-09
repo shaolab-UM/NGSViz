@@ -5,12 +5,14 @@ import com.NGSViz.configSet.ProcessInputParameters;
 import com.NGSViz.coverageCalculator.MainCalculator;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 
+import java.io.IOException;
+
 /**
  * @author Benchen Ye
  * @create 2024-11--21:36
  */
 public class NGSViz {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         args = new String[]{
                 "-G", "hg19",
                 "-R", "exon",
@@ -26,6 +28,8 @@ public class NGSViz {
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
                 "-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",

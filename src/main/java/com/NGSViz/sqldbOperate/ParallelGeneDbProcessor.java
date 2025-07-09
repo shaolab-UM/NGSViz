@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 public class ParallelGeneDbProcessor extends DBAtribute{
-    // OPTIMIZED: Use concurrent collections instead of synchronized collections
     private Set<String> unique_chrname_list = ConcurrentHashMap.newKeySet();
     private Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
     private Set<String> record_name_list = ConcurrentHashMap.newKeySet();
@@ -21,9 +20,7 @@ public class ParallelGeneDbProcessor extends DBAtribute{
     private int region_num = 0;
     // Concurrent Map
     private Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
-    // OPTIMIZED: Use concurrent list instead of synchronized list
     private List<Double> width_list = Collections.synchronizedList(new ArrayList<>());
-
     // Thread pool, used for parallel processing
     private final ExecutorService executorService;
     // Each time the number of records processed
@@ -49,13 +46,12 @@ public class ParallelGeneDbProcessor extends DBAtribute{
         return newGenesBInfo;
     }
 
-    // OPTIMIZED: Use database connection pool for better performance
-    public void processGeneDataOptimized(String tbl_name, String biotype, String type) throws SQLException, InterruptedException {
+    // Use database connection pool for better performance
+    public void processGeneData(String tbl_name, String biotype, String type) throws SQLException, InterruptedException {
         String query = String.format("SELECT gname, tid, chrom, strand, start, end FROM '%s' " +
                         "WHERE biotype = '%s' AND type = '%s' AND DefaultChoose = 1",
                 tbl_name, biotype, type);
         System.out.println("The query keyword is : " + query);
-        
         // Use connection pool instead of single connection
         DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance(DATABASE_URL);
         
@@ -74,33 +70,24 @@ public class ParallelGeneDbProcessor extends DBAtribute{
                     // Submit a task to the thread pool to process the current batch
                     // Copy batch to avoid modification
                     List<Map<String, Object>> currentBatch = new ArrayList<>(batchRecords);
-                    executorService.submit(() -> processBatchOptimized(currentBatch));
+                    executorService.submit(() -> processBatch(currentBatch));
                     batchRecords.clear(); // Clear batch
                 }
             }
             // Process the remaining records
             if (!batchRecords.isEmpty()) {
-                executorService.submit(() -> processBatchOptimized(batchRecords));
+                executorService.submit(() -> processBatch(batchRecords));
             }
         }
-        
         // Shut down the thread pool and no longer accept new tasks
         executorService.shutdown();
         // Wait for all tasks to be completed
         executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        
         // Print pool statistics
         pool.printPoolStats();
     }
 
-    // Retrieve the results of the database query and process them in parallel in chunks.
-    public void processGeneData(String tbl_name, String biotype, String type) throws SQLException, InterruptedException {
-        // Use optimized method
-        processGeneDataOptimized(tbl_name, biotype, type);
-    }
-
-    // OPTIMIZED: Process the results of each specific database query with better performance
-    private void processBatchOptimized(List<Map<String, Object>> records) {
+    private void processBatch(List<Map<String, Object>> records) {
         for (Map<String, Object> record : records) {
             String gene_name = (String) record.get("gname");
             String transcript_id = (String) record.get("tid");
@@ -124,12 +111,6 @@ public class ParallelGeneDbProcessor extends DBAtribute{
                     chr_name, nochr_name, strand, start_pos, end_pos);
             gene_map.put(record_name, transcript);
         }
-    }
-
-    // Process the results of each specific database query
-    private void processBatch(List<Map<String, Object>> records) {
-        // Use optimized method
-        processBatchOptimized(records);
     }
 
     // Methods
