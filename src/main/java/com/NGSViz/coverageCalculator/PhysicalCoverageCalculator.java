@@ -37,21 +37,9 @@ public class PhysicalCoverageCalculator {
             boolean paired_lab = ReadRecordProcess.checkPairedRecord(bam_record);
             boolean isPairedEnd = bam_record.getReadPairedFlag();
 
-            // paired mood
-            /*if(paired_mode){
-                if (paired_lab) {
-                    boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(bam_record);
-                    filterRes = filterRes & !paired_filter;
-                } else {
-                    System.out.println("paired bam error, there not exists insert region!");
-                }
-            }*/
-
             if (isPairedEnd) {
                 boolean paired_filter = ReadRecordProcess.checkPairedRecordQuality(bam_record);
                 filterRes = filterRes & !paired_filter;
-            } else {
-                System.out.println("paired bam error, there not exists insert region!");
             }
 
             if (bam_record.getReadUnmappedFlag()) continue;
@@ -101,8 +89,6 @@ public class PhysicalCoverageCalculator {
                 }
                 //System.out.println("align start is : " + pos_start_difference);
                 coverage = physicalCoverageCalculateOptimized(coverage, pos_start_difference, align_width);
-
-
             }
 
         }

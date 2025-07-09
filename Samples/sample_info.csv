@@ -1,0 +1,3 @@
+sampleName,BamFile,GeneListFile,Group,Title
+LSD2,/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam,all,High,LSD2
+H3k4me3,/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam,all,Med,H3k4me3

@@ -1,7 +1,5 @@
 library(ggh4x)
 library(tidyverse)
-library(colorspace)
-library(tidyverse)
 library(rtracklayer)
 library(circlize)
 library(colorspace)

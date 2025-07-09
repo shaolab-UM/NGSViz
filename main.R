@@ -7,7 +7,7 @@ packages <- c(
   "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles", "circlize",
   "EnrichedHeatmap"
 )
-
+# future ggsci shinyFiles markdown "plotly", "leaflet", "DT"
 # Check and install missing packages
 for (pkg in packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {

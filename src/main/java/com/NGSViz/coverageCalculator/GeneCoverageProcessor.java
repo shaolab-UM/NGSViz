@@ -98,6 +98,13 @@ public class GeneCoverageProcessor {
         List<String> record_names = new CopyOnWriteArrayList<>(Collections.nCopies(record_name_list.size(), null));
         // Get the library size of bam file
         SamReader bam_reader = ReadBam.getBamReader(bam_file_path);
+        SamReader bam_reader2 = ReadBam.getBamReader(bam_file_path);
+        SAMRecord first_record = bam_reader2.iterator().next();
+        if (first_record.getReadPairedFlag()) {
+            System.out.println("This BAM file is paired-end.");
+        } else {
+            System.out.println("This BAM file is single-end.");
+        }
         long library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
         ReadBam.closeBamReader(bam_reader);
         // Get the chromosome list in bam file

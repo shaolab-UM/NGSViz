@@ -5,13 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/pairedmode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz_run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_run.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PERFORMANCE_OPTIMIZATION_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" afterPath="$PROJECT_DIR$/main.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/performance_log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirement.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_info.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/TestRun.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/TestRun.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/TestRun.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/QuickPairedEndCheck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -63,10 +69,12 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "vue.rearranger.settings.migration": "true",
+    "应用程序.BamPairedEndChecker.executor": "Run",
     "应用程序.GeneCoverageProcessor.executor": "Run",
     "应用程序.NGSViz.executor": "Run",
     "应用程序.ParallelGeneDbProcessor.executor": "Run",
     "应用程序.PhysicalCoverageCalculator.executor": "Run",
+    "应用程序.QuickPairedEndCheck.executor": "Run",
     "应用程序.ReadTextFile.executor": "Run",
     "应用程序.TestRun.executor": "Run",
     "应用程序.mergeDB.executor": "Run"
@@ -78,12 +86,12 @@
     </key>
   </component>
   <component name="RunManager" selected="应用程序.NGSViz">
-    <configuration name="GeneCoverageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.NGSViz.coverageCalculator.GeneCoverageProcessor" />
+    <configuration name="BamPairedEndChecker" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.BamPairedEndChecker" />
       <module name="NGSViz" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.NGSViz.coverageCalculator.*" />
+          <option name="PATTERN" value="com.NGSViz.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -104,12 +112,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PhysicalCoverageCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.NGSViz.coverageCalculator.PhysicalCoverageCalculator" />
+    <configuration name="QuickPairedEndCheck" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.NGSViz.QuickPairedEndCheck" />
       <module name="NGSViz" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.NGSViz.coverageCalculator.*" />
+          <option name="PATTERN" value="com.NGSViz.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -146,10 +154,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="应用程序.NGSViz" />
+        <item itemvalue="应用程序.QuickPairedEndCheck" />
+        <item itemvalue="应用程序.BamPairedEndChecker" />
         <item itemvalue="应用程序.TestRun" />
         <item itemvalue="应用程序.mergeDB" />
-        <item itemvalue="应用程序.PhysicalCoverageCalculator" />
-        <item itemvalue="应用程序.GeneCoverageProcessor" />
       </list>
     </recent_temporary>
   </component>
@@ -186,6 +194,8 @@
       <workItem from="1750984216740" duration="13000" />
       <workItem from="1750984301907" duration="3693000" />
       <workItem from="1751622206547" duration="28596000" />
+      <workItem from="1751807413352" duration="334000" />
+      <workItem from="1751945027337" duration="6683000" />
     </task>
     <servers />
   </component>

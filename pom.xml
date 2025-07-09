@@ -16,21 +16,6 @@
 
 
   <dependencies>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-core</artifactId>
-      <version>LATEST</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-pool2</artifactId>
-      <version>2.12.1</version> <!-- 可根据需要替换为最新版本 -->
-    </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-excel</artifactId>
-      <version>LATEST</version>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.samtools/htsjdk -->
     <dependency>
       <groupId>com.github.samtools</groupId>
@@ -41,24 +26,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
       <version>3.6.1</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>2.3</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.18.0-rc1</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>2.18.0-rc1</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
     <dependency>
@@ -77,6 +44,12 @@
           <artifactId>annotations</artifactId>
           <version>RELEASE</version>
           <scope>compile</scope>
+      </dependency>
+      <!-- SLF4J implementation to avoid warnings -->
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+          <version>2.0.9</version>
       </dependency>
   </dependencies>
   <build>
