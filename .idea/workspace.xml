@@ -6,35 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/QuickPairedEndCheck.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/OptimizedBamReader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/ReadRecordProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/CheckLegal2InputParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/CheckLegal2InputParameter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/CoverageCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/DataScaler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachGeneRegionProcess.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/AverageCoverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/AverageCoverage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/PhysicalCoverageCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/SparseGeneProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/TrimBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/TrimBuffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/CalculateLog2Matrix.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/CurrentTime.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/MemoryManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/OptimizedDataStructures.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/ParallelFileProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/PerformanceBenchmark.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/PerformanceMonitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/PerformanceMonitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/SparseMatrixExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/pairedmode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/Matrix2CSV.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +188,7 @@
       <workItem from="1750984301907" duration="3693000" />
       <workItem from="1751622206547" duration="28596000" />
       <workItem from="1751807413352" duration="334000" />
-      <workItem from="1751945027337" duration="12732000" />
+      <workItem from="1751945027337" duration="20417000" />
     </task>
     <servers />
   </component>

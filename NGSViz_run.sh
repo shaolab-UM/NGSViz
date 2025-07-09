@@ -1,6 +1,5 @@
 #!/bin/bash
 core_num=8
-# 设置日志文件名
 output_dir="/Users/benche/myProj/ngsPlot/Output/Test"
 input_dir="/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam"
 genome="hg19"

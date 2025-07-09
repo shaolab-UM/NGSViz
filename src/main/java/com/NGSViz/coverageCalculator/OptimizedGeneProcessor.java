@@ -2,6 +2,7 @@ package com.NGSViz.coverageCalculator;
 
 import com.NGSViz.ReadBam.ReadBam;
 import com.NGSViz.configSet.InputParameterAttributes;
+import com.NGSViz.utils.SparseMatrix;
 import htsjdk.samtools.SamReader;
 import com.NGSViz.sqldbOperate.ProcessEachQueryCoorRecord;
 import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
@@ -33,7 +34,6 @@ public class OptimizedGeneProcessor {
                                                                   boolean paired_mode) {
         // Create SamReader object pool
         SamReader[] readerPool = createReaderPool(bam_file);
-        
         try {
             // Get library size and chromosome list (only once)
             long library_size = BamFileLibrarySize.getLibrarySize(readerPool[0]);
@@ -44,7 +44,8 @@ public class OptimizedGeneProcessor {
             
             // Initialize result matrix
             int num_query_gene = query_gene_list.size();
-            double[][] coverage_scaled_matrix = new double[num_query_gene][num_datapoints+1];
+            //double[][] coverage_scaled_matrix = new double[num_query_gene][num_datapoints+1];
+            SparseMatrix coverage_scaled_matrix = new SparseMatrix(num_query_gene, num_datapoints+1);
             
             // Batch process gene list
             List<List<String>> batches = splitIntoBatches(query_gene_list, BATCH_SIZE);
@@ -146,7 +147,7 @@ public class OptimizedGeneProcessor {
      */
     private static void processBatch(List<String> batch, String bam_file, boolean paired_mode,
                                    long library_size, Set<String> bam_chromosomes_list,
-                                   double[][] coverage_scaled_matrix, int startIndex,
+                                     SparseMatrix coverage_scaled_matrix, int startIndex,
                                    SamReader[] readerPool) {
         try {
             fileSemaphore.acquire();
@@ -164,7 +165,8 @@ public class OptimizedGeneProcessor {
                                                                  bam_chromosomes_list);
                     
                     // Copy results to shared matrix
-                    System.arraycopy(transcript_mat, 0, coverage_scaled_matrix[matrixIndex], 0, transcript_mat.length);
+                    //System.arraycopy(transcript_mat, 0, coverage_scaled_matrix[matrixIndex], 0, transcript_mat.length);
+                    coverage_scaled_matrix.setRow(matrixIndex, transcript_mat);
                 }
             } finally {
                 fileSemaphore.release();

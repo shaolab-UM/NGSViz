@@ -8,6 +8,7 @@ import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
 import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
 import com.NGSViz.utils.ReadTextFile;
+import com.NGSViz.utils.SparseMatrix;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
@@ -36,7 +37,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static List<String> DB_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
-    private static double[][] coverage_scaled_matrix;
+    private static SparseMatrix coverage_scaled_matrix;
     private static Map<String, Transcript> DB_GENES;
     private static Set<String> record_name_list;
     private static List<String> row_names;
@@ -82,7 +83,7 @@ public class MainCalculator extends InputParameterAttributes {
                 // Use optimized processor instead of old method
                 HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file, query_gene_list, paired_mode);
                 List<String> row_names = (List<String>) mat_res.get("row_names");
-                coverage_scaled_matrix = (double[][]) mat_res.get("coverage_matrix");
+                coverage_scaled_matrix = (SparseMatrix) mat_res.get("coverage_matrix");
             }else{
                 // get the subset of gene list
                 ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
@@ -111,15 +112,16 @@ public class MainCalculator extends InputParameterAttributes {
                 GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
                 Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
                 row_names = (List<String>) coverage_map.get("record_names");
-                coverage_scaled_matrix = (double[][]) coverage_map.get("cov_mat");
+                coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
+                //coverage_scaled_matrix = (double[][]) coverage_map.get("cov_mat");
             }
 
             // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
-            double[] confi_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
+            double[] confi_matrix = AverageCoverage.calculateSEM(coverage_scaled_matrix);
             // output the result
             System.out.println("Coverage Scaled Matrix finish!");
-            System.out.println("The number of row is: " + coverage_scaled_matrix.length);
-            System.out.println("The number of column is: " + coverage_scaled_matrix[0].length);
+            //System.out.println("The number of row is: " + coverage_scaled_matrix.length);
+            //System.out.println("The number of column is: " + coverage_scaled_matrix[0].length);
 
             // Return avg. profile.
             double[] average_coverage_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
