@@ -2,9 +2,8 @@ package com.NGSViz.utils;
 
 import com.NGSViz.configSet.ConfigReader;
 import com.NGSViz.configSet.InputParameterAttributes;
-
 import java.io.File;
-import java.io.IOException;
+
 
 /**
  * @author Benchen Ye

@@ -11,11 +11,7 @@ import java.sql.*;
  */
 public class DBAtribute extends InputParameterAttributes {
     // DB need the whole path
-    //public static final String DATABASE_URL = "jdbc:sqlite:coordinate_db.db";
-    //public static String dbFilePath = DBAtribute.class.getResource(db_path).getFile();
-    //public static String dbFilePath = "/Users/bencheye/myProj/ngsPlot/NGSVir2/src/main/resources/genomeCoordinate.db";
     public static final String DATABASE_URL = "jdbc:sqlite:"+ db_path;
-    //public static final String DATABASE_URL = "jdbc:sqlite::resource:genomeCoordinate.db";
     public static Connection connection = null;
     public static Statement statement = null;
 

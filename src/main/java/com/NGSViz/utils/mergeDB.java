@@ -1,8 +1,6 @@
 package com.NGSViz.utils;
 
 import com.NGSViz.configSet.InputParameterAttributes;
-import com.NGSViz.sqldbOperate.DBAtribute;
-
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;

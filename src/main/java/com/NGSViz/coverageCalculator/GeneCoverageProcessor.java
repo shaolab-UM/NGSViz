@@ -34,7 +34,6 @@ public class GeneCoverageProcessor {
     // Calculate the coverage matrix
     public Map<String, Object> buildCoverageMatrix() throws IOException {
         // Create result matrix
-        //double[][] coverage_scaled_matrix = new double[record_name_list.size()][num_datapoints+1];
         SparseMatrix coverage_scaled_matrix = new SparseMatrix(record_name_list.size(), num_datapoints+1);
         // Initialize gene name list
         List<String> record_names = new CopyOnWriteArrayList<>(Collections.nCopies(record_name_list.size(), null));
@@ -49,7 +48,6 @@ public class GeneCoverageProcessor {
         }
         bam_reader2.close();
         long library_size = BamFileLibrarySize.getLibrarySize(bam_reader);
-        //ReadBam.closeBamReader(bam_reader);
         // close the bam
         bam_reader.close();
         // Get the chromosome list in bam file

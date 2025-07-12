@@ -1,6 +1,5 @@
 package com.NGSViz.coverageCalculator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**

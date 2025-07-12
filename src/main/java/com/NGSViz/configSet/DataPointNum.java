@@ -5,9 +5,6 @@ package com.NGSViz.configSet;
  * @ create 2024-10--17:10
  */
 public class DataPointNum extends InputParameterAttributes{
-    public static void main(String[] args) {
-        DataPointNum.getDataPointNum();
-    }
     public static void getDataPointNum() {
         if (interval_type.equals("point_interval")) {
             middle_points = 1;

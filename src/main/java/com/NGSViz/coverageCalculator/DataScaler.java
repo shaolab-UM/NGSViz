@@ -1,10 +1,7 @@
 package com.NGSViz.coverageCalculator;
 
 import com.NGSViz.configSet.InputParameterAttributes;
-import java.util.stream.DoubleStream;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Benchen Ye
@@ -12,8 +9,6 @@ import java.util.List;
  */
 public class DataScaler {
     private static  int num_datapoints = InputParameterAttributes.num_datapoints+1;
-    private static int flanking_region_datapoints = InputParameterAttributes.flank_points;
-    private static int middle_datapoints = InputParameterAttributes.middle_points;
     private static String interval_type = InputParameterAttributes.interval_type;
 
     // Method: switch scale
@@ -81,43 +76,6 @@ public class DataScaler {
     //   num_datapoints: int, number of data points to plot
     // Output:
     //   coverage_scaled: List<Double> of binned values
-    public static double[] bin(ArrayList<Integer> coverage_list, int num_points){
-        int total_size = coverage_list.size();
-        int chunk_size = total_size / num_points;
-        double[] coverage_scaled = new double[num_points];
-        for (int i = 0; i < num_points; i++) {
-            int start = i * chunk_size;
-            // could include more item in the last chunk
-            int end = (i == num_points - 1) ? total_size : start + chunk_size;
-            double sum = 0;
-            int count = 0;
-            for (int j = start; j < end; j++) {
-                sum += coverage_list.get(j);
-                count++;
-            }
-            coverage_scaled[i] = sum / count;
-        }
-        return coverage_scaled;
-    }
-
-    public static double[] bin(double[] coverage_list, int num_points){
-        int total_size = coverage_list.length;
-        int chunk_size = total_size / num_points;
-        double[] coverage_scaled = new double[num_points];
-        for (int i = 0; i < num_points; i++) {
-            int start = i * chunk_size;
-            // could include more item in the last chunk
-            int end = (i == num_points - 1) ? total_size : start + chunk_size;
-            double sum = 0;
-            int count = 0;
-            for (int j = start; j < end; j++) {
-                sum += coverage_list[j];
-                count++;
-            }
-            coverage_scaled[i] = sum / count;
-        }
-        return coverage_scaled;
-    }
     public static double[] bin(int[] coverage_list, int num_points){
         int total_size = coverage_list.length;
         int chunk_size = total_size / num_points;

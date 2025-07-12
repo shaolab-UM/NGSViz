@@ -1,11 +1,12 @@
 package com.NGSViz.configSet;
 
 import com.NGSViz.sqldbOperate.GetRefDB;
-import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
 import com.NGSViz.utils.JsonConfigPath;
 import com.NGSViz.utils.mergeDB;
-
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Benchen Ye
@@ -31,11 +32,23 @@ public class ProcessInputParameters extends InputParameterAttributes {
             System.out.println("Finish merging DB. Quit the program!");
             System.exit(0);
         }
+
         // set and print the default value for option parameters
         SetDefaultOptionParameter.setDefaultOptionParameter();
-
         // check whether is legal value for input parameter
         CheckLegal2InputParameter.checkLegal2InputParameter();
+        // Merge Paths
+        Path fullPath = Paths.get(output_path, title);
+        // Check and create folders
+        if (!Files.exists(fullPath)) {
+            try {
+                Files.createDirectories(fullPath);
+                System.out.println("Directory created: " + fullPath.toString());
+            } catch (IOException e) {
+                System.out.println("Failed to create directory: " + e.getMessage());
+            }
+        }
+        output_path = fullPath.toString();
         // get default point label value
         DBdefaultValue.getPointLabFIValue();
         // process the input text file

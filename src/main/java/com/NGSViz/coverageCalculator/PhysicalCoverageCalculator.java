@@ -1,12 +1,9 @@
 package com.NGSViz.coverageCalculator;
 
-
 import htsjdk.samtools.*;
 import htsjdk.samtools.util.Interval;
-import com.NGSViz.ReadBam.ReadBam;
 import java.util.*;
 import com.NGSViz.ReadBam.ReadRecordProcess;
-import com.NGSViz.configSet.InputParameterAttributes;
 
 /**
  * @author Benchen Ye
@@ -14,9 +11,6 @@ import com.NGSViz.configSet.InputParameterAttributes;
  * @function calculate the physical coverage for one query region
  */
 public class PhysicalCoverageCalculator {
-    private static final int core_num = InputParameterAttributes.core_num;
-    private static int frag_len = InputParameterAttributes.frag_len;
-
     public static int[] calculatePhysicalCoverage2(SamReader bam_reader,
                                                                Interval interval_range,
                                                                String query_strand,
@@ -46,7 +40,6 @@ public class PhysicalCoverageCalculator {
             if (filterRes) continue;
 
             // bam filter
-
             // get the alignment read information
             List<Integer> read_align_info;
             if(isPairedEnd){

@@ -1,23 +1,17 @@
 package com.NGSViz.coverageCalculator;
 
-import com.NGSViz.ReadBam.BamFileLibrarySize;
-import com.NGSViz.ReadBam.ReadBam;
 import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.ParallelGeneDbProcessor;
 import com.NGSViz.sqldbOperate.Transcript;
-import com.NGSViz.sqldbOperate.QueryWholeRegionCoordinate;
 import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
 import com.NGSViz.utils.ReadTextFile;
 import com.NGSViz.utils.SparseMatrix;
-import htsjdk.samtools.SamReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -38,9 +32,6 @@ public class MainCalculator extends InputParameterAttributes {
     private static String average_cov_name = "average_coverage_matrix.csv";
     private static String sem_name = "sem.csv";
     private static boolean paired_mode = false;
-    private static String paired_bam = null;
-    private static List<String> query_gene_list;
-    private static List<String> DB_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
     private static SparseMatrix coverage_scaled_matrix;
@@ -72,108 +63,65 @@ public class MainCalculator extends InputParameterAttributes {
             sample_subset = sample_list.get(i);
 
             System.out.println("The title subset will be analysing: " + title_subset);
+            System.out.println("----------------------------------------");
             System.out.println("--- Start coverage matrix calculation! ---");
 
-            if (analysis_type.equals("exon")){
-
-                // get the whole coordinate
-                QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
-                query_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
-                exon_gene_map = QueryWholeRegionCoordinate.gene_map;
-
-                // get the subset of gene list
-                if (gene_subset.equals("all")){
-                    System.out.println("--- Run all DB gene list!");
-                    query_gene_list = DB_gene_list;
-                } else {
-                    System.out.println("The gene subset will be analysing: " + gene_subset);
-                    System.out.println("--- Run subset gene list!");
-                    System.out.println("subset gene list name is: " + gene_subset);
-                    query_gene_list = ReadTextFile.readGeneList2(gene_subset);
-                }
-
-                // Use optimized processor instead of old method
-                HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file,
-                        query_gene_list, exon_gene_map, paired_mode);
-                List<String> row_names = (List<String>) mat_res.get("row_names");
-                coverage_scaled_matrix = (SparseMatrix) mat_res.get("coverage_matrix");
-
-                if(paired_mode){
-                    // calculate background
-                    System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix
-                    HashMap<String, Object> mat_res_bkg = OptimizedGeneProcessor.optimizedParallelProcess(bam_file_bkg,
-                            query_gene_list, exon_gene_map, paired_mode);
-                    coverage_scaled_matrix_bkg = (SparseMatrix) mat_res_bkg.get("coverage_matrix");
-                    // adjust the coverage matrix based on the input / IgG
-                    coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,
-                            coverage_scaled_matrix_bkg);
-                }
-
-            }else{
-                // build the DB_genes for chip-seq
-                // get the subset of gene list
-                ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
-                try {
-                    // By invoking a non-static method through an instance
-                    GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
-                } catch (SQLException e) {
-                    System.err.println("Database error: " + e.getMessage());
-                } catch (InterruptedException e) {
-                    System.err.println("Thread interruption error: " + e.getMessage());
-                }
-
-                if (gene_subset.equals("all")){
-                    System.out.println("--- Run all DB gene list!");
-                    record_name_list = GenesBInfo.getRecordName();
-                    DB_GENES = GenesBInfo.getGeneMap();
-                } else {
-                    System.out.println("--- Run subset gene list!");
-                    System.out.println("subset gene list name is: " + gene_subset);
-                    Set<String> query_gene_list = ReadTextFile.readGeneList(gene_subset);
-                    ParallelGeneDbProcessor newGenesBInfo = new ParallelGeneDbProcessor(core_num);
-                    ParallelGeneDbProcessor subDBGeneInfo = newGenesBInfo.subsetGeneList(newGenesBInfo, query_gene_list, GenesBInfo);
-                    record_name_list = subDBGeneInfo.getRecordName();
-                    DB_GENES = subDBGeneInfo.getGeneMap();
-                }
-
-                // Use optimized processor instead of old method
-                GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
-                Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
-                row_names = (List<String>) coverage_map.get("record_names");
-                coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
-
-                if(paired_mode){
-                    // calculate background
-                    System.out.println("Paired mode: to calculate background.");
-                    // bkg_coverage_scaled_matrix
-                    GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bam_file_bkg, DB_GENES, record_name_list, paired_mode);
-                    // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
-                    Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
-                    coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
-                    // adjust the coverage matrix based on the input / IgG
-                    coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,
-                            coverage_scaled_matrix_bkg);
-                }
-
+            ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
+            record_name_list = GenesBInfo.getRecordName();
+            DB_GENES = GenesBInfo.getGeneMap();
+            try {
+                // By invoking a non-static method through an instance
+                GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
+            } catch (SQLException e) {
+                System.err.println("Database error: " + e.getMessage());
+            } catch (InterruptedException e) {
+                System.err.println("Thread interruption error: " + e.getMessage());
             }
 
+            if (!gene_subset.equals("all")){
+                System.out.println("--- Run subset gene list!");
+                System.out.println("subset gene list name is: " + gene_subset);
+                Set<String> query_gene_list = ReadTextFile.readGeneList(gene_subset);
+                ParallelGeneDbProcessor newGenesBInfo = new ParallelGeneDbProcessor(core_num);
+                ParallelGeneDbProcessor subDBGeneInfo = newGenesBInfo.subsetGeneList(newGenesBInfo, query_gene_list, GenesBInfo);
+                record_name_list = subDBGeneInfo.getRecordName();
+                DB_GENES = subDBGeneInfo.getGeneMap();
+            }
+
+            // Use optimized processor instead of old method
+            GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
+            Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
+            row_names = (List<String>) coverage_map.get("record_names");
+            coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
+
+            if(paired_mode){
+                // calculate background
+                System.out.println("Paired mode: to calculate background.");
+                // bkg_coverage_scaled_matrix
+                GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bam_file_bkg, DB_GENES, record_name_list, paired_mode);
+                // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
+                Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
+                coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
+                // adjust the coverage matrix based on the input / IgG
+                coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,
+                        coverage_scaled_matrix_bkg);
+            }
+            System.out.println("Coverage Scaled Matrix finish!");
+            System.out.println("----------------------------------------");
             // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
             //double[] confi_matrix = AverageCoverage.calculateSEM(coverage_scaled_matrix);
             // output the result
-            System.out.println("Coverage Scaled Matrix finish!");
-
             // Return avg. profile.
             //double[] average_coverage_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
+
             // save the data
             // Book-keep this matrix for heatmap.
             File bam_path = new File(bam_file);
             String bam_name = bam_path.getName();
             bam_name = bam_name.substring(0, bam_name.lastIndexOf('.'));
-
             //
             JSONObject OutFileList = new JSONObject();
-            String heatmap_data_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + heatmap_file_name;
+            String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name; //+ group_subset + "__" +
             /*String average_coverage_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + average_cov_name;
             String sem_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + sem_name;*/
             OutFileList.put("heatmapDataFile", heatmap_data_path);
@@ -187,7 +135,7 @@ public class MainCalculator extends InputParameterAttributes {
             Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);*/
         }
         config_obj.put("OutputFile", jsonArray);
-        String plot_json_name = "NGSViz_plotSetting.json";
+        String plot_json_name = title + "_NGSViz_plotSetting.json";
         GenerateJsonConfig.generateJsonConfig2(output_path, plot_json_name, config_obj);
     }
 }

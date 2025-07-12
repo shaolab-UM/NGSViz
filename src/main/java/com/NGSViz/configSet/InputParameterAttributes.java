@@ -14,6 +14,7 @@ public class InputParameterAttributes {
     public static String region_type = null; //-R
     public static String input_file = null; // -C
     public static String output_path = null; //-O
+    public static String title = null; //-T
     //
     public static String version_num = "1.0";
     public static String refname = null;
@@ -40,7 +41,6 @@ public class InputParameterAttributes {
     public static String DB_type = null; //-D
     // all is all gene in the database
     public static String genes = "all"; // -E
-    public static String title = "AverageCoverage"; //-T
     public static String analysis_type = "transcript"; // -A
     public static String biotype = "protein_coding"; // -F
     public static int flank_region = 0; //-L

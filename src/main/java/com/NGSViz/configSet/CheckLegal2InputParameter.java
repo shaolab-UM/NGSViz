@@ -1,7 +1,6 @@
 package com.NGSViz.configSet;
 
 import com.NGSViz.sqldbOperate.QueryDBUniqueItem;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,23 +167,24 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
     // check necessary parameters
     public static void checkNecessaryPara(){
         if (genome == null) {
-            System.out.println("There is not a parameter -G, please check!");
-            System.out.println("-G is to specify the genome database used in the analysis!");
-            return;
+            throw new IllegalArgumentException("Missing required parameter -G. " +
+                    "Please specify the genome database used in the analysis.");
         }
         if (region_type == null) {
-            System.out.println("There is not a parameter -R, please check!");
-            System.out.println("-R is to specify the region ");
-            return;
+            throw new IllegalArgumentException("Missing required parameter -R. " +
+                    "Please specify the region type .");
         }
         if (input_file == null) {
-            System.out.println("There is not a parameter -C, please check!");
-            System.out.println("-C is to specify the input file, bam file path or file list in txt format");
-            return;
+            throw new IllegalArgumentException("Missing required parameter -I. " +
+                    "Please specify the input file, bam file path.");
         }
         if (output_path == null) {
-            System.out.println("There is not a parameter -O, please check!");
-            System.out.println("-O is to specify the output file path");
+            throw new IllegalArgumentException("Missing required parameter -O. " +
+                    "Please specify the output file path.");
+        }
+        if (title == null) {
+            throw new IllegalArgumentException("Missing required parameter -T. " +
+                    "Please specify the analysis title.");
         }
     }
 }

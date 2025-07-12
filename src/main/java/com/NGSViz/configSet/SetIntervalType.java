@@ -24,16 +24,4 @@ public class SetIntervalType{
         System.out.println("interval type is " + interval_type);
         return interval_type;
     };
-    public static double calculateMedian(List<Double> numbers) {
-        // order
-        Collections.sort(numbers);
-        int size = numbers.size();
-        if (size % 2 == 0) {
-            // If it is even, return the average of the middle two numbers.
-            return (numbers.get(size / 2 - 1) + numbers.get(size / 2)) / 2.0;
-        } else {
-            // If the number is odd, return the middle number
-            return numbers.get(size / 2);
-        }
-    }
 }

@@ -17,6 +17,8 @@ public class GetInputParameterValue extends InputParameterAttributes {
             region_type = setParameterValue(region_type, "-R", args, i);
             input_file = setParameterValue(input_file, "-I", args, i);
             output_path = setParameterValue(output_path, "-O", args, i);
+            title = setParameterValue(title,"-T", args, i);
+
             // Option parameters
             // system config path
             sys_config_path = setParameterValue(sys_config_path,"-CP", args, i);
@@ -24,8 +26,6 @@ public class GetInputParameterValue extends InputParameterAttributes {
             DB_type = setParameterValue(DB_type,"-D", args, i);
             // gene list
             genes = setParameterValue(genes,"-X", args, i);
-            // analysis title
-            title = setParameterValue(title,"-T", args, i);
             // analysis type
             analysis_type = setParameterValue(analysis_type,"-A", args, i);
             // subset for region - B

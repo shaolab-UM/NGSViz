@@ -9,7 +9,7 @@ import java.util.List;
  * @fucntion integrate exon coverage
  */
 public class CoverageExonSubset {
-    public static ArrayList<Integer> getCoverageExonSubset(ArrayList<Integer> physical_coverage, String tid_name,
+    public static int[] getCoverageExonSubset(int[] physical_coverage, String tid_name,
                                                            int query_range_start, int query_range_end) {
         System.out.println("---------");
         System.out.println("Processing exon coverage, its id is : " + tid_name);
@@ -18,7 +18,8 @@ public class CoverageExonSubset {
         List<Integer> exon_end_list = ExonModelData.getExonEndList(tid_name);
         int exon_list_len = exon_start_list.size();
 
-        ArrayList<Integer> exon_coverage_list = new ArrayList<>();
+        int[] exon_coverage_list = new int[range_len];
+        int currentIndex = 0;
         for(int i = 0; i < exon_list_len; i++) {
             int exon_start = exon_start_list.get(i) - query_range_start;
             int exon_end = exon_end_list.get(i) - query_range_start;
@@ -28,8 +29,9 @@ public class CoverageExonSubset {
             if(i == exon_list_len - 1) {
                 exon_end = range_len - 1;
             }
-            List<Integer> sub_List = physical_coverage.subList(exon_start, exon_end);
-            exon_coverage_list.addAll(sub_List);
+            for(int j = exon_start; j < exon_end; j++) {
+                exon_coverage_list[currentIndex++] = physical_coverage[j];
+            }
         }
         ArrayList<Integer> exon_coverage = new ArrayList<>();
         exon_coverage.addAll(exon_start_list);

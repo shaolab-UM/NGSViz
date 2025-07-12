@@ -1,7 +1,5 @@
 package com.NGSViz.sqldbOperate;
 
-
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +95,7 @@ public class ParallelGeneDbProcessor extends DBAtribute{
             int width = end_pos - start_pos + 1;
 
             String nochr_name = chr_name.replace("chr", "");
-            String record_name = gene_name + ":" + transcript_id;
+            String record_name = gene_name + ":" + transcript_id; //
 
             // Thread-safe method using concurrent collections (no synchronization needed)
             unique_chrname_list.add(chr_name);
