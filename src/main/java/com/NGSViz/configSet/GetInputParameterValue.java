@@ -38,6 +38,10 @@ public class GetInputParameterValue extends InputParameterAttributes {
             //robust = setParameterValue(robust,"-RB", args, i);
             // Random sampling rate
             //random_sampling_rate = setParameterValue(random_sampling_rate,"-S", args, i);
+            // scale_ratio, such as spike-in calibriation
+            scale_ratio = setParameterValue(scale_ratio,"-S", args, i);
+            // bed db path
+            bedDB_path = setParameterValue(input_file, "-BD", args, i);
             // number of datapoint
             num_datapoints = setParameterValue(num_datapoints,"-DP", args, i);
             // Set cores number

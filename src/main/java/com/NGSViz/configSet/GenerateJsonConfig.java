@@ -87,6 +87,8 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         plot_parameters.put("num_datapoints", num_datapoints);
         plot_parameters.put("middle_datapoints", middle_points);
         plot_parameters.put("flanking_region_datapoints", flank_points);
+        plot_parameters.put("SEM", true);
+        plot_parameters.put("smooth", false);
         // create JSONArray to save list data
         JSONArray sample_array = new JSONArray();
         sample_array = buildJsonListConfig(sample_array, sample_list);

@@ -84,19 +84,7 @@ public class GeneCoverageProcessor {
                             CoverageScaled.bamSizeNormalization(library_size);
                             // Obtain gene index
                             int index = gene_coord.getIndex();
-
-//                            System.arraycopy(CoverageScaled.getScaledCoverage(), 0,
-//                                    coverage_scaled_matrix[index], 0,
-//                                    CoverageScaled.getScaledCoverage().length);
-
-
-                            // Write coverage data
-                            /*System.arraycopy(CoverageScaled.getScaledCoverage(), 0,
-                                    coverage_scaled_matrix[index], 0,
-                                    CoverageScaled.getScaledCoverage().length);
-                            double[] rowData = new double[]{1.0, 0.0, 3.5, 0.0};*/
                             coverage_scaled_matrix.setRow(index, CoverageScaled.getScaledCoverage());
-
                             // Write gene name
                             record_names.set(index, query_record_name);
 

@@ -38,21 +38,16 @@ public class OptimizedGeneProcessor {
             // Get library size and chromosome list (only once)
             long library_size = BamFileLibrarySize.getLibrarySize(readerPool[0]);
             Set<String> bam_chromosomes_list = ReadBam.getChromosomesInBam(bam_file);
-            
             // Create optimized thread pool
             ThreadPoolExecutor executor = createOptimizedThreadPool();
-            
             // Initialize result matrix
             int num_query_gene = query_gene_list.size();
             //double[][] coverage_scaled_matrix = new double[num_query_gene][num_datapoints+1];
             SparseMatrix coverage_scaled_matrix = new SparseMatrix(num_query_gene, num_datapoints+1);
-            
             // Batch process gene list
             List<List<String>> batches = splitIntoBatches(query_gene_list, BATCH_SIZE);
-            
             // Use CompletableFuture for asynchronous processing
             List<CompletableFuture<Void>> futures = new ArrayList<>();
-            
             for (int batchIndex = 0; batchIndex < batches.size(); batchIndex++) {
                 List<String> batch = batches.get(batchIndex);
                 int startIndex = batchIndex * BATCH_SIZE;
@@ -62,9 +57,7 @@ public class OptimizedGeneProcessor {
                                bam_chromosomes_list, coverage_scaled_matrix, 
                                startIndex, readerPool);
                 }, executor);
-                
                 futures.add(future);
-                
                 // Memory monitoring and garbage collection
                 monitorMemoryUsage();
             }

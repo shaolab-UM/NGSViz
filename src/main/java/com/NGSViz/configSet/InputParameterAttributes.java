@@ -35,6 +35,7 @@ public class InputParameterAttributes {
     public static List<String> group_list = new ArrayList<>();
     public static String db_path = "";
     public static String input_db_path = ""; // merge db for input db path
+    public static String bedDB_path = null; // -BD
     // option parameters
     public static String DB_type = null; //-D
     // all is all gene in the database
@@ -45,7 +46,8 @@ public class InputParameterAttributes {
     public static int flank_region = 0; //-L
     public static double flank_factor = 0.0; // -N
     public static double robust = 0.0; //-RB
-    public static double random_sampling_rate =0.0;//-S
+    public static double random_sampling_rate =0.0;
+    public static double scale_ratio = 1.0;//-S
     public static int core_num = 1; //-P
     public static String scaler_method = "bin"; //-AL
     public static int chunk_size = 100; //-CS

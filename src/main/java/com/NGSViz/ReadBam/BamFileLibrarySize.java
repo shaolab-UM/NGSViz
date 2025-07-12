@@ -1,5 +1,6 @@
 package com.NGSViz.ReadBam;
 
+import com.NGSViz.configSet.InputParameterAttributes;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.List;
  * @function get the library size of bam file which pass the quality control
  */
 public class BamFileLibrarySize {
+    // spike-in calibration
+    private static double scale_ratio = InputParameterAttributes.scale_ratio;
 
     public static long getLibrarySize(SamReader bam_reader) {
         long librarySize = 0;
@@ -35,7 +38,7 @@ public class BamFileLibrarySize {
         for (int i = 0; i < coverage_scaled.length; i++) {
             double num = coverage_scaled[i];
             // num / library_size * 1e6
-            double result = num / library_size * 1_000_000.0;
+            double result = num / library_size * 1_000_000.0 * scale_ratio;
             result_list[i] = result;
         }
         return result_list;

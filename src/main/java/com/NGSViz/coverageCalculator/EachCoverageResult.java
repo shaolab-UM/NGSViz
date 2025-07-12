@@ -1,5 +1,6 @@
 package com.NGSViz.coverageCalculator;
 
+import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.Transcript;
 
 import java.util.Arrays;
@@ -8,6 +9,7 @@ public class EachCoverageResult {
     private Transcript gene_coord;
     private double[] scaled_coverage;
     private String record_name;
+    private static double scale_ratio = InputParameterAttributes.scale_ratio;
     private int index;
 
     public EachCoverageResult(Transcript gene_coord, double[] scaled_coverage) {
@@ -24,7 +26,7 @@ public class EachCoverageResult {
         for (int i = 0; i < scaled_coverage.length; i++) {
             double num = scaled_coverage[i];
             // num / library_size * 1e6
-            double result = num / library_size * 1_000_000.0;
+            double result = num / library_size * 1_000_000.0 * scale_ratio;
             scaled_coverage[i] = result;
         }
     }

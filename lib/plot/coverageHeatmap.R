@@ -4,6 +4,9 @@ library(rtracklayer)
 library(circlize)
 library(colorspace)
 library(RColorBrewer)
+library(purrr)
+library(data.table)
+library(RcppRoll)
 
 
 # theme -------------------------------------------------------------------
@@ -114,7 +117,7 @@ matrix2LongDf <- function(data_mat){
       values_to = "Coverage"    
     )
   df_long["XAsis"] <- sub("X", "", df_long$Position) |> as.numeric()
-  if(min(df_long$XAsis) == 0){
+  if(min(df_long$XAsis, na.rm = TRUE) == 0){
     df_long$XAsis <- df_long$XAsis+1
   }
   return(df_long)
@@ -165,6 +168,7 @@ coverageHeatmap <- function(sorted_df, plot_paras, bg_col = "#Cb648b"){
   axis_name <- names(axis_pos)
   # positon of vertical reference line
   line_pos <- axis_pos[-c(1, length(axis_pos))]
+  print(sprintf("AveragePlot:tss:%s,tes:%s", line_pos[1], line_pos[2]))
   #print(line_pos)
   split_num <- length(unique(sorted_df$Split))
   # process the Outlier
@@ -233,16 +237,20 @@ averageCovPlot <- function(sorted_df, plot_paras, sample_name){
   # calculate the average coverage for each point
   mat_df <- sorted_df %>%
     group_by(Split, XAsis) %>%
-    summarise(Density = mean(Coverage, na.rm = TRUE), .groups = 'drop')
+    summarise(
+      Density = mean(Coverage, na.rm = TRUE),
+      SEM = sd(Coverage, na.rm = TRUE) / sqrt(n()),
+      .groups = 'drop'
+    )
   axis_pos <- getXAxisCoor(plot_paras)
   line_pos <- axis_pos[-c(1, length(axis_pos))]
-  line_pos[1] <- line_pos[1]-1
-  line_pos[2] <- line_pos[2]+1
   print(line_pos)
   split_num <- length(unique(sorted_df$Split))
   # plot the average plot
   ptop <- ggplot(mat_df) +
     geom_line(aes(x = XAsis, y = Density, color = Split), linewidth = plot_paras$line_size) + 
+    # Add error lines
+    geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3) +
     # Specified color
     # scale_color_brewer(palette = "Set1") + 
     scale_color_manual(values = plot_paras$split_color[1:split_num]) +
@@ -257,13 +265,29 @@ averageCovPlot <- function(sorted_df, plot_paras, sample_name){
                color = plot_paras$dash_color, linewidth = plot_paras$dash_size) +
     # By sample dimension, because only one sample is selected here, so there is only one dimension.
     # facet_wrap(~sample, nrow = 1) + 
-    labs(title = sample_name) 
+    labs(title = sample_name) + 
+  # Remove the gap between the heatmap edge and the coordinate axis.
+  coord_cartesian(expand = 0) 
   if(split_num == 1){
     ptop <- ptop + theme(legend.position = "none")
   }
   return(ptop)
 }
 
+# "moving_average", "gaussian", "loess"
+smooth_moving_average_pad <- function(x, window_size = 5) {
+  pad_size <- floor(window_size / 2)
+  x_padded <- c(rep(x[1], pad_size), x, rep(x[length(x)], pad_size))
+  smoothed <- zoo::rollmean(x_padded, k = window_size, align = "center")
+  return(smoothed)
+}
+
+smooth <- function(data_mat, window_size = 5) {
+  smooth_mat <- t(apply(data_mat, 1, function(x) {
+    smooth_moving_average_pad(x, window_size = 5)
+  }))
+  return(smooth_mat)
+}
 
 plotMain <- function(plot_paras){
   heatmap_files <- plot_paras$heatmap_mat_path
@@ -278,9 +302,14 @@ plotMain <- function(plot_paras){
     }else{
       data_mat <- read.csv(heatmap_files[i], row.names = 1) %>% as.matrix()
     }
+    
+    # smooth
+    data_mat <- smooth(data_mat, window_size = 5)
+    
     sample_name <- plot_paras$sample_list[i]
     # order the row of the heatmap based on the mean coverage
     sorted_df <- getSplitLabel(data_mat, plot_paras)
+    
     # plot
     bg_col <- plot_paras$sample_color[i]
     pbom <- coverageHeatmap(sorted_df, plot_paras, bg_col)
@@ -308,50 +337,3 @@ plot_paras <- getPlotJsonParas(plot_para_file)
 p <- plotMain(plot_paras)
 p
 
-
-
-
-# json_file_path <- "/Users/bencheye/myProj/ngsPlot/Output/pointMode/NGSVir_running_config.json"
-#json_file_path <- "/Users/bencheye/myProj/ngsPlot/Output/broadMode/NGSVir_running_config.json"
-# file_path <- "/Users/bencheye/myProj/ngsPlot/Output/k4.test/hm1.csv"
-# data_mat <- read.csv(file_path, sep = ',', row.names = 1) %>% as.matrix()
-# pbom <- coverageHeatmap(data_mat, running_paras, bg_col, sample_name, plot_paras)
-# ptop <- averageCovPlot(data_mat, running_paras, bg_col, sample_name, plot_paras)
-# pmer <- aplot::plot_list(gglist = list(ptop, pbom), ncol = 1, heights = c(1, 3))
-# pmer
-# 
-# 
-# # split the row (genes) into serial sub gene list or cluster
-# # order the row of the heatmap based on the mean coverage
-# sorted_df <- getSplitLabel(data_mat, plot_paras)
-# split_num <- length(unique(sorted_df$Split))
-# plot_paras
-
-
-# brewer.pal(n = 6, name = "Set1")
-# "#E41A1C" "#377EB8" "#4DAF4A" "#984EA3" "#FF7F00" "#FFFF33"
-# brewer.pal(n = 6, name = "Set2")
-# "#66C2A5" "#FC8D62" "#8DA0CB" "#E78AC3" "#A6D854" "#FFD92F"
-# brewer.pal(n = 6, name = "Set3")
-# "#8DD3C7" "#FFFFB3" "#BEBADA" "#FB8072" "#80B1D3" "#FDB462"
-# brewer.pal(n = 6, name = "Pastel1")
-# "#FBB4AE" "#B3CDE3" "#CCEBC5" "#DECBE4" "#FED9A6" "#FFFFCC"
-# brewer.pal(n = 6, name = "Pastel2")
-# "#B3E2CD" "#FDCDAC" "#CBD5E8" "#F4CAE4" "#E6F5C9" "#FFF2AE"
-# brewer.pal(n = 6, name = "Paired")
-# "#A6CEE3" "#1F78B4" "#B2DF8A" "#33A02C" "#FB9A99" "#E31A1C"
-# brewer.pal(n = 6, name = "Dark2")
-# "#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02"
-# brewer.pal(n = 6, name = "Accent")
-# "#7FC97F" "#BEAED4" "#FDC086" "#FFFF99" "#386CB0" "#F0027F"
-# 
-# pal_aaas(palette = "default")(6)
-# "#3B4992FF" "#EE0000FF" "#008B45FF" "#631879FF" "#008280FF" "#BB0021FF"
-# pal_jama(palette = "default")(6)
-# "#374E55FF" "#DF8F44FF" "#00A1D5FF" "#B24745FF" "#79AF97FF" "#6A6599FF"
-# pal_nejm(palette = "default")(6)
-# "#BC3C29FF" "#0072B5FF" "#E18727FF" "#20854EFF" "#7876B1FF" "#6F99ADFF"
-# pal_npg(palette = c("nrc"))(6)
-# "#E64B35FF" "#4DBBD5FF" "#00A087FF" "#3C5488FF" "#F39B7FFF" "#8491B4FF"
-# pal_lancet(palette = c("lanonc"))(6)
-# "#00468BFF" "#ED0000FF" "#42B540FF" "#0099B4FF" "#925E9FFF" "#FDAF91FF"

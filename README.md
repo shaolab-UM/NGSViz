@@ -44,8 +44,6 @@ The `CoordinateTblName` contains the program to obtain the interested genomic el
 | chr1  | 249208015 | 249208078 | 64    | +      | exon       | protein_coding | PGBD2 | NM_001017434 | 0             |
 | chr1  | 249200434 | 249213345 | 12912 | +      | transcript | protein_coding | PGBD2 | NM_170725    | 0             |
 
-
-
 ### Reference database
 
 This program provides a reference database of multiple species and multiple versions. Users can download the corresponding database from the provided online disk according to their research needs and import it into the program's dependent database.
@@ -53,6 +51,25 @@ This program provides a reference database of multiple species and multiple vers
 ### Modify the build-in batabase path
 
 The default built-in database, `genomeCoordinate.db`, is located in the program's `database` directory. Its location is specified by the system settings file, `NGSViz_setting.json`, found in the system setting path relative to the program directory. However, due to containerization or other reasons, this database might be in read-only mode, which could prevent users from adding new databases using the `merge` method. The program allows users to create a new `NGSViz_setting.json` file at any location. When running the program, they can specify the path to their custom system configuration file using the `-CP` parameter or through the Rshiny module. Within this file, they can modify the `db_path` parameter to point to the path of their new reference database.
+
+### 🧬 Chromosome Naming Compatibility When Processing BAM Files
+
+When processing BAM files, it's important to ensure consistency between the reference genome used for alignment and the corresponding GTF annotation file. Different genome sources may use different chromosome naming conventions, which can lead to mismatches during downstream analysis.
+
+For example:
+
+- **Ensembl** reference genomes and GTF files typically use chromosome names like `1`, `2`, `X` (without the `chr`prefix).
+- **UCSC** and **GENCODE** use names like `chr1`, `chr2`, `chrX` (with the `chr` prefix).
+- **NCBI RefSeq** uses accession-based identifiers such as `NC_000001.11`.
+
+Our tool is built using **UCSC GTF annotations**, which follow the `chr`-prefixed naming convention. Therefore, it expects chromosome names in the format `chr1`, `chr2`, etc. GTF files following UCSC-style naming are fully supported and handled natively. Our tool automatically detects and adapts to BAM files aligned using Ensembl-style reference genomes (without the chr prefix). No manual intervention or configuration is required from the user.
+
+To ensure compatibility:
+
+- If your BAM file was aligned using a reference genome without the `chr` prefix (e.g., from Ensembl), you may need to adjust the chromosome names in the BAM or GTF file accordingly.
+- Our tool **automatically handles** GTF files that follow the UCSC-style naming convention.
+
+> ⚠️ **Note:**  We do **not support automatic conversion** of NCBI-style accession identifiers (e.g., `NC_000001.11`). If you're using RefSeq-based annotations, please convert chromosome names to UCSC format before proceeding.
 
 ### Merge database
 

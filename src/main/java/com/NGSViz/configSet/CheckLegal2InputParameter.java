@@ -32,7 +32,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         checkValueGreater0(flank_region, "-F");
         checkValue01(flank_factor, "-N");
         checkValue01(robust, "-RB");
-        checkValue01(random_sampling_rate, "-S");
+        checkValue01(scale_ratio, "-S");
         checkValueGreater0(core_num, "-P");
         checkScaleMethod(scaler_method);
         checkValueGreater0(chunk_size, "-CZ");
@@ -45,29 +45,34 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
     }
     //
     // check whether the path of input file or directory exist
-    public static void CheckFilePath (String file_ath) {
+    public static void CheckFilePath (String file_path) {
         List<String> legal_extension = new ArrayList<>();
         legal_extension.add("txt");
         legal_extension.add("csv");
         legal_extension.add("bam");
-        File file = new File(file_ath);
-        if (file.exists()) {
-            System.out.println("Input file path : " + file_ath);
-        } else {
-            System.out.println("Error: Input file or directory not exists !");
-            System.out.println("Input file path : " + file_ath);
-            System.exit(-1);
+
+        String[] files = file_path.split(":");
+        for (String file_ath : files) {
+            File file = new File(file_ath);
+            if (file.exists()) {
+                System.out.println("Input file path : " + file_ath);
+            } else {
+                System.out.println("Error: Input file or directory not exists !");
+                System.out.println("Input file path : " + file_ath);
+                System.exit(-1);
+            }
+            String file_type = getFileExtension(file_ath);
+            if (file_type.isEmpty()) {
+                System.out.println("Error: There is no extension file for input file!");
+                System.out.println("Input file path : " + file_ath);
+                System.exit(-1);
+            } else if (! legal_extension.contains(file_type)) {
+                System.out.println("Error: Input file or not in `bam`, `txt` or `csv` !");
+                System.out.println("Input file path : " + file_ath);
+                System.exit(-1);
+            }
         }
-        String file_type = getFileExtension(file_ath);
-        if (file_type.isEmpty()) {
-            System.out.println("Error: There is no extension file for input file!");
-            System.out.println("Input file path : " + file_ath);
-            System.exit(-1);
-        } else if (! legal_extension.contains(file_type)) {
-            System.out.println("Error: Input file or not in `bam`, `txt` or `csv` !");
-            System.out.println("Input file path : " + file_ath);
-            System.exit(-1);
-        }
+
     }
     // get the extension name of file
     public static String getFileExtension(String file_path) {
