@@ -9,8 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BedDBProcess {
     private static Set<String> unique_chrname_list = ConcurrentHashMap.newKeySet();
     private static Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
-    private static Set<String> record_name_list = ConcurrentHashMap.newKeySet();
-    private static Set<String> DB_gene_list = ConcurrentHashMap.newKeySet();
+    //public static List<String> exon_record_name_list = new ArrayList<>();
+    public static List<String> record_name_list = new ArrayList<>();
+    public static Set<String> DB_gene_list = ConcurrentHashMap.newKeySet();
     // Concurrent Map
     private static Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
     public static Map<String, List<Transcript>> gene_map_exon = new HashMap<>();
@@ -101,8 +102,8 @@ public class BedDBProcess {
     }
 
 
-    public Set<String> getRecordName() { return record_name_list; }
-    public Map<String, Transcript> getGeneMap() { return gene_map; }
+    public static Map<String, Transcript> getGeneMap() { return gene_map; }
+    public static Map<String, List<Transcript>> getExonGeneMap() { return gene_map_exon; };
 
 
 }

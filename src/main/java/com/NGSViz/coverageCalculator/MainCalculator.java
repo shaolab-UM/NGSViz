@@ -48,6 +48,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static Map<String, Transcript> DB_GENES;
     private static Set<String> record_name_list;
     private static List<String> row_names;
+    private static Map<String, List<Transcript>> exon_gene_map;
 
 
     public static void mainCalculator() throws IOException {
@@ -77,6 +78,8 @@ public class MainCalculator extends InputParameterAttributes {
 
                 // get the whole coordinate
                 QueryWholeRegionCoordinate.queryGenomeCoorDatabaseRecord(tbl_name, biotype, analysis_type);
+                query_gene_list = QueryWholeRegionCoordinate.DB_gene_list;
+                exon_gene_map = QueryWholeRegionCoordinate.gene_map;
 
                 // get the subset of gene list
                 if (gene_subset.equals("all")){
@@ -88,9 +91,10 @@ public class MainCalculator extends InputParameterAttributes {
                     System.out.println("subset gene list name is: " + gene_subset);
                     query_gene_list = ReadTextFile.readGeneList2(gene_subset);
                 }
-                
+
                 // Use optimized processor instead of old method
-                HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file, query_gene_list, paired_mode);
+                HashMap<String, Object> mat_res = OptimizedGeneProcessor.optimizedParallelProcess(bam_file,
+                        query_gene_list, exon_gene_map, paired_mode);
                 List<String> row_names = (List<String>) mat_res.get("row_names");
                 coverage_scaled_matrix = (SparseMatrix) mat_res.get("coverage_matrix");
 
@@ -98,7 +102,8 @@ public class MainCalculator extends InputParameterAttributes {
                     // calculate background
                     System.out.println("Paired mode: to calculate background.");
                     // bkg_coverage_scaled_matrix
-                    HashMap<String, Object> mat_res_bkg = OptimizedGeneProcessor.optimizedParallelProcess(bam_file_bkg, query_gene_list, paired_mode);
+                    HashMap<String, Object> mat_res_bkg = OptimizedGeneProcessor.optimizedParallelProcess(bam_file_bkg,
+                            query_gene_list, exon_gene_map, paired_mode);
                     coverage_scaled_matrix_bkg = (SparseMatrix) mat_res_bkg.get("coverage_matrix");
                     // adjust the coverage matrix based on the input / IgG
                     coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,

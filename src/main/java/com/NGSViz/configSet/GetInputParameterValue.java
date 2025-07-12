@@ -41,7 +41,7 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // scale_ratio, such as spike-in calibriation
             scale_ratio = setParameterValue(scale_ratio,"-S", args, i);
             // bed db path
-            bedDB_path = setParameterValue(input_file, "-BD", args, i);
+            bedDB_path = setParameterValue(bedDB_path, "-BD", args, i);
             // number of datapoint
             num_datapoints = setParameterValue(num_datapoints,"-DP", args, i);
             // Set cores number

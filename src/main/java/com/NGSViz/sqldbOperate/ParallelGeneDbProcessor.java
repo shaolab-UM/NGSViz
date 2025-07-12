@@ -123,5 +123,11 @@ public class ParallelGeneDbProcessor extends DBAtribute{
         region_num = width_list.toArray().length;
         return region_num;
     }
+    public void setRecordName(Set<String> bed_record_name_list) {
+        record_name_list = bed_record_name_list;
+    }
+    public void setGeneMap(Map<String, Transcript> bed_gene_map) {
+        gene_map = bed_gene_map;
+    }
 }
 

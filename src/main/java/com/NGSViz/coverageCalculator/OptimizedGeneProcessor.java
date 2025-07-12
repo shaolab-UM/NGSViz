@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Contains SamReader object pool, memory management and batch processing optimization
  */
 public class OptimizedGeneProcessor {
-    private static Map<String, List<Transcript>> gene_map = QueryWholeRegionCoordinate.gene_map;
+    //private static Map<String, List<Transcript>> gene_map = QueryWholeRegionCoordinate.gene_map;
     private static int num_datapoints = InputParameterAttributes.num_datapoints;
     private static int core_num = InputParameterAttributes.core_num;
     private static final int BATCH_SIZE = 100; // Batch size
@@ -30,7 +30,8 @@ public class OptimizedGeneProcessor {
      * Optimized parallel gene processing method
      */
     public static HashMap<String, Object> optimizedParallelProcess(String bam_file, 
-                                                                  List<String> query_gene_list, 
+                                                                  List<String> query_gene_list,
+                                                                   Map<String, List<Transcript>> gene_map,
                                                                   boolean paired_mode) {
         // Create SamReader object pool
         SamReader[] readerPool = createReaderPool(bam_file);
@@ -53,7 +54,7 @@ public class OptimizedGeneProcessor {
                 int startIndex = batchIndex * BATCH_SIZE;
                 
                 CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                    processBatch(batch, bam_file, paired_mode, library_size, 
+                    processBatch(batch, gene_map, bam_file, paired_mode, library_size,
                                bam_chromosomes_list, coverage_scaled_matrix, 
                                startIndex, readerPool);
                 }, executor);
@@ -138,7 +139,7 @@ public class OptimizedGeneProcessor {
     /**
      * Process a batch of genes
      */
-    private static void processBatch(List<String> batch, String bam_file, boolean paired_mode,
+    private static void processBatch(List<String> batch, Map<String, List<Transcript>> gene_map, String bam_file, boolean paired_mode,
                                    long library_size, Set<String> bam_chromosomes_list,
                                      SparseMatrix coverage_scaled_matrix, int startIndex,
                                    SamReader[] readerPool) {
@@ -153,7 +154,7 @@ public class OptimizedGeneProcessor {
                     String gene_name = batch.get(i);
                     int matrixIndex = startIndex + i;
                     
-                    double[] transcript_mat = processGeneOptimized(gene_name, reader, 
+                    double[] transcript_mat = processGeneOptimized(gene_map, gene_name, reader,
                                                                  paired_mode, library_size, 
                                                                  bam_chromosomes_list);
                     
@@ -172,7 +173,8 @@ public class OptimizedGeneProcessor {
     /**
      * Optimized single gene processing method
      */
-    private static double[] processGeneOptimized(String gene_name, SamReader reader,
+    private static double[] processGeneOptimized(Map<String, List<Transcript>> gene_map,
+                                                 String gene_name, SamReader reader,
                                                boolean paired_mode, long library_size,
                                                Set<String> bam_chromosomes_list) {
         System.out.println("> --- Processing query gene name is: " + gene_name);

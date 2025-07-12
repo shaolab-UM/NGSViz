@@ -5,55 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/BackgrouNormalizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/ngs.plot/0.CNR_allgene.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/ngs.plot/0.CNR_allgene_avg_log2_latest.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/ngs.plot/0.ngsplot_rep_3ndbatch_peaks_heatmap.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/ngs.plot/0.ngsplot_rep_genebody_latest_v3.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/plot/mutli-sample.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/plot/未命名.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/utils/未命名.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/.Rhistory" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/R/plot/mutli-sample.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/R/plot/未命名.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/R/utils/smooth.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/Rshiny设计思路.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/Viz.Rproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/app-old.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/app_副本.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/www/NGSViz_log.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/www/img/NGSViz_log.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/图片 1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Viz/未命名文本.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSVir_running_config 20.16.01.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSVir_running_config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSVir_running_config_副本.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSVir_running_config_副本2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSViz_plotParameters.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSViz_plotSetting.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/NGSViz_plotSetting_副本.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/README.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/main_backup_20250518.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/main_backup_20250519.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/ar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/old/averagePlot.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/old/heatmap.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/old/mainPlot.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/old/plotThemeSet.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/BamFileLibrarySize.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/CheckLegal2InputParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/CheckLegal2InputParameter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/GeneCoverageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/OptimizedGeneProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/SEMCalculator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/BedDBProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/BedDBProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/ParallelGeneDbProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -233,7 +190,7 @@
       <workItem from="1751622206547" duration="28596000" />
       <workItem from="1751807413352" duration="334000" />
       <workItem from="1751945027337" duration="20417000" />
-      <workItem from="1752281051701" duration="12486000" />
+      <workItem from="1752281051701" duration="18991000" />
     </task>
     <servers />
   </component>
