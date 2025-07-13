@@ -4,7 +4,7 @@
   <groupId>NGSViz</groupId>
   <artifactId>NGSViz</artifactId>
   <name>NGSViz</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
@@ -30,14 +30,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>22</source>
-          <target>22</target>
-          <compilerArgs>--enable-preview</compilerArgs>
-        </configuration>
       </plugin>
     </plugins>
   </build>
