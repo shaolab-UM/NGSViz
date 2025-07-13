@@ -134,7 +134,7 @@ getSplitLabel <- function(data_mat, plot_paras){
   cluster_num <- plot_paras$cluster_num
   # for multiple subgeneset, i.e up/down-regulated genes
   if(plot_paras$split_mode == "cluster"){
-    df_long <- setHCluster(data_mat, cluster_num, hc_m, dist_m)
+     df_long <- setHCluster(data_mat, cluster_num, hc_m, dist_m)
   }else{
     # sub gene list
     # # transform the matrix into the long data
@@ -146,15 +146,19 @@ getSplitLabel <- function(data_mat, plot_paras){
 }
 
 setHCluster <- function(data_mat, cluster_num, hc_m, dist_m){
-  hc <- hclust(dist(data_mat, method = dist_m), method = hc_m)
-  hc_result <- cutree(hc, k = cluster_num)
   # transform the matrix into the long data
   df_long <- matrix2LongDf(data_mat)
-  df_long["Split"] <- NA
-  # give the cluster label
-  for (i in 1:cluster_num) {
-    choose_genes <- names(hc_result)[hc_result == i]
-    df_long$Split[df_long$Gene %in% choose_genes] <- paste0("C", as.character(i))
+  df_long["Split"] <- "C1"
+  if(cluster_num != 1){
+    hc <- hclust(dist(data_mat, method = dist_m), method = hc_m)
+    hc_result <- cutree(hc, k = cluster_num)
+    
+    
+    # give the cluster label
+    for (i in 1:cluster_num) {
+      choose_genes <- names(hc_result)[hc_result == i]
+      df_long$Split[df_long$Gene %in% choose_genes] <- paste0("C", as.character(i))
+    }
   }
   return(df_long)
 }
@@ -163,7 +167,8 @@ setHCluster <- function(data_mat, cluster_num, hc_m, dist_m){
 # heatmap -----------------------------------------------------------------
 
 # Lack of split plot based on gene clustering or differential genes
-coverageHeatmap <- function(sorted_df, plot_paras, bg_col = "#Cb648b"){
+coverageHeatmap <- function(sorted_df, plot_paras){
+  bg_col <- plot_paras$sample_color
   # X-axis label and position
   axis_pos <- getXAxisCoor(plot_paras)
   axis_name <- names(axis_pos)
@@ -234,7 +239,8 @@ coverageHeatmap <- function(sorted_df, plot_paras, bg_col = "#Cb648b"){
 
 
 # average plot ------------------------------------------------------------
-averageCovPlot <- function(sorted_df, plot_paras, sample_name){
+averageCovPlot <- function(sorted_df, plot_paras){
+  sample_name <- plot_paras$plot_title
   # calculate the average coverage for each point
   mat_df <- sorted_df %>%
     group_by(Split, XAsis) %>%
@@ -250,8 +256,6 @@ averageCovPlot <- function(sorted_df, plot_paras, sample_name){
   # plot the average plot
   ptop <- ggplot(mat_df) +
     geom_line(aes(x = XAsis, y = Density, color = Split), linewidth = plot_paras$line_size) + 
-    # Add error lines
-    geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3) +
     # Specified color
     # scale_color_brewer(palette = "Set1") + 
     scale_color_manual(values = plot_paras$split_color[1:split_num]) +
@@ -272,8 +276,14 @@ averageCovPlot <- function(sorted_df, plot_paras, sample_name){
   if(split_num == 1){
     ptop <- ptop + theme(legend.position = "none")
   }
+  if(plot_paras$SEM){
+    # Add error lines
+    ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3)
+  }
   return(ptop)
 }
+
+
 
 # "moving_average", "gaussian", "loess"
 smooth_moving_average_pad <- function(x, window_size = 5) {
@@ -290,51 +300,152 @@ smooth <- function(data_mat, window_size = 5) {
   return(smooth_mat)
 }
 
-plotMain <- function(plot_paras){
+preparePlotData <- function(plot_paras){
   heatmap_files <- plot_paras$heatmap_mat_path
   out_path <- plot_paras$output_path
-  ht_list <- list()
-  for (i in 1:length(heatmap_files)) {
-    if (!file.exists(heatmap_files[i])) {
-      error_message <- paste0("Error: Specified file path '", 
-                              heatmap_files[i], 
-                              "' not exist. The script will terminate.")
-      stop(error_message)
-    }else{
-      data_mat <- read.csv(heatmap_files[i], row.names = 1) %>% as.matrix()
-    }
-    
-    # smooth
-    data_mat <- smooth(data_mat, window_size = 5)
-    
-    sample_name <- plot_paras$sample_list[i]
-    # order the row of the heatmap based on the mean coverage
-    sorted_df <- getSplitLabel(data_mat, plot_paras)
-    
-    # plot
-    bg_col <- plot_paras$sample_color[i]
-    pbom <- coverageHeatmap(sorted_df, plot_paras, bg_col)
-    ptop <- averageCovPlot(sorted_df, plot_paras, sample_name)
-    pmer <- aplot::plot_list(gglist = list(ptop, pbom), ncol = 1, heights = c(1, 3))
-    ht_list[[i]] <- pmer
+  if (!file.exists(heatmap_files)) {
+    error_message <- paste0("Error: Specified file path '", 
+                            heatmap_files, 
+                            "' not exist. The script will terminate.")
+    stop(error_message)
+  }else{
+    data_mat <- read.csv(heatmap_files, row.names = 1) %>% as.matrix()
   }
-  all_plots <- cowplot::plot_grid(plotlist = ht_list, nrow = 1)
-  file_name <- sprintf("%s/coverage_heatmap.%s", out_path, plot_paras$file_type)
-  ggsave(file_name, plot = all_plots, dpi = plot_paras$dpi, 
-         width = plot_paras$width, height = plot_paras$high, units = "cm")
-  return(all_plots)
+  
+  # smooth
+  if(plot_paras$smooth){
+    data_mat <- smooth(data_mat)
+  }
+  
+  # order the row of the heatmap based on the mean coverage
+  sorted_df <- getSplitLabel(data_mat, plot_paras)
+  return(sorted_df)
 }
 
 
 
-# usage -------------------------------------------------------------------
+# Retrieve all JSON filenames under the specified path
+getJsonFiles <- function(path) {
+  json_files <- list.files(path, pattern = "\\.json$", full.names = FALSE)
+  return(as.list(json_files))
+}
 
+# Multiple results are plotted on one graph.
+averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name){
+  # calculate the average coverage for each point
+  axis_pos <- getXAxisCoor(plot_paras)
+  axis_name <- names(axis_pos)
+  # positon of vertical reference line
+  line_pos <- axis_pos[-c(1, length(axis_pos))]
+  print(line_pos)
+  split_num <- length(unique(merge_df$Split))
+  # plot the average plot
+  ptop <- ggplot(merge_df) +
+    geom_line(aes(x = XAsis, y = Density, color = Group, group = Group), linewidth = plot_paras$line_size) + 
+    # Specified color
+    # scale_color_brewer(palette = "Set1") + 
+    scale_color_manual(values = plot_paras$split_color) +
+    xlab("") + ylab("") +
+    # add the axis-x label
+    scale_x_continuous(breaks = axis_pos, labels = axis_name) +
+    myTheme(plot_paras) + 
+    theme(
+      
+      # Adjust the margin of the graph, setting the bottom margin to a negative value helps with alignment.
+      plot.margin = margin(t = 0.2, r = .2, b = 0, l = .2, unit = "cm") 
+    ) +
+    geom_vline(xintercept = line_pos, linetype = "dashed", 
+               color = plot_paras$dash_color, linewidth = plot_paras$dash_size) +
+    # By sample dimension, because only one sample is selected here, so there is only one dimension.
+    # facet_wrap(~sample, nrow = 1) + 
+    labs(title = title_name) + 
+    # Remove the gap between the heatmap edge and the coordinate axis.
+    coord_cartesian(expand = 0) 
+  if(split_num == 1){
+    ptop <- ptop + theme(legend.position = "none")
+  }
+  if(plot_paras$SEM){
+    # Add error lines
+    ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3)
+  }
+  return(ptop)
+}
+
+mergeMultiVisResult <- function(json_path, out_path = ""){
+  # get the json file name list
+  plot_para_list <- getJsonFiles(json_path)
+  ht_list <- list()
+  # plot each visualization result
+  for(i in 1:length(plot_para_list)){
+    plot_paras_name <- plot_para_list[[i]]
+    plot_paras_path <- file.path(json_path, plot_paras_name)
+    plot_paras <- getPlotJsonParas(plot_paras_path)
+    sorted_df <- preparePlotData(plot_paras)
+    # plot
+    pbom <- coverageHeatmap(sorted_df, plot_paras)
+    ptop <- averageCovPlot(sorted_df, plot_paras)
+    p_merge <- aplot::plot_list(gglist = list(ptop, pbom), ncol = 1, heights = c(1, 3))
+    ht_list[[i]] <- p_merge
+  }
+  # merge all the plot result
+  all_plots <- cowplot::plot_grid(plotlist = ht_list, nrow = 1)
+  # output
+  if(out_path == ""){
+    out_path <- json_path
+  }
+  file_name <- sprintf("%s/coverage_heatmap.%s", out_path, plot_paras$file_type)
+  item_num <- length(plot_para_list)
+  ggsave(file_name, plot = all_plots, dpi = plot_paras$dpi, 
+         width = plot_paras$width*item_num, height = plot_paras$high, units = "cm")
+  
+}
+
+mergeAveragePlot <- function(json_path, title_name){
+  # get the json file name list
+  plot_para_list <- getJsonFiles(json_path)
+  merge_df <- data.frame()
+  for(i in 1:length(plot_para_list)){
+    plot_paras_name <- plot_para_list[[i]]
+    plot_paras_path <- file.path(json_path, plot_paras_name)
+    plot_paras <- getPlotJsonParas(plot_paras_path)
+    sorted_df <- preparePlotData(plot_paras)
+    mat_df <- sorted_df %>%
+      group_by(Split, XAsis) %>%
+      summarise(
+        Density = mean(Coverage, na.rm = TRUE),
+        SEM = sd(Coverage, na.rm = TRUE) / sqrt(n()),
+        .groups = 'drop'
+      )
+    mat_df["Group"] <- plot_paras$plot_title
+    if(nrow(merge_df)==0){
+      merge_df <- mat_df
+    }else{
+      merge_df <- rbind(merge_df, mat_df)
+    }
+  }
+  ave_plot <- averageCovPlotMultiMerge(merge_df, plot_paras, title_name)
+  file_name <- sprintf("%s/merge_average_plot.%s", json_path, plot_paras$file_type)
+  ggsave(file_name, plot = ave_plot, dpi = plot_paras$dpi, 
+         width = plot_paras$width, height = plot_paras$width, units = "cm")
+}
+# usage -------------------------------------------------------------------
 setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
 source("lib/processJSON.R")
-#json_file_path <- plot_para_file
-plot_para_file <- "/Users/benche/myProj/ngsPlot/Output/Test/RNAseq-test/RNAseq-test_NGSViz_plotSetting.json"
-plot_paras <- getPlotJsonParas(plot_para_file)
-# running_paras <- getCalcuJsonRes(json_file_path)
-p <- plotMain(plot_paras)
-p
+
+
+json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
+
+title_name <- "title"
+mergeAveragePlot(json_path, title_name)
+mergeMultiVisResult(json_path)
+
+
+json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/GSE209153_H3K4me3_0.5"
+mergeAveragePlot(json_path, title_name)
+mergeMultiVisResult(json_path)
+
+
+
+
+
 

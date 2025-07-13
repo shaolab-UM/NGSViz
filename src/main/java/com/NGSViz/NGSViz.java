@@ -15,9 +15,9 @@ import static com.NGSViz.configSet.InputParameterAttributes.output_path;
 public class NGSViz {
     public static void main(String[] args) throws IOException {
         args = new String[]{
-                "-G", "hg19",
-                "-R", "exon",
-                "-T", "RNAseq-test",
+                "-G", "hg38",
+                "-R", "tss",
+                "-T", "GSE209153_H3K4me3_0.5",
                 //"-T", "H3K27-test",
                 //"-A", "exon",
                 //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
@@ -31,8 +31,8 @@ public class NGSViz {
                 //"-R", "tes",
                 //"-I", "/Users/benche/myProj/ngsPlot/NGSViz/Samples/sample_info.csv",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",

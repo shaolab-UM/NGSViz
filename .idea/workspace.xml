@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/processJSON.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processJSON.R" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +78,7 @@
       <recent name="com.NGSVir" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.NGSViz (1)">
+  <component name="RunManager" selected="应用程序.NGSViz">
     <configuration name="BedDBProcess" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.sqldbOperate.BedDBProcess" />
       <module name="NGSViz" />
@@ -142,9 +141,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="应用程序.NGSViz" />
         <item itemvalue="应用程序.NGSViz (1)" />
         <item itemvalue="应用程序.ExonModelData" />
-        <item itemvalue="应用程序.NGSViz" />
         <item itemvalue="应用程序.BedDBProcess" />
         <item itemvalue="应用程序.QuickPairedEndCheck" />
       </list>
@@ -188,6 +187,7 @@
       <workItem from="1752281051701" duration="20341000" />
       <workItem from="1752313315534" duration="18817000" />
       <workItem from="1752335044548" duration="3546000" />
+      <workItem from="1752375425732" duration="1288000" />
     </task>
     <servers />
   </component>
