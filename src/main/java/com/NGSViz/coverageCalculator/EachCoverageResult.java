@@ -26,7 +26,7 @@ public class EachCoverageResult {
         for (int i = 0; i < scaled_coverage.length; i++) {
             double num = scaled_coverage[i];
             // num / library_size * 1e6
-            double result = num / library_size * 1_000_000.0 * scale_ratio;
+            double result = (num / library_size) * 1_000_000.0 * scale_ratio;
             scaled_coverage[i] = result;
         }
     }

@@ -11,6 +11,8 @@ import com.NGSViz.sqldbOperate.exonMode.CoverageExonSubset;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 import htsjdk.samtools.SamReader;
 
+import java.util.Arrays;
+
 
 /**
  * @author Benchen Ye

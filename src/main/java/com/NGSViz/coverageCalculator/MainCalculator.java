@@ -67,8 +67,6 @@ public class MainCalculator extends InputParameterAttributes {
             System.out.println("--- Start coverage matrix calculation! ---");
 
             ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
-            record_name_list = GenesBInfo.getRecordName();
-            DB_GENES = GenesBInfo.getGeneMap();
             try {
                 // By invoking a non-static method through an instance
                 GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
@@ -77,6 +75,8 @@ public class MainCalculator extends InputParameterAttributes {
             } catch (InterruptedException e) {
                 System.err.println("Thread interruption error: " + e.getMessage());
             }
+            record_name_list = GenesBInfo.getRecordName();
+            DB_GENES = GenesBInfo.getGeneMap();
 
             if (!gene_subset.equals("all")){
                 System.out.println("--- Run subset gene list!");
@@ -93,7 +93,6 @@ public class MainCalculator extends InputParameterAttributes {
             Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
             row_names = (List<String>) coverage_map.get("record_names");
             coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
-
             if(paired_mode){
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
@@ -131,6 +130,7 @@ public class MainCalculator extends InputParameterAttributes {
 
             // output the result
             Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
+
             /*Matrix2CSV.saveMatrix2CSV(average_coverage_path, average_coverage_matrix, title_subset);
             Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);*/
         }

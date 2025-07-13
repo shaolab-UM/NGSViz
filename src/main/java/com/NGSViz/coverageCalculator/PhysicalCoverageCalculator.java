@@ -1,5 +1,6 @@
 package com.NGSViz.coverageCalculator;
 
+import com.NGSViz.ReadBam.ReadBam;
 import htsjdk.samtools.*;
 import htsjdk.samtools.util.Interval;
 import java.util.*;
@@ -11,6 +12,9 @@ import com.NGSViz.ReadBam.ReadRecordProcess;
  * @function calculate the physical coverage for one query region
  */
 public class PhysicalCoverageCalculator {
+
+
+
     public static int[] calculatePhysicalCoverage2(SamReader bam_reader,
                                                                Interval interval_range,
                                                                String query_strand,
@@ -56,6 +60,31 @@ public class PhysicalCoverageCalculator {
                 int align_pos_end = align_pos_start + align_width -1;
                 // read start position in the search range
                 // index start from zero, so no add 1
+                int pos_start_difference = align_pos_start - query_range_start;
+                if(align_pos_start >= query_range_start){
+                    if(align_pos_start >= query_range_end){
+                        align_width = 0;
+                    }else if(align_pos_end >= query_range_end){
+                        align_width = query_range_end - align_pos_start + 1;
+                    }else if(align_pos_end < query_range_end){
+                        align_width = align_width;
+                    }
+                }else{
+                    if(align_pos_end <= query_range_start){
+                        align_width = 0;
+                    }else{
+                        align_width = align_pos_end - query_range_start + 1;
+                    }
+                }
+                coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
+            }
+            /*if (read_align_info.get(0) != 0) {
+                //System.out.println("--- Processing a read: " + read_align_info);
+                int align_pos_start = read_align_info.get(0);
+                int align_width = read_align_info.get(1);
+                int align_pos_end = align_pos_start + align_width -1;
+                // read start position in the search range
+                // index start from zero, so no add 1
 
                 int pos_start_difference = align_pos_start - query_range_start;
                 if(pos_start_difference<0){
@@ -79,11 +108,13 @@ public class PhysicalCoverageCalculator {
                 }
                 //System.out.println("align start is : " + pos_start_difference);
                 coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
-            }
+            }*/
 
         }
         return coverage;
     }
+
+
 
     // calculate the physical coverage for a reads in query range using primitive array
     public static int[] physicalCoverageCalculate(int[] physical_coverage,

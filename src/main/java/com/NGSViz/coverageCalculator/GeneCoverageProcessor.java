@@ -85,7 +85,6 @@ public class GeneCoverageProcessor {
                             coverage_scaled_matrix.setRow(index, CoverageScaled.getScaledCoverage());
                             // Write gene name
                             record_names.set(index, query_record_name);
-
                         } catch (Exception e) {
                             throw new RuntimeException("Processing failed for " + query_record_name + ": " + e.getMessage());
                         }

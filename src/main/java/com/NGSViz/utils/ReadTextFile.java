@@ -28,18 +28,6 @@ public class ReadTextFile {
         }
         return gene_list;
     }
-    public static List<String> readGeneList2(String file_path) {
-        List<String> gene_list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file_path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                gene_list.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return gene_list;
-    }
 
     public static Map<String, Object> readTxtConfigFile(String file_path) {
         Map<String, Object> out_list = new HashMap<>();

@@ -12,13 +12,6 @@ import java.util.Set;
  * @function insert defaultTbl information and create new table including genome information
  */
 public class mergeDB extends InputParameterAttributes {
-    public static void main(String[] args) {
-        String main_db_path = "/Users/benche/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db";
-        String input_db_path = "/Users/benche/myProj/ngsPlot/DB/DB/Mus_musculus/NGSViz_mm9_RefSeq.db";
-        merge2DB(main_db_path, input_db_path);
-
-    }
-
     public static void merge2DB(String main_db_path, String input_db_path){
         String tbl_name = checkUniqueTbl(main_db_path, input_db_path);
         if (tbl_name != null) {
