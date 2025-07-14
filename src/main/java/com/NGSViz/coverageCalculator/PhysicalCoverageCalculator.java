@@ -53,32 +53,8 @@ public class PhysicalCoverageCalculator {
             } else {
                 read_align_info = ReadRecordProcess.getReadAlignmentInfo(bam_record, interval_range);
             }
+
             if (read_align_info.get(0) != 0) {
-                //System.out.println("--- Processing a read: " + read_align_info);
-                int align_pos_start = read_align_info.get(0);
-                int align_width = read_align_info.get(1);
-                int align_pos_end = align_pos_start + align_width -1;
-                // read start position in the search range
-                // index start from zero, so no add 1
-                int pos_start_difference = align_pos_start - query_range_start;
-                if(align_pos_start >= query_range_start){
-                    if(align_pos_start >= query_range_end){
-                        align_width = 0;
-                    }else if(align_pos_end >= query_range_end){
-                        align_width = query_range_end - align_pos_start + 1;
-                    }else if(align_pos_end < query_range_end){
-                        align_width = align_width;
-                    }
-                }else{
-                    if(align_pos_end <= query_range_start){
-                        align_width = 0;
-                    }else{
-                        align_width = align_pos_end - query_range_start + 1;
-                    }
-                }
-                coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
-            }
-            /*if (read_align_info.get(0) != 0) {
                 //System.out.println("--- Processing a read: " + read_align_info);
                 int align_pos_start = read_align_info.get(0);
                 int align_width = read_align_info.get(1);
@@ -108,7 +84,7 @@ public class PhysicalCoverageCalculator {
                 }
                 //System.out.println("align start is : " + pos_start_difference);
                 coverage = physicalCoverageCalculate(coverage, pos_start_difference, align_width);
-            }*/
+            }
 
         }
         return coverage;

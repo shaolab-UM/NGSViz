@@ -10,19 +10,21 @@ public class BedDBProcess {
     private static Set<String> unique_chrname_list = ConcurrentHashMap.newKeySet();
     private static Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
     //public static List<String> exon_record_name_list = new ArrayList<>();
-    public static List<String> record_name_list = new ArrayList<>();
-    public static Set<String> DB_gene_list = ConcurrentHashMap.newKeySet();
+    public static Set<String> record_name_list = ConcurrentHashMap.newKeySet();
     // Concurrent Map
     private static Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
-    public static Map<String, List<Transcript>> gene_map_exon = new HashMap<>();
     private static List<Double> width_list = Collections.synchronizedList(new ArrayList<>());
+    private String bedFilePath;
 
     public static void main(String[] args) {
         String bedFilePath = "/Users/benche/myProj/ngsPlot/test.bed";
-        buildBedExonDB(bedFilePath);
+        //buildBedDB(bedFilePath);
+    }
+    public BedDBProcess(String bedFilePath) {
+        this.bedFilePath = bedFilePath;
     }
 
-    public static void buildBedNotExonDB(String bedFilePath) {
+    public void buildBedDB(String bedFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(bedFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -45,55 +47,18 @@ public class BedDBProcess {
                 // Thread-safe method using concurrent collections (no synchronization needed)
                 unique_chrname_list.add(chr_name);
                 unique_nochrname_list.add(nochr_name);
-                if (!DB_gene_list.contains(gene_name)){
-                    DB_gene_list.add(gene_name);
+                if (!record_name_list.contains(record_name)){
+                    record_name_list.add(record_name);
                 }
-                // DB_gene_list.add(gene_name);
-                record_name_list.add(record_name);
+
                 width_list.add((double) width);
                 Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
                         chr_name, nochr_name, strand, start_pos, end_pos);
                 gene_map.put(record_name, transcript);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("--- BedDB Build Complete!");
-    }
 
-    public static void buildBedExonDB(String bedFilePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(bedFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // Skip comment lines
-                if (line.startsWith("#") || line.trim().isEmpty()) continue;
-                String[] records = line.split("\t");
-                //
-                String chr_name = records[0];
-
-                int start_pos = Integer.parseInt(records[1]);
-                int end_pos = Integer.parseInt(records[2]);
-                String strand = records[3];
-                String gene_name = records[4];
-                String transcript_id = records[5];
-                int width = end_pos - start_pos + 1;
-
-                String nochr_name = chr_name.replace("chr", "");
-                String record_name = gene_name + ":" + transcript_id;
-
-                // Thread-safe method using concurrent collections (no synchronization needed)
-                unique_chrname_list.add(chr_name);
-                unique_nochrname_list.add(nochr_name);
-                if (!DB_gene_list.contains(gene_name)){
-                    DB_gene_list.add(gene_name);
-                }
-                // DB_gene_list.add(gene_name);
-                record_name_list.add(record_name);
-                width_list.add((double) width);
-
-                Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
-                        chr_name, nochr_name, strand, start_pos, end_pos);
-                gene_map_exon.computeIfAbsent(gene_name, k -> new ArrayList<>()).add(transcript);
+                /*System.out.println("chr name is " + chr_name);
+                System.out.println(transcript);
+                System.out.println(record_name);*/
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,8 +67,10 @@ public class BedDBProcess {
     }
 
 
-    public static Map<String, Transcript> getGeneMap() { return gene_map; }
-    public static Map<String, List<Transcript>> getExonGeneMap() { return gene_map_exon; };
+
+
+    public Map<String, Transcript> getGeneMap() { return gene_map; }
+    public Set<String> getRecordName() { return record_name_list; }
 
 
 }

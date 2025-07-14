@@ -2,6 +2,7 @@ package com.NGSViz.coverageCalculator;
 
 import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
+import com.NGSViz.sqldbOperate.BedDBProcess;
 import com.NGSViz.sqldbOperate.ParallelGeneDbProcessor;
 import com.NGSViz.sqldbOperate.Transcript;
 import com.NGSViz.utils.DirectoryChecker;
@@ -67,16 +68,28 @@ public class MainCalculator extends InputParameterAttributes {
             System.out.println("--- Start coverage matrix calculation! ---");
 
             ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
-            try {
-                // By invoking a non-static method through an instance
-                GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
-            } catch (SQLException e) {
-                System.err.println("Database error: " + e.getMessage());
-            } catch (InterruptedException e) {
-                System.err.println("Thread interruption error: " + e.getMessage());
+
+            if(bedDB_path == null){
+                // get genelist from build in DB
+                try {
+                    // By invoking a non-static method through an instance
+                    GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
+                } catch (SQLException e) {
+                    System.err.println("Database error: " + e.getMessage());
+                } catch (InterruptedException e) {
+                    System.err.println("Thread interruption error: " + e.getMessage());
+                }
+                record_name_list = GenesBInfo.getRecordName();
+                DB_GENES = GenesBInfo.getGeneMap();
+            } else {
+                BedDBProcess BedDB = new BedDBProcess(bedDB_path);
+                BedDB.buildBedDB(bedDB_path);
+                DB_GENES = BedDB.getGeneMap();
+                record_name_list = BedDB.getRecordName();
+                // get genelist from bed file
+                GenesBInfo.setRecordName(record_name_list);
+                GenesBInfo.setGeneMap(DB_GENES);
             }
-            record_name_list = GenesBInfo.getRecordName();
-            DB_GENES = GenesBInfo.getGeneMap();
 
             if (!gene_subset.equals("all")){
                 System.out.println("--- Run subset gene list!");
