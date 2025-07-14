@@ -1,8 +1,11 @@
 package com.NGSViz.utils;
 
+import com.NGSViz.NGSViz;
 import com.NGSViz.configSet.ConfigReader;
 import com.NGSViz.configSet.InputParameterAttributes;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 
 /**
@@ -10,17 +13,24 @@ import java.io.File;
  * @create 2025-02--17:37
  */
 public class JsonConfigPath extends InputParameterAttributes {
-    public static void main(String[] args){
+    public static void main(String[] args) throws URISyntaxException {
         getJsonConfigPath();
     }
     private static String config_path;
     private static String sys_config = sys_config_path;
-    public static void getJsonConfigPath(){
+    public static void getJsonConfigPath() throws URISyntaxException {
         if (sys_config.isEmpty()){
-            String current_dir = System.getProperty("user.dir");
-            System.out.println("Current directory: " + current_dir);
+            //String current_dir = System.getProperty("user.dir");
+            //System.out.println("Current directory: " + current_dir);
+
+            String jarPath = NGSViz.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            File jarFile = new File(jarPath);
+            String jar_dir = jarFile.getParent();
+            String current_dir = System.getProperty("jar_dir");
+
             // Construct configuration file path
-            config_path = current_dir + '/' + sys_config_name;
+            config_path = jar_dir + '/' + sys_config_name;
+            //config_path = current_dir + '/' + sys_config_name;
         } else {
             config_path = sys_config;
         }

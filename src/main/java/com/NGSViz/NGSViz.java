@@ -5,6 +5,8 @@ import com.NGSViz.configSet.ProcessInputParameters;
 import com.NGSViz.coverageCalculator.MainCalculator;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 import static com.NGSViz.configSet.InputParameterAttributes.output_path;
 
 /**
@@ -13,7 +15,7 @@ import static com.NGSViz.configSet.InputParameterAttributes.output_path;
  * @function ngsViz
  */
 public class NGSViz {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         args = new String[]{
                 "-G", "hg38",
                 "-R", "tss",
@@ -25,7 +27,7 @@ public class NGSViz {
                 //"-R", "tss",
                 "-P", "8",
                 //"-R", "tes",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",

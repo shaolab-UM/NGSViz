@@ -4,6 +4,7 @@ import com.NGSViz.sqldbOperate.GetRefDB;
 import com.NGSViz.utils.JsonConfigPath;
 import com.NGSViz.utils.mergeDB;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ import java.nio.file.Paths;
  */
 public class ProcessInputParameters extends InputParameterAttributes {
     //public static List<Map<String, Object>> region_coord;
-    public static void processInputParameter(String[] args) {
+    public static void processInputParameter(String[] args) throws URISyntaxException {
         if (args.length % 2 ==1 || args.length == 0){
             System.err.println("Error: Unpaired argument and value.");
             System.exit(-1);

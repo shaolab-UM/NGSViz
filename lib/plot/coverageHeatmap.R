@@ -24,7 +24,7 @@ myTheme <- function(plot_paras){
       axis.text.x = element_text(size = plot_paras$axis_text_x_size, face = face_item),
       axis.text.y = element_text(size = plot_paras$axis_text_y_size, face = face_item),
       axis.title=element_text(size = plot_paras$title_size, face = face_item),
-      axis.title.x = element_blank(), 
+      #axis.title.x = element_blank(), 
       legend.title=element_text(size = 10, face = face_item), 
       legend.text = element_text(size = 10, face = face_item),
       legend.key=element_rect(colour = "white"),
@@ -211,6 +211,7 @@ coverageHeatmap <- function(sorted_df, plot_paras){
     ) +
     # Remove the gap between the heatmap edge and the coordinate axis.
     coord_cartesian(expand = 0) + 
+    theme(axis.title.x = element_blank())+
     heatmapTheme()
   # split
   if (split_num > 1) {
@@ -263,6 +264,7 @@ averageCovPlot <- function(sorted_df, plot_paras){
     myTheme(plot_paras) + 
     theme(
       axis.text.x = element_blank(), 
+      axis.title.x = element_blank(),
       # Adjust the margin of the graph, setting the bottom margin to a negative value helps with alignment.
       plot.margin = margin(t = 0.2, r = .2, b = 0, l = .2, unit = "cm") 
     ) +
@@ -338,7 +340,7 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name){
   # positon of vertical reference line
   line_pos <- axis_pos[-c(1, length(axis_pos))]
   print(line_pos)
-  split_num <- length(unique(merge_df$Split))
+  group_num <- length(unique(merge_df$Group))
   # plot the average plot
   ptop <- ggplot(merge_df) +
     geom_line(aes(x = XAsis, y = Density, color = Group, group = Group), linewidth = plot_paras$line_size) + 
@@ -350,9 +352,9 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name){
     scale_x_continuous(breaks = axis_pos, labels = axis_name) +
     myTheme(plot_paras) + 
     theme(
-      
       # Adjust the margin of the graph, setting the bottom margin to a negative value helps with alignment.
-      plot.margin = margin(t = 0.2, r = .2, b = 0, l = .2, unit = "cm") 
+      plot.margin = margin(t = 0.2, r = .2, b = 0, l = .2, unit = "cm"),
+      axis.title.x = element_blank()
     ) +
     geom_vline(xintercept = line_pos, linetype = "dashed", 
                color = plot_paras$dash_color, linewidth = plot_paras$dash_size) +
@@ -361,12 +363,12 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name){
     labs(title = title_name) + 
     # Remove the gap between the heatmap edge and the coordinate axis.
     coord_cartesian(expand = 0) 
-  if(split_num == 1){
-    ptop <- ptop + theme(legend.position = "none")
+  if(group_num == 1){
+    ptop <- ptop #+ theme(legend.position = "none")
   }
   if(plot_paras$SEM){
     # Add error lines
-    ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3)
+    ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM), alpha = 0.3)
   }
   return(ptop)
 }
@@ -426,23 +428,30 @@ mergeAveragePlot <- function(json_path, title_name){
   ave_plot <- averageCovPlotMultiMerge(merge_df, plot_paras, title_name)
   file_name <- sprintf("%s/merge_average_plot.%s", json_path, plot_paras$file_type)
   ggsave(file_name, plot = ave_plot, dpi = plot_paras$dpi, 
-         width = plot_paras$width, height = plot_paras$width, units = "cm")
+         width = plot_paras$width, height = plot_paras$high, units = "cm")
+}
+
+coeragePlotMian <- function(json_path, title_name){
+  mergeAveragePlot(json_path, title_name)
+  mergeMultiVisResult(json_path)
 }
 # usage -------------------------------------------------------------------
-setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
-source("lib/processJSON.R")
+# setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
+# source("lib/processJSON.R")
+# 
+# coeragePlotMian(json_path, title_name)
+# 
+# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
+# title_name <- "title"
+# coeragePlotMian(json_path, title_name)
+# 
+# mergeAveragePlot(json_path, title_name)
+# mergeMultiVisResult(json_path)
 
-
-json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
-
-title_name <- "title"
-mergeAveragePlot(json_path, title_name)
-mergeMultiVisResult(json_path)
-
-
-json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/GSE209153_H3K4me3_0.5"
-mergeAveragePlot(json_path, title_name)
-mergeMultiVisResult(json_path)
+# title_name <- "title"
+# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/GSE209153_H3K4me3_0.5"
+# mergeAveragePlot(json_path, title_name)
+# mergeMultiVisResult(json_path)
 
 
 
