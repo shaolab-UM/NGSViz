@@ -5,11 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e633a914-07ae-4c35-9841-a51845dcf483" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/.Rhistory" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz-1.0-2.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/NGSViz-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/pages/aboutUS.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/.Rhistory" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/coverageHeatmap.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/processJSONParas.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/qualityControlViz.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/plot/transform2EnrichedHeatmap.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/processCalculateParameters.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/processCalculateParameters.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.R" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/ProcessInputParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/JsonConfigPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/utils/JsonConfigPath.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,7 +96,7 @@
       <recent name="com.NGSVir" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.JsonConfigPath">
+  <component name="RunManager" selected="应用程序.NGSViz">
     <configuration name="BedDBProcess" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.NGSViz.sqldbOperate.BedDBProcess" />
       <module name="NGSViz" />
@@ -144,8 +159,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="应用程序.JsonConfigPath" />
         <item itemvalue="应用程序.NGSViz" />
+        <item itemvalue="应用程序.JsonConfigPath" />
         <item itemvalue="应用程序.BedDBProcess" />
         <item itemvalue="应用程序.NGSViz (1)" />
         <item itemvalue="应用程序.ExonModelData" />
@@ -193,7 +208,7 @@
       <workItem from="1752375425732" duration="18891000" />
       <workItem from="1752418097131" duration="961000" />
       <workItem from="1752419122764" duration="296000" />
-      <workItem from="1752419513532" duration="9110000" />
+      <workItem from="1752419513532" duration="17137000" />
     </task>
     <servers />
   </component>

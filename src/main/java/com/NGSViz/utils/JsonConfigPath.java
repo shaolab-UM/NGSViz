@@ -19,10 +19,7 @@ public class JsonConfigPath extends InputParameterAttributes {
     private static String config_path;
     private static String sys_config = sys_config_path;
     public static void getJsonConfigPath() throws URISyntaxException {
-        if (sys_config.isEmpty()){
-            //String current_dir = System.getProperty("user.dir");
-            //System.out.println("Current directory: " + current_dir);
-
+        if (sys_config.isEmpty() || sys_config.equals("-")){
             String jarPath = NGSViz.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
             File jarFile = new File(jarPath);
             String jar_dir = jarFile.getParent();

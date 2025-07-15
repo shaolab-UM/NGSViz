@@ -1,6 +1,6 @@
 
 
-execute_ngsviz_jar <- function(java_path, jar_path, params_list) {
+executeNgsvizJar <- function(java_path, jar_path, params_list) {
   log_name <- "NGSViz_java_running.log"
   output_dir <- params_list$O
   # log file

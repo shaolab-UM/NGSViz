@@ -29,7 +29,7 @@ public class InputParameterAttributes {
     public static int flank_points = 0;
     public static String sys_config_name = "NGSViz_setting.json";
     public static String config_name = "NGSVir_running_config.json";
-    public static String sys_config_path = ""; // -CP // /Users/bencheye/myProj/ngsPlot/NGSViz/NGSViz_setting.json
+    public static String sys_config_path = ""; // -CP //
     public static List<String> gene_list = new ArrayList<>(); // -E
     public static List<String> analysis_title = new ArrayList<>();
     public static List<String> sample_list = new ArrayList<>();

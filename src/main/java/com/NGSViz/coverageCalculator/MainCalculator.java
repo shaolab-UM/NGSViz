@@ -69,7 +69,7 @@ public class MainCalculator extends InputParameterAttributes {
 
             ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
 
-            if(bedDB_path == null){
+            if(bedDB_path == null || bedDB_path.equals("-")) { //
                 // get genelist from build in DB
                 try {
                     // By invoking a non-static method through an instance

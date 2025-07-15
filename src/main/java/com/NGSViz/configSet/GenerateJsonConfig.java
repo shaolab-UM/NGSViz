@@ -121,7 +121,7 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         sampleColor_labelsArray = buildJsonListConfig(sampleColor_labelsArray, sample_color);
         theme_paras.put("sample_color", sampleColor_labelsArray);
         theme_paras.put("border_size", 1.2);
-        theme_paras.put("text_family", "Arial");
+        theme_paras.put("text_family", "sans");
         theme_paras.put("text_face", "bold");
         theme_paras.put("axis_text_x_size", 10);
         theme_paras.put("axis_text_y_size", 10);

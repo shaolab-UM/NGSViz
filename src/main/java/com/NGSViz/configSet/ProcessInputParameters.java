@@ -28,7 +28,7 @@ public class ProcessInputParameters extends InputParameterAttributes {
         GetInputParameterValue.getInputParametersValue(args);
         //
         JsonConfigPath.getJsonConfigPath();
-        if(!input_db_path.isEmpty()){
+        if(!(input_db_path.isEmpty() || input_db_path.equals("-"))){
             mergeDB.merge2DB(db_path, input_db_path);
             System.out.println("Finish merging DB. Quit the program!");
             System.exit(0);

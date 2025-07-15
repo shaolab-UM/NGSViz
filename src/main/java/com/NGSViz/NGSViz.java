@@ -7,7 +7,7 @@ import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static com.NGSViz.configSet.InputParameterAttributes.output_path;
+import static com.NGSViz.configSet.InputParameterAttributes.*;
 
 /**
  * @author Benchen Ye
@@ -17,21 +17,25 @@ import static com.NGSViz.configSet.InputParameterAttributes.output_path;
 public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
         args = new String[]{
-                "-G", "hg38",
+                "-G", "hg19",
                 "-R", "tss",
                 //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
-                "-T", "GSE209153_H3K4me3_0.5",
-                //"-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
+                "-T", "H3K4",
+                "-CP", "-",
+                //"-DB", "-",
+               // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
+                // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
                 //"-T", "GeneName",
                 //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
                 //"-R", "tss",
                 "-P", "8",
                 //"-R", "tes",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.5.sorted.bam",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",
-                //"-C", "/Users/bencheye/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
                 "-O", "/Users/benche/myProj/ngsPlot/Output/Test",
                 //"-F", "protein_coding",
@@ -46,6 +50,9 @@ public class NGSViz {
     /*
     Here, ExonModelData is used to obtain the lengths, starting sites, and other information of all different transcripts.
     * */
+        if (analysis_type.equals("exon")) {
+            interval_type = "exon";
+        }
         if (InputParameterAttributes.interval_type.equals("exon")) {
             ExonModelData.getExonModelData(InputParameterAttributes.tbl_name,
                     InputParameterAttributes.interval_type,

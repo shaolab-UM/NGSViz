@@ -117,11 +117,9 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // check whether it is '-'
             if (firstChar == '-') {
                 System.out.println("Parameter `" + parameter + "` without value!");
-                System.exit(-1);
             }
         } else {
             System.out.println("The value of parameter " + parameter + " is empty!");
-            System.exit(-1);
         }
     }
 }
