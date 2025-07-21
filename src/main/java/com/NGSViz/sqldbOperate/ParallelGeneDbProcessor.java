@@ -1,5 +1,9 @@
 package com.NGSViz.sqldbOperate;
 
+import com.NGSViz.ReadBam.QueryGenomeRange;
+import com.NGSViz.configSet.InputParameterAttributes;
+import htsjdk.samtools.util.Interval;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +26,8 @@ public class ParallelGeneDbProcessor extends DBAtribute{
     private final ExecutorService executorService;
     // Each time the number of records processed
     private final int BATCH_SIZE = 1000;
+    private static Interval interval_range;
+    private boolean chr_format = InputParameterAttributes.bamChromLabStartWithChr;
 
     public ParallelGeneDbProcessor(int nThreads) {
         this.executorService = Executors.newFixedThreadPool(nThreads);

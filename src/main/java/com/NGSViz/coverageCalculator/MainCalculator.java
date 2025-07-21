@@ -1,5 +1,6 @@
 package com.NGSViz.coverageCalculator;
 
+import com.NGSViz.ReadBam.BAMAttribute;
 import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.BedDBProcess;
@@ -9,13 +10,13 @@ import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
 import com.NGSViz.utils.ReadTextFile;
 import com.NGSViz.utils.SparseMatrix;
+import htsjdk.samtools.util.Interval;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-
 
 /**
  * @author Benchen Ye
@@ -38,6 +39,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static SparseMatrix coverage_scaled_matrix;
     private static SparseMatrix coverage_scaled_matrix_bkg;
     private static Map<String, Transcript> DB_GENES;
+    private static Map<String, Interval> genes_intervals;
     private static Set<String> record_name_list;
     private static List<String> row_names;
     private static Map<String, List<Transcript>> exon_gene_map;
@@ -48,6 +50,7 @@ public class MainCalculator extends InputParameterAttributes {
         for (int i=0; i<bam_list.size(); i++) {
             String[] bam_file_list = bam_list.get(i).split(":", 2);
             bam_file = bam_file_list[0];
+            BAMAttribute bamObj = new BAMAttribute(bam_file);
             System.out.println("--- The bam file will be analysing: " + bam_file);
             // Is the paired mode available?
             if (bam_file_list.length == 2) {
@@ -58,7 +61,6 @@ public class MainCalculator extends InputParameterAttributes {
 
             gene_subset = gene_list.get(i);
             System.out.println("The gene subset will be analysing: " + gene_subset);
-
             title_subset = analysis_title.get(i);
             group_subset = group_list.get(i);
             sample_subset = sample_list.get(i);
@@ -102,7 +104,7 @@ public class MainCalculator extends InputParameterAttributes {
             }
 
             // Use optimized processor instead of old method
-            GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bam_file, DB_GENES, record_name_list, paired_mode);
+            GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bamObj, DB_GENES, record_name_list, paired_mode);
             Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
             row_names = (List<String>) coverage_map.get("record_names");
             coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
@@ -110,7 +112,8 @@ public class MainCalculator extends InputParameterAttributes {
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
                 // bkg_coverage_scaled_matrix
-                GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bam_file_bkg, DB_GENES, record_name_list, paired_mode);
+                BAMAttribute bamObj_bkg = new BAMAttribute(bam_file_bkg);
+                GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bamObj_bkg, DB_GENES, record_name_list, paired_mode);
                 // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
                 Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");

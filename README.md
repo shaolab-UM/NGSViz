@@ -358,7 +358,20 @@ The coverage values are scaled using the **average coverage** within each data p
 
 Additionally, the program generates a default **JSON configuration file** containing recommended parameters for downstream visualization tasks.
 
+### Read-Aware Shift in ChIP-seq and CUT&Tag Analysis
 
+In ChIP-seq and CUT&Tag analysis, read-aware shift is a critical step in processing sequencing reads to accurately estimate protein binding sites or epigenetic marker positions. Since sequencing reads originate from both strands of DNA fragments, the orientation (forward or reverse strand) causes the 5' end of reads to be offset from the actual binding site. Adjusting read positions enables more precise coverage calculation and peak calling.
+
+Processing Method
+
+1. Strand-Specific Adjustment
+
+- **Forward Strand**: The 5' end of reads is typically upstream of the binding site, so it needs to be shifted downstream (toward the 3' direction) by a certain offset (shift).
+- **Reverse Strand**: The 5' end of reads is downstream of the binding site, so it needs to be shifted upstream (toward the 5' direction) by the same offset.
+
+2. Determining the Shift Value
+
+- **Fragment Length**: The shift value is typically based on the estimated DNA fragment length, commonly 100-300 bp for ChIP-seq or 50-150 bp for CUT&Tag. The shift is usually half the fragment length. For example, a 200 bp fragment length implies a shift of approximately 100 bp.
 
 ---
 
@@ -566,23 +579,6 @@ java -jar NGSViz-1.0.jar
 
 
 
-
-```bash
-# 1. 构建数据库
-Rscript lib/buildRefDB.R -g Homo_sapiens.gtf -o database/
-
-# 2. 运行主计算
-java -jar NGSViz-1.0-SNAPSHOT.jar -i sample1.bam -o results/ -c NGSViz_setting.json
-
-# 3. 生成热图
-Rscript lib/plot/coverageHeatmap.R -i results/coverage_matrix.csv -o results/heatmap.pdf
-
-# 4. 启动R Shiny界面
-cd Viz
-Rscript app_副本.R
-```
-
-### 
 
 
 

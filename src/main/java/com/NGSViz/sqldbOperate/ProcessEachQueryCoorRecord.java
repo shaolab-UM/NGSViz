@@ -44,6 +44,7 @@ public class ProcessEachQueryCoorRecord {
         String tid_name = parts.length > 1 ? parts[1] : "";
 
         // config code need to change when flank_factor exist
+
         if (flank_factor > 0){
             if(interval_type.equals("exon")){
                 // exon specific

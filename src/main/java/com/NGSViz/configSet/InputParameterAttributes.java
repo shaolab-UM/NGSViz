@@ -1,5 +1,7 @@
 package com.NGSViz.configSet;
 
+import htsjdk.samtools.SAMFileHeader;
+
 import java.util.*;
 
 /**
@@ -55,6 +57,8 @@ public class InputParameterAttributes {
     public static int frag_len = 150; //-FL
     public static String strand_spec = "both"; //-SS
     public static int fi_tag = 0; // -FI
+    public static boolean bamChromLabStartWithChr = true;
+    public static SAMFileHeader header;
 
     public static String getGenome() {
         return genome;

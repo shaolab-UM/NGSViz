@@ -477,14 +477,14 @@ plotOneIntegratePlot <- function(plot_paras){
 # coeragePlotMian(json_path, title_name)
 # 
 # json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
-# title_name <- "title"
-# coeragePlotMian(json_path, title_name)
-# 
-# mergeAveragePlot(json_path, title_name)
+# # title_name <- "title"
+# # coeragePlotMian(json_path, title_name)
+# # 
+# mergeAveragePlot(json_path)
 # mergeMultiVisResult(json_path)
 
 # # title_name <- "title"
-# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4"
+# json_path <- "/Users/benche/myProj/ngsPlot/Result/performanceCompare/ngsViz/p1_run_2/1.0"
 # mergeAveragePlot(json_path)
 # mergeMultiVisResult(json_path)
 
