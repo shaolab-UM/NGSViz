@@ -49,7 +49,7 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Algorithm for coverage vector normalization (scale data)
             scaler_method = setParameterValue(scaler_method,"-M", args, i);
             // Gene chunk size
-            chunk_size = setParameterValue(chunk_size,"-CZ", args, i);
+            BATCH_SIZE = setParameterValue(BATCH_SIZE,"-CZ", args, i);
             // Mapping quality cutoff
             min_mapq = setParameterValue(min_mapq,"-MQ", args, i);
             // Fragment length

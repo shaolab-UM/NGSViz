@@ -34,7 +34,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         checkValue01(scale_ratio, "-S");
         checkValueGreater0(core_num, "-P");
         checkScaleMethod(scaler_method);
-        checkValueGreater0(chunk_size, "-CZ");
+        checkValueGreater0(BATCH_SIZE, "-BS");
         checkValueGreater0(min_mapq, "-MQ");
         checkValueGreater0(frag_len, "-FL");
         checkStrandSpecificValue(strand_spec);

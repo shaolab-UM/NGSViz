@@ -1,5 +1,7 @@
 package com.NGSViz.sqldbOperate;
 
+import com.NGSViz.configSet.InputParameterAttributes;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,14 +9,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BedDBProcess {
-    private static Set<String> unique_chrname_list = ConcurrentHashMap.newKeySet();
-    private static Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
-    //public static List<String> exon_record_name_list = new ArrayList<>();
     public static Set<String> record_name_list = ConcurrentHashMap.newKeySet();
-    Map<String, List<Transcript>> genesByChromosome = new ConcurrentHashMap<>();
-    // Concurrent Map
-    //private static Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
-    private static List<Double> width_list = Collections.synchronizedList(new ArrayList<>());
+    public static Map<Integer, List<Transcript>> geneList_batches = new HashMap<>();
+    private static final int BATCH_SIZE = InputParameterAttributes.BATCH_SIZE;
     private String bedFilePath;
 
     public static void main(String[] args) {
@@ -28,6 +25,11 @@ public class BedDBProcess {
     public void buildBedDB(String bedFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(bedFilePath))) {
             String line;
+
+            System.out.println("=== batch size" + BATCH_SIZE + " ===");
+            int batchIndex = 0;
+            List<Transcript> currentBatch = new ArrayList<>(BATCH_SIZE);
+
             while ((line = br.readLine()) != null) {
                 // Skip comment lines
                 if (line.startsWith("#") || line.trim().isEmpty()) continue;
@@ -45,16 +47,24 @@ public class BedDBProcess {
                 String record_name = gene_name + ":" + transcript_id;
 
                 // Thread-safe method using concurrent collections (no synchronization needed)
-                unique_chrname_list.add(chr_name);
-                unique_nochrname_list.add(nochr_name);
                 if (!record_name_list.contains(record_name)){
                     record_name_list.add(record_name);
                 }
 
-                width_list.add((double) width);
                 Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
                         chr_name, nochr_name, strand, start_pos, end_pos);
-                genesByChromosome.computeIfAbsent(chr_name, k -> new ArrayList<>()).add(transcript);
+
+                // Join the current batch
+                currentBatch.add(transcript);
+                // Batch is full, stock is depleted and reset
+                if (currentBatch.size() == BATCH_SIZE) {
+                    geneList_batches.put(batchIndex++, currentBatch);
+                    currentBatch = new ArrayList<>(BATCH_SIZE);
+                }
+            }
+            // Process the remaining records that are less than batchSize
+            if (!currentBatch.isEmpty()) {
+                geneList_batches.put(batchIndex, currentBatch);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,12 +72,8 @@ public class BedDBProcess {
         System.out.println("--- BedDB Build Complete!");
     }
 
-
-
-
-    //public Map<String, Transcript> getGeneMap() { return gene_map; }
-    public Set<String> getRecordName() { return record_name_list; }
-    public Map<String, List<Transcript>> getGeneListByChromosome() { return genesByChromosome; }
+    public static Set<String> getRecordName() { return record_name_list; }
+    public static Map<Integer, List<Transcript>> getBatchGeneList() { return geneList_batches; }
 
 
 }

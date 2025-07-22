@@ -18,7 +18,7 @@ public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
         args = new String[]{
                 "-G", "hg19",
-                "-R", "exon",
+                "-R", "tss",
                 //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
                 "-T", "H3K4",
                 "-CP", "-",
@@ -31,11 +31,11 @@ public class NGSViz {
                 "-P", "8",
                 //"-R", "tes",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/LX/sgControl_LSD2.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
                 //"-I", "/Users/bencheye/myProj/ngsPlot/NGSViz/sample_info.csv",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
                 "-O", "/Users/benche/myProj/ngsPlot/Output/Test",
                 //"-F", "protein_coding",

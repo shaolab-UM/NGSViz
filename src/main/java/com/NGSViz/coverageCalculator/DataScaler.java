@@ -12,51 +12,6 @@ public class DataScaler {
     private static  int num_datapoints = InputParameterAttributes.num_datapoints+1;
     private static String interval_type = InputParameterAttributes.interval_type;
 
-    // Method: switch scale
-    // Input:
-    //   method: String, method name to scale coverage
-    // Output:
-    //   coverage_scaled: List<Double> of binned values
-    /*public static double[] getCoverageScaled2(int[] physical_coverage, String method, int flank_size) {
-        double[] coverage_scaled = new double[num_datapoints];
-        double[] head_cov_scaled;
-        double[] tail_cov_scaled;
-        double[] mid_cov_scaled;
-        //System.out.println("--- flank size is :" + flank_size);
-        //System.out.println("--- physical coverage size is " + physical_coverage.length);
-
-        int length = physical_coverage.length;
-        int[] head_cov = Arrays.copyOfRange(physical_coverage, 0, flank_size);
-        int[] tail_cov = Arrays.copyOfRange(physical_coverage, length - flank_size, length);
-        int[] mid_cov = Arrays.copyOfRange(physical_coverage, flank_size, length - flank_size);
-
-        switch (method){
-            case "bin":
-                head_cov_scaled = bin(head_cov, flanking_region_datapoints);
-                mid_cov_scaled = bin(mid_cov, middle_datapoints);
-                tail_cov_scaled = bin(tail_cov, flanking_region_datapoints);
-                //System.out.println("--- Normalize data with bin");
-                // copy the result into the coverage_scaled
-                System.arraycopy(head_cov_scaled, 0, coverage_scaled, 0, head_cov_scaled.length);
-                System.arraycopy(mid_cov_scaled, 0, coverage_scaled, head_cov_scaled.length, mid_cov_scaled.length);
-                System.arraycopy(tail_cov_scaled, 0, coverage_scaled,
-                        head_cov_scaled.length + mid_cov_scaled.length, tail_cov_scaled.length);
-                break;
-            case "spline":
-                head_cov_scaled = spline(head_cov, flanking_region_datapoints);
-                tail_cov_scaled = spline(tail_cov, flanking_region_datapoints);
-                mid_cov_scaled = spline(mid_cov, middle_datapoints);
-                //System.out.println("--- Normalize data with spline");
-                // copy the result into the coverage_scaled
-                System.arraycopy(head_cov_scaled, 0, coverage_scaled, 0, head_cov_scaled.length);
-                System.arraycopy(mid_cov_scaled, 0, coverage_scaled, head_cov_scaled.length, mid_cov_scaled.length);
-                System.arraycopy(tail_cov_scaled, 0, coverage_scaled,
-                        head_cov_scaled.length + mid_cov_scaled.length, tail_cov_scaled.length);
-                break;
-        }
-        return coverage_scaled;
-    }*/
-
     public static double[] getCoverageScaled(int[] physical_coverage, String method, int flank_size) {
         double[] coverage_scaled = new double[num_datapoints];
         double[] head_cov_scaled = new double[0];

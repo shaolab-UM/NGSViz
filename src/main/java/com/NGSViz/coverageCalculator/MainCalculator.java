@@ -4,13 +4,11 @@ import com.NGSViz.ReadBam.BAMAttribute;
 import com.NGSViz.configSet.GenerateJsonConfig;
 import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.BedDBProcess;
-import com.NGSViz.sqldbOperate.ParallelGeneDbProcessor;
+import com.NGSViz.sqldbOperate.GeneDbProcessor;
 import com.NGSViz.sqldbOperate.Transcript;
 import com.NGSViz.utils.DirectoryChecker;
 import com.NGSViz.utils.Matrix2CSV;
-import com.NGSViz.utils.ReadTextFile;
 import com.NGSViz.utils.SparseMatrix;
-import htsjdk.samtools.util.Interval;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
@@ -35,7 +33,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
     private static SparseMatrix coverage_scaled_matrix;
     private static SparseMatrix coverage_scaled_matrix_bkg;
-    private static Map<String, List<Transcript>> genesByChromosome;
+    private static Map<Integer, List<Transcript>> geneList_batches;
     private static Set<String> record_name_list;
     private static List<String> row_names;
     private static Map<String, List<Transcript>> exon_gene_map;
@@ -65,32 +63,26 @@ public class MainCalculator extends InputParameterAttributes {
             System.out.println("----------------------------------------");
             System.out.println("--- Start coverage matrix calculation! ---");
 
-            ParallelGeneDbProcessor GenesBInfo = new ParallelGeneDbProcessor(core_num);
-
             if(bedDB_path == null || bedDB_path.equals("-")) { //
                 // get genelist from build in DB
                 try {
                     // By invoking a non-static method through an instance
-                    GenesBInfo.processGeneData(tbl_name, biotype, analysis_type);
+                    GeneDbProcessor.processGeneData(tbl_name, biotype, analysis_type);
                 } catch (SQLException e) {
                     System.err.println("Database error: " + e.getMessage());
-                } catch (InterruptedException e) {
-                    System.err.println("Thread interruption error: " + e.getMessage());
                 }
-                record_name_list = GenesBInfo.getRecordName();
-                genesByChromosome = GenesBInfo.getGenesByContig();
+                record_name_list = GeneDbProcessor.getRecordName();
+                geneList_batches = GeneDbProcessor.getBatchGenes();
             } else {
                 BedDBProcess BedDB = new BedDBProcess(bedDB_path);
                 BedDB.buildBedDB(bedDB_path);
-                genesByChromosome = BedDB.getGeneListByChromosome();
+                //genesByChromosome = BedDB.getGeneListByChromosome();
                 record_name_list = BedDB.getRecordName();
-                // get genelist from bed file
-                GenesBInfo.setRecordName(record_name_list);
-                GenesBInfo.setGeneListbyChromosome(genesByChromosome);
+                geneList_batches = BedDB.getBatchGeneList();
             }
 
             // Use optimized processor instead of old method
-            GeneCoverageProcessorByChromosome genesProcess = new GeneCoverageProcessorByChromosome(bamObj, genesByChromosome, record_name_list);
+            GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bamObj, geneList_batches, record_name_list);
             Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
             row_names = (List<String>) coverage_map.get("record_names");
             coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
@@ -100,7 +92,7 @@ public class MainCalculator extends InputParameterAttributes {
                 System.out.println("Paired mode: to calculate background.");
                 // bkg_coverage_scaled_matrix
                 BAMAttribute bamObj_bkg = new BAMAttribute(bam_file_bkg);
-                GeneCoverageProcessorByChromosome genesProcess_bkg = new GeneCoverageProcessorByChromosome(bamObj_bkg, genesByChromosome, record_name_list);
+                GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bamObj_bkg, geneList_batches, record_name_list);
                 // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
                 Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");

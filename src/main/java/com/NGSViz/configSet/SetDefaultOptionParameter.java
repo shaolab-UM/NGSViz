@@ -38,8 +38,9 @@ public class SetDefaultOptionParameter extends InputParameterAttributes {
         if (scaler_method.equals("bin")) {
             System.out.println("scaler_method: " + scaler_method);
         }
-        if (chunk_size == 100){
-            System.out.println("chunk_size: " + chunk_size);
+        int chunk_size;
+        if (BATCH_SIZE == 500){
+            System.out.println("chunk_size: " + BATCH_SIZE);
         }
         if (min_mapq == 20){
             System.out.println("min_mapq: " + min_mapq);

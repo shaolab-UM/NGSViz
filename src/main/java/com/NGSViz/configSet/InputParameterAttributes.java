@@ -52,7 +52,7 @@ public class InputParameterAttributes {
     public static double scale_ratio = 1.0;//-S
     public static int core_num = 1; //-P
     public static String scaler_method = "bin"; //-AL
-    public static int chunk_size = 100; //-CS
+    public static int BATCH_SIZE = 500; //-CS
     public static int min_mapq = 20; //-MQ
     public static int frag_len = 150; //-FL
     public static String strand_spec = "both"; //-SS
