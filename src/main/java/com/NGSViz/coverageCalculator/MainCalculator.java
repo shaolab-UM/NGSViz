@@ -29,17 +29,13 @@ public class MainCalculator extends InputParameterAttributes {
     private static String title_subset;
     private static String sample_subset;
     private static String group_subset;
-    private static double trim_ratio = InputParameterAttributes.robust;
     private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
-    private static String average_cov_name = "average_coverage_matrix.csv";
-    private static String sem_name = "sem.csv";
     private static boolean paired_mode = false;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
     private static SparseMatrix coverage_scaled_matrix;
     private static SparseMatrix coverage_scaled_matrix_bkg;
-    private static Map<String, Transcript> DB_GENES;
-    private static Map<String, Interval> genes_intervals;
+    private static Map<String, List<Transcript>> genesByChromosome;
     private static Set<String> record_name_list;
     private static List<String> row_names;
     private static Map<String, List<Transcript>> exon_gene_map;
@@ -82,38 +78,29 @@ public class MainCalculator extends InputParameterAttributes {
                     System.err.println("Thread interruption error: " + e.getMessage());
                 }
                 record_name_list = GenesBInfo.getRecordName();
-                DB_GENES = GenesBInfo.getGeneMap();
+                genesByChromosome = GenesBInfo.getGenesByContig();
             } else {
                 BedDBProcess BedDB = new BedDBProcess(bedDB_path);
                 BedDB.buildBedDB(bedDB_path);
-                DB_GENES = BedDB.getGeneMap();
+                genesByChromosome = BedDB.getGeneListByChromosome();
                 record_name_list = BedDB.getRecordName();
                 // get genelist from bed file
                 GenesBInfo.setRecordName(record_name_list);
-                GenesBInfo.setGeneMap(DB_GENES);
-            }
-
-            if (!gene_subset.equals("all")){
-                System.out.println("--- Run subset gene list!");
-                System.out.println("subset gene list name is: " + gene_subset);
-                Set<String> query_gene_list = ReadTextFile.readGeneList(gene_subset);
-                ParallelGeneDbProcessor newGenesBInfo = new ParallelGeneDbProcessor(core_num);
-                ParallelGeneDbProcessor subDBGeneInfo = newGenesBInfo.subsetGeneList(newGenesBInfo, query_gene_list, GenesBInfo);
-                record_name_list = subDBGeneInfo.getRecordName();
-                DB_GENES = subDBGeneInfo.getGeneMap();
+                GenesBInfo.setGeneListbyChromosome(genesByChromosome);
             }
 
             // Use optimized processor instead of old method
-            GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bamObj, DB_GENES, record_name_list, paired_mode);
+            GeneCoverageProcessorByChromosome genesProcess = new GeneCoverageProcessorByChromosome(bamObj, genesByChromosome, record_name_list);
             Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
             row_names = (List<String>) coverage_map.get("record_names");
             coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
+
             if(paired_mode){
                 // calculate background
                 System.out.println("Paired mode: to calculate background.");
                 // bkg_coverage_scaled_matrix
                 BAMAttribute bamObj_bkg = new BAMAttribute(bam_file_bkg);
-                GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bamObj_bkg, DB_GENES, record_name_list, paired_mode);
+                GeneCoverageProcessorByChromosome genesProcess_bkg = new GeneCoverageProcessorByChromosome(bamObj_bkg, genesByChromosome, record_name_list);
                 // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
                 Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
@@ -123,12 +110,6 @@ public class MainCalculator extends InputParameterAttributes {
             }
             System.out.println("Coverage Scaled Matrix finish!");
             System.out.println("----------------------------------------");
-            // Calculate standard errors (SEM) for matrix if needed. Shut off SEM in single gene case.
-            //double[] confi_matrix = AverageCoverage.calculateSEM(coverage_scaled_matrix);
-            // output the result
-            // Return avg. profile.
-            //double[] average_coverage_matrix = AverageCoverage.calculateAverageCoverage(coverage_scaled_matrix, trim_ratio);
-
             // save the data
             // Book-keep this matrix for heatmap.
             File bam_path = new File(bam_file);
@@ -136,19 +117,12 @@ public class MainCalculator extends InputParameterAttributes {
             bam_name = bam_name.substring(0, bam_name.lastIndexOf('.'));
             //
             JSONObject OutFileList = new JSONObject();
-            String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name; //+ group_subset + "__" +
-            /*String average_coverage_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + average_cov_name;
-            String sem_path = cleaned_path + "/" + bam_name + "__" + group_subset + "__" + sem_name;*/
+            String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name;
             OutFileList.put("heatmapDataFile", heatmap_data_path);
-            /*OutFileList.put("avgPlotDataFile", average_coverage_path);
-            OutFileList.put("semDataFile", sem_path);*/
             jsonArray.put(OutFileList);
 
             // output the result
             Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
-
-            /*Matrix2CSV.saveMatrix2CSV(average_coverage_path, average_coverage_matrix, title_subset);
-            Matrix2CSV.saveMatrix2CSV(sem_path, confi_matrix, title_subset);*/
         }
         config_obj.put("OutputFile", jsonArray);
         String plot_json_name = title + "_NGSViz_plotSetting.json";

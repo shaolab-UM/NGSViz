@@ -32,7 +32,7 @@ public class ProcessEachQueryCoorRecord {
 
 
     public static EachCoverageResult processRecord2(Transcript gene_coord, SamReader bam_reader,
-                                         String chr_name, boolean paired_mode) {
+                                         String chr_name) {
 
         // genome coordinate information
         String query_strand = gene_coord.getQueryStrand();
@@ -42,8 +42,6 @@ public class ProcessEachQueryCoorRecord {
         // get the exon tid name
         String[] parts = record_name.split(":");
         String tid_name = parts.length > 1 ? parts[1] : "";
-
-        // config code need to change when flank_factor exist
 
         if (flank_factor > 0){
             if(interval_type.equals("exon")){
@@ -82,7 +80,7 @@ public class ProcessEachQueryCoorRecord {
         // calculate the physical coverage for each query region
         int[] physical_coverage =
                 PhysicalCoverageCalculator.calculatePhysicalCoverage2(bam_reader, interval_range,
-                        query_strand, paired_mode);
+                        query_strand);
         // Filter transcripts whose chromosomes do not match bam file.
         if(interval_type.equals("exon")){
             int query_range_start = interval_range.getStart();

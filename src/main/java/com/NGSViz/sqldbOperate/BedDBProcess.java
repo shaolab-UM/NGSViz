@@ -11,8 +11,9 @@ public class BedDBProcess {
     private static Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
     //public static List<String> exon_record_name_list = new ArrayList<>();
     public static Set<String> record_name_list = ConcurrentHashMap.newKeySet();
+    Map<String, List<Transcript>> genesByChromosome = new ConcurrentHashMap<>();
     // Concurrent Map
-    private static Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
+    //private static Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
     private static List<Double> width_list = Collections.synchronizedList(new ArrayList<>());
     private String bedFilePath;
 
@@ -31,7 +32,6 @@ public class BedDBProcess {
                 // Skip comment lines
                 if (line.startsWith("#") || line.trim().isEmpty()) continue;
                 String[] records = line.split("\t");
-                //
                 String chr_name = records[0];
 
                 int start_pos = Integer.parseInt(records[1]);
@@ -54,11 +54,7 @@ public class BedDBProcess {
                 width_list.add((double) width);
                 Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
                         chr_name, nochr_name, strand, start_pos, end_pos);
-                gene_map.put(record_name, transcript);
-
-                /*System.out.println("chr name is " + chr_name);
-                System.out.println(transcript);
-                System.out.println(record_name);*/
+                genesByChromosome.computeIfAbsent(chr_name, k -> new ArrayList<>()).add(transcript);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,8 +65,9 @@ public class BedDBProcess {
 
 
 
-    public Map<String, Transcript> getGeneMap() { return gene_map; }
+    //public Map<String, Transcript> getGeneMap() { return gene_map; }
     public Set<String> getRecordName() { return record_name_list; }
+    public Map<String, List<Transcript>> getGeneListByChromosome() { return genesByChromosome; }
 
 
 }

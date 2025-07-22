@@ -14,40 +14,33 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 public class ParallelGeneDbProcessor extends DBAtribute{
-    private Set<String> unique_chrname_list = ConcurrentHashMap.newKeySet();
-    private Set<String> unique_nochrname_list = ConcurrentHashMap.newKeySet();
     private Set<String> record_name_list = ConcurrentHashMap.newKeySet();
-    private Set<String> DB_gene_list = ConcurrentHashMap.newKeySet();
-    private int region_num = 0;
     // Concurrent Map
-    private Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
-    private List<Double> width_list = Collections.synchronizedList(new ArrayList<>());
+    Map<String, List<Transcript>> genesByChromosome = new ConcurrentHashMap<>();
     // Thread pool, used for parallel processing
     private final ExecutorService executorService;
     // Each time the number of records processed
     private final int BATCH_SIZE = 1000;
-    private static Interval interval_range;
-    private boolean chr_format = InputParameterAttributes.bamChromLabStartWithChr;
 
     public ParallelGeneDbProcessor(int nThreads) {
         this.executorService = Executors.newFixedThreadPool(nThreads);
     }
 
-    public ParallelGeneDbProcessor subsetGeneList(ParallelGeneDbProcessor newGenesBInfo, Set<String> gene_list,
+    /*public ParallelGeneDbProcessor subsetGeneList(ParallelGeneDbProcessor newGenesBInfo, Set<String> gene_list,
                                                   ParallelGeneDbProcessor GenesBInfo){
 
-        Map<String, Transcript> ori_gene_map = GenesBInfo.getGeneMap();
+        //Map<String, Transcript> ori_gene_map = GenesBInfo.getGeneMap();
         for(Transcript transcript : ori_gene_map.values()){
             String gene_name = transcript.getGeneName();
             String record_name = transcript.getRecordName();
             boolean isPresent = gene_list.contains(gene_name);
-            if(isPresent){
+            *//*if(isPresent){
                 newGenesBInfo.gene_map.put(record_name, transcript);
-            }
+            }*//*
         }
         Map<String, Transcript> gene_map = new ConcurrentHashMap<>();
         return newGenesBInfo;
-    }
+    }*/
 
     // Use database connection pool for better performance
     public void processGeneData(String tbl_name, String biotype, String type) throws SQLException, InterruptedException {
@@ -104,34 +97,20 @@ public class ParallelGeneDbProcessor extends DBAtribute{
             String record_name = gene_name + ":" + transcript_id; //
 
             // Thread-safe method using concurrent collections (no synchronization needed)
-            unique_chrname_list.add(chr_name);
-            unique_nochrname_list.add(nochr_name);
-            DB_gene_list.add(gene_name);
             record_name_list.add(record_name);
-            width_list.add((double) width);
-
             Transcript transcript = new Transcript(record_name, gene_name, transcript_id,
                     chr_name, nochr_name, strand, start_pos, end_pos);
-            gene_map.put(record_name, transcript);
+            genesByChromosome.computeIfAbsent(chr_name, k -> new ArrayList<>()).add(transcript);
         }
     }
 
     // Methods
-    public Set<String> getUniqueChrNameList() { return unique_chrname_list; }
-    public Set<String> getUniqueNoChrNameList() { return unique_nochrname_list; }
     public Set<String> getRecordName() { return record_name_list; }
-    public Set<String> getDBGeneList() { return DB_gene_list; }
-    public Map<String, Transcript> getGeneMap() { return gene_map; }
-    public List<Double> getWidthList() { return width_list; }
-    public int getRegionNum() {
-        region_num = width_list.toArray().length;
-        return region_num;
+    public Map<String, List<Transcript>> getGenesByContig() { return genesByChromosome; }
+    public void setRecordName(Set<String> bed_record_name_list) {record_name_list = bed_record_name_list;
     }
-    public void setRecordName(Set<String> bed_record_name_list) {
-        record_name_list = bed_record_name_list;
-    }
-    public void setGeneMap(Map<String, Transcript> bed_gene_map) {
-        gene_map = bed_gene_map;
+    public void setGeneListbyChromosome(Map<String, List<Transcript>> bed_genesByChromosome) {
+        genesByChromosome = bed_genesByChromosome;
     }
 }
 

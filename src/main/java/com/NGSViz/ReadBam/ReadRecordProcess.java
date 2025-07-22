@@ -28,17 +28,6 @@ public class ReadRecordProcess {
     public static List<Integer> getReadAlignmentInfo(SAMRecord bam_record, Interval interval_range){
         // get the alignment value, the start position and width of read
         int align_start_pos = bam_record.getAlignmentStart();
-        boolean isPairedEnd = bam_record.getReadPairedFlag();
-        if (isPairedEnd) {
-            int insertSize = bam_record.getInferredInsertSize();
-
-            //int insertSize = Math.abs(bam_record.getInferredInsertSize());
-            System.out.println("Insert size: " + insertSize);
-
-        }else {
-
-        }
-
         int read_width = bam_record.getReadLength();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();

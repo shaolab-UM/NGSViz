@@ -488,7 +488,9 @@ plotOneIntegratePlot <- function(plot_paras){
 # mergeAveragePlot(json_path)
 # mergeMultiVisResult(json_path)
 
-
+json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4"
+mergeAveragePlot(json_path)
+# mergeMultiVisResult(json_path)
 
 
 
