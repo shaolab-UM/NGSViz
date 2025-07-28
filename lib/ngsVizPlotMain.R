@@ -1,22 +1,20 @@
 #!/usr/bin/env Rscript
 
-args <- commandArgs(trailingOnly = TRUE)
-
-library(here)
-
-source(here("lib", "processJSON.R"))
-source(here("lib", "coverageHeatmap.R"))
-source(here("lib", "qualityControlViz.R"))
-
-parse_args <- function(args) {
-  if (length(args) != 1) {
-    cat("Usage: Rscript your_script.R <json_path>\n")
-    cat("<json_path> : Path of the JSON folder!\n")
-    quit(status = 1)
+# Get the absolute path of the current script
+getScriptPath <- function() {
+  cmd_args <- commandArgs(trailingOnly = FALSE)
+  # Find the --file= argument, which is passed when running with Rscript
+  file_arg <- grep("--file=", cmd_args, value = TRUE)
+  if (length(file_arg) > 0) {
+    # Extract the file path and convert to absolute path
+    script_path <- normalizePath(sub("--file=", "", file_arg))
+  } else {
+    # If running interactively in R, try using sys.frame
+    script_path <- normalizePath(sys.frame(1)$ofile)
   }
-  
-  list(json_path = args[1])
+  return(script_path)
 }
+
 
 getJsonFiles <- function(path) {
   json_files <- list.files(path, pattern = "\\.json$", full.names = FALSE)
@@ -24,22 +22,37 @@ getJsonFiles <- function(path) {
 }
 
 Main <- function(args){
+  # Get the directory of the script
+  script_dir <- dirname(getScriptPath())
+  # Print the script path and directory
+  message(paste0("Script directory:", script_dir, "\n"))
+  message("Load the library")
+  # Source scripts from the same directory as the current script
+  source(file.path(script_dir, "processJSON.R"))
+  source(file.path(script_dir, "coverageHeatmap.R"))
+  source(file.path(script_dir, "qualityControlViz.R"))
+  
   # Parse parameters
-  params <- parse_args(args)
+  if (length(args) != 1) {
+    cat("Usage: Rscript your_script.R <json_path>\n")
+    cat("<json_path> : Path of the JSON folder!\n")
+    quit(status = 1)
+  }
+  json_path <- args[1]
+  
   
   # Check if json_path is provided
-  if (is.null(params$json_path)) {
+  if (is.null(json_path)) {
     cat("Error: JSON path is required!\n")
     cat("Usage: Rscript your_script.R <json_path>\n")
     cat("<json_path> : Path of the JSON folder!\n")
     quit(status = 1)
   }
   
-  if (!dir.exists(params$json_path)) {
-    stop(paste("Error: folder of Json not exist ->", params$json_path))
+  if (!dir.exists(json_path)) {
+    stop(paste("Error: folder of Json not exist ->", json_path))
   }
-
-  cat("JSON Path:", params$json_path, "\n")
+  message(paste0("Input the json path is:", json_path, "\n"))
   mergeAveragePlot(json_path) # , title_name
   mergeMultiVisResult(json_path)
   heatmapMat_rowMerge <- propressData(json_path) #  , row_merge_method
@@ -51,8 +64,10 @@ Main <- function(args){
   
 }
 
-Main(args)
 
 # usage -------------------------------------------------------------------
 # json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4"
+args <- commandArgs(trailingOnly = TRUE)
+Main(args)
+
 

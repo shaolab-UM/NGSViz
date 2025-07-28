@@ -1,24 +1,50 @@
 
+checkRequiredPackages <- function(required_packages) {
+  # Loop through each package to check and load
+  for (pkg in required_packages) {
+    # Check if the package is installed
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
+      # Attempt to install the package
+      tryCatch({
+        install.packages(pkg, dependencies = TRUE)
+        message(paste0("Package '", pkg, "' installed successfully."))
+      }, error = function(e) {
+        # If installation fails, print error message and stop the script
+        stop(paste0("Error: Unable to install package '", pkg, "'. Please install this package manually and then run the script.\n",
+                    "Error message: ", e$message))
+      })
+    }
+    
+    # Attempt to load the package
+    # Use suppressPackageStartupMessages to avoid printing package startup messages
+    # Use tryCatch to capture potential errors during loading
+    tryCatch({
+      suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+      message(paste0("Package '", pkg, "' loaded successfully."))
+    }, error = function(e) {
+      # If loading fails, print error message and stop the script
+      stop(paste0("Error: Unable to load package '", pkg, "'. Please check if the installation is complete or if there are compatibility issues.\n",
+                  "Error message: ", e$message))
+    })
+  }
+  
+  message("\nAll required packages have been installed and loaded.")
+}
 
-# 定义需要检查的包列表
+
 packages <- c(
   "shiny", "bs4Dash", "dplyr", "readr", "plotly", "leaflet", "DT", 
   "fresh", "future", "promises", "RSQLite", "processx", "jsonlite", 
   "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles", "circlize",
-  "EnrichedHeatmap", "here", "corrplot", "ggrepel", "reshape2"
+  "EnrichedHeatmap", "here", "corrplot", "ggrepel", "reshape2", "aplot",
+  "ggh4x", "tidyverse", "rtracklayer", "colorspace", "zoo", "corrplot", 
+  "RColorBrewer", "purrr", "data.table", "RcppRoll", "ggrepel", "cowplot"
 )
-# future ggsci shinyFiles markdown "plotly", "leaflet", "DT"
-# Check and install missing packages
-for (pkg in packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg, dependencies = TRUE)
-    cat(paste("Installed packages:", pkg, "\n"))
-  } 
-}
 
-# Load all packages
-lapply(packages, library, character.only = TRUE)
-
+# # Load all packages
+# lapply(packages, library, character.only = TRUE)
+checkRequiredPackages(packages)
 
 plot_colour <- "#8965CD"
 
@@ -34,28 +60,14 @@ theme <- create_theme(
   )
 )
 
-
-# load Rscript ------------------------------------------------------------
-# source("lib/plot/averagePlot.R")
-source("lib/processDB.R")
-source("www/aboutUS.R")
-source("lib/processJSON.R")
-source("lib/coverageHeatmap.R")
-source("lib/processCalculateParameters.R")
-source("lib/qualityControlViz.R")
-
-# source(here("lib", "processJSON.R"))
-# source(here("lib", "coverageHeatmap.R"))
-# source(here("lib", "qualityControlViz.R"))
-# source("lib/plot/mainPlot.R")
-# source("lib/plot/plotThemeSet.R")
-# source("lib/processCalculateParameters.R")
-
 # Load data ---------------------------------------------------
 
 # Input parameters --------------------------------------------------------
-json_file <- "NGSViz_setting.json"
-# db_file <- '/Users/bencheye/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db'
+tool_dir <- here()
+print(sprintf("The root path of ngsViz is : %s", tool_dir))
+json_file <- here("NGSViz_setting.json")
+ngsViz_log <- "img/NGSViz_log.png"
+help_text <- here("README.md")
 split_color_panel <- c(
   "NPG" = "npg", 
   "AAAS" = "aaas", 
@@ -75,11 +87,16 @@ sample_color_panel <- c(
 )
 file_type_list <- c("tiff", "png", "pdf", "jpeg")
 
+# load Rscript ------------------------------------------------------------
+source(here("www/aboutUS.R"))
+source(here("lib/processDB.R"))
+source(here("lib/processJSON.R"))
+source(here("lib/coverageHeatmap.R"))
+source(here("lib/qualityControlViz.R"))
+source(here("lib/processCalculateParameters.R"))
+
 # run java ----------------------------------------------------------------
 java_res <- getToolJsonPara(json_file)
-# cmd <- java_res[1]
-# args <- c(java_res[2], java_res[3])
-# db_file <- java_res[4]
 
 java_path <- java_res[1]
 jar_path <- java_res[3]
@@ -97,11 +114,9 @@ ui <- dashboardPage(
   title = "NGSViz",
   freshTheme = theme,
   dark = TRUE,
-  help = NULL,
+  help = FALSE,
   fullscreen = TRUE,
   scrollToTop = TRUE,
-  
-  
   
   # Header ----
   header = dashboardHeader(
@@ -109,7 +124,7 @@ ui <- dashboardPage(
     title = dashboardBrand(
       title = "NGSViz",
       color = "olive",
-      image = "NGSViz_log.png"
+      image = ngsViz_log
     ),
     controlbarIcon = NULL,
     fixed = TRUE,
@@ -205,7 +220,7 @@ ui <- dashboardPage(
             column(4, selectInput("dashG", "Choose a reference genome",
                                   choices = result$Genome)),
             column(4, selectInput("dashR", "Choose a region type", 
-                                  choices = c("tss", "tes", "genebody"))),
+                                  choices = c("tss", "tes", "genebody", "exon"))),
             column(4, textInput("dashT", "Type the analysis title:", value = "")),
           ),
           fluidRow(
@@ -224,21 +239,18 @@ ui <- dashboardPage(
           collapsible = TRUE,
           collapsed = FALSE,
           fluidRow(
-            column(4, selectInput("dashA", "Choose a analysis type", 
-                                  choices = c("transcript", "exon"))),
+            column(4, numericInput("dashBS", "Batch size for genes parallel",
+                                   value = 500, min = 100, max = 2000)),
             column(4, uiOutput("dynamic_ui")), # dashB
             
             column(4, numericInput("dashF", "Input the flanking region size:", 
                                    value = 2000, min = 1, max = 3000))
           ),
           fluidRow(
-            # column(4, selectInput("dashM", "Choose the scale method", 
-            #                       choices = c("bin", "spline"))),
             column(4, numericInput("dashN", "Flanking size factor", 
                                    value = 0, min = 0, max = 1)),
             column(4, numericInput("dashS", "scale ratio (spike-in calibration)", 
                                    value = 1, min = 0, max = 1)),
-            # column(4, textInput("dashX", "Group: gene list file:", value = "all"))
             column(4, numericInput("dashDP", "Number of datapoints",
                                    value = 100, min = 0, max = 1000))
           ),
@@ -287,10 +299,6 @@ ui <- dashboardPage(
             column(4, h5(" Start Parsing"),
                    actionButton("parse_covPlot", "Parsing parameters")),
             column(4, textInput("outputdir", " Type JSON config path", value = ""))
-            # column(4, textInput("calcuJson", "CalculationMode JSON",
-            #                     value = "NGSVir_running_config.json"))
-            # column(4, textInput("plotJson", "Plot JSON", 
-            #                     value = ""))
           )
         ),
         # adjust plot paras ----------------------------------------------------
@@ -331,9 +339,6 @@ ui <- dashboardPage(
           h5("Gene Split Parameters"),
           hr(), # Add horizontal separator
           fluidRow(
-            # column(4, selectInput("split_mode", "Split mode:",
-            #                       choices = c("cluster", "gene_list"),
-            #                       selected = "cluster")),
             column(4, selectInput("dist_m", "dist_m:",
                                   choices = c("euclidean", "manhattan", "maximum"),
                                   selected = "euclidean")),
@@ -343,16 +348,6 @@ ui <- dashboardPage(
                                   choices = c("ward.D", "median", "average"),
                                   selected = "ward.D"))
           ),
-          # # 
-          # fluidRow(
-          #   
-          #                         
-          #   column(4, textInput("gene_list_file", "File paht for gene_list :",
-          #                       value = "")),
-          #   column(4, textInput("sub_gene_list", "Gene list level colname :",
-          #                       value = "all"))
-          # ),
-          #
           
           hr(), # Add horizontal separator
           h5("Theme Parameters"),
@@ -550,7 +545,6 @@ server <- function(input, output, session) {
                 choices = result)
   })
   
-  
   # Run Java ----------------------------------------------------------------
   observeEvent(input$run_java, {
     # Retrieve the value of the dashB parameter currently selected by the user.
@@ -561,17 +555,14 @@ server <- function(input, output, session) {
     # Step 1: Button is clicked, update status to "Running"
     run_status("Running...")
     # Disable button, prevent repeated clicks
-    # disable("run_java")
-    # req(!rv$running)
     para_list <- list(
       G=input$dashG, R=input$dashR, I=input$dashI,
       O=input$dashO, "T"=input$dashT, 
       DB=input$dashDB, CP=input$dashCP, # X=input$dashX, 
-      A=input$dashA, B=selected_dashB, "F"=input$dashF, 
+      BS=input$dashBS, B=selected_dashB, "F"=input$dashF, 
       N=input$dashN, DP=input$dashDP, S=input$dashS,
       MQ=input$dashMQ, BD=input$dashBD, # M=input$dashM,
       FL=input$dashFL,  P=input$dashP # SS=input$dashSS,
-      
     )
     
     excution_res <- executeNgsvizJar(java_path, jar_path, para_list)
@@ -854,16 +845,11 @@ server <- function(input, output, session) {
 
 # Help --------------------------------------------------------------------
   output$markdown_content <- renderUI({
-    md_file <- "README.md"
+    md_file <- help_text
     # Convert Markdown to HTML
     html_content <- markdownToHTML(file = md_file, fragment.only = TRUE)
     HTML(html_content)
   })
-  
-  
-  
 }
-
-
 
 shinyApp(ui, server)

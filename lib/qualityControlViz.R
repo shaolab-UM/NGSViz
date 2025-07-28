@@ -6,6 +6,39 @@
 # Created: July 2025
 #
 
+# build species reference genome based on the gtf file
+checkRequiredPackages <- function(required_packages) {
+  # Loop through each package to check and load
+  for (pkg in required_packages) {
+    # Check if the package is installed
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
+      # Attempt to install the package
+      tryCatch({
+        install.packages(pkg, dependencies = TRUE)
+        message(paste0("Package '", pkg, "' installed successfully."))
+      }, error = function(e) {
+        # If installation fails, print error message and stop the script
+        stop(paste0("Error: Unable to install package '", pkg, "'. Please install this package manually and then run the script.\n",
+                    "Error message: ", e$message))
+      })
+    }
+    
+    # Attempt to load the package
+    # Use suppressPackageStartupMessages to avoid printing package startup messages
+    # Use tryCatch to capture potential errors during loading
+    tryCatch({
+      suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+      message(paste0("Package '", pkg, "' loaded successfully."))
+    }, error = function(e) {
+      # If loading fails, print error message and stop the script
+      stop(paste0("Error: Unable to load package '", pkg, "'. Please check if the installation is complete or if there are compatibility issues.\n",
+                  "Error message: ", e$message))
+    })
+  }
+  
+  message("\nAll required packages have been installed and loaded.")
+}
 
 # Define row statistic functions
 getRowMeans <- function(x, mean.trim=0, na.rm=TRUE){
@@ -73,27 +106,35 @@ corPlot <- function(json_path, heatmapMat_rowMerge, width = 600, height=600, dpi
   cor_matrix <- cor(heatmapMat_rowMerge)
   file_name <- sprintf("%s/correlation_plot.tiff", json_path)
   # plot
-  corrplot(cor_matrix, 
-           method = "circle", 
+  corrplot(cor_matrix,
+           method = "circle",
            type = "upper",
-           diag = FALSE, 
-           tl.col = "black", 
-           tl.cex = 1.2,
-           number.cex = 0.8,
-           tl.srt = 45, # Set the label rotation angle to 45 degrees
-           addCoef.col = "grey"
-  )
+           diag = T,
+           tl.col = "black",
+           addgrid.col = "black",
+           tl.cex = 1.2,           
+           number.cex = 1.2, 
+           rect.lwd = 3,
+           tl.srt = 45,
+           addCoef.col = "grey",
+           addCoefasPercent = TRUE,  
+           mar = c(0, 0, 0, 0)
+  )    
   tiff(file_name, width = width, height = height, res = dpi)
-  corrplot(cor_matrix, 
-           method = "circle", 
+  corrplot(cor_matrix,
+           method = "circle",
            type = "upper",
-           diag = FALSE, 
-           tl.col = "black", 
-           tl.cex = 1.2,
-           number.cex = 0.8,
-           tl.srt = 45, # Set the label rotation angle to 45 degrees
-           addCoef.col = "grey"
-  )
+           diag = T,
+           tl.col = "black",
+           addgrid.col = "black",
+           tl.cex = 1.2,           
+           number.cex = 1.2, 
+           rect.lwd = 3,
+           tl.srt = 45,
+           addCoef.col = "grey",
+           addCoefasPercent = TRUE,  
+           mar = c(0, 0, 0, 0)
+  )    
   dev.off()
 }
 
@@ -134,14 +175,16 @@ runPCA <- function(heatmapMat_rowMerge, json_path){
 }
 
 # usage -------------------------------------------------------------------
-# library(ggplot2)
-# library(reshape2)
-# library(corrplot)
-# library(ggrepel)
-# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
-# # row_merge_method <- "mean"
-# # 
-# # 
+packages <- c(
+  "corrplot", "ggrepel"
+)
+
+# # Load all packages
+checkRequiredPackages(packages)
+
+# json_path <- "/Users/benche/myProj/ngsPlot/Result/feature/mergeH3K4me3"
 # heatmapMat_rowMerge <- propressData(json_path)
-# corPlot(json_path, heatmapMat_rowMerge) #, 600, 600, 80
-# runPCA(heatmapMat_rowMerge, json_path)
+# if(length(plot_para_list)>1){
+#   corPlot(json_path, heatmapMat_rowMerge)
+#   runPCA(heatmapMat_rowMerge, json_path)
+# }

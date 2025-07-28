@@ -37,7 +37,9 @@ public class ReadRecordProcess {
         //System.out.println("The strand flag of this read is " + strand_flag);
         if (strand_flag){
             // if strand's direction is "-", adjust the start position of read
-            align_start_pos = align_start_pos - frag_len + read_width;
+            align_start_pos = (align_start_pos + read_width) - frag_len/2 ;
+        }else{
+            align_start_pos = align_start_pos + frag_len/2;
         }
         int align_end_pos = align_start_pos + read_width;
         if (align_start_pos < query_range_start || align_end_pos > query_range_end){

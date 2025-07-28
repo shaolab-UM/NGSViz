@@ -1,14 +1,3 @@
-library(ggh4x)
-library(tidyverse)
-library(rtracklayer)
-library(circlize)
-library(colorspace)
-library(RColorBrewer)
-library(purrr)
-library(data.table)
-library(RcppRoll)
-library(zoo)
-
 
 # theme -------------------------------------------------------------------
 myTheme <- function(plot_paras){
@@ -51,6 +40,40 @@ heatmapTheme <- function(){
     panel.spacing.x = unit(0.6, "cm"), 
   )
   return(custom_theme)
+}
+
+# build species reference genome based on the gtf file
+checkRequiredPackages <- function(required_packages) {
+  # Loop through each package to check and load
+  for (pkg in required_packages) {
+    # Check if the package is installed
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
+      # Attempt to install the package
+      tryCatch({
+        install.packages(pkg, dependencies = TRUE)
+        message(paste0("Package '", pkg, "' installed successfully."))
+      }, error = function(e) {
+        # If installation fails, print error message and stop the script
+        stop(paste0("Error: Unable to install package '", pkg, "'. Please install this package manually and then run the script.\n",
+                    "Error message: ", e$message))
+      })
+    }
+    
+    # Attempt to load the package
+    # Use suppressPackageStartupMessages to avoid printing package startup messages
+    # Use tryCatch to capture potential errors during loading
+    tryCatch({
+      suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+      message(paste0("Package '", pkg, "' loaded successfully."))
+    }, error = function(e) {
+      # If loading fails, print error message and stop the script
+      stop(paste0("Error: Unable to load package '", pkg, "'. Please check if the installation is complete or if there are compatibility issues.\n",
+                  "Error message: ", e$message))
+    })
+  }
+  
+  message("\nAll required packages have been installed and loaded.")
 }
 
 # process the row order of each gene including split situation ------------
@@ -364,7 +387,7 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name = ""){
     # Remove the gap between the heatmap edge and the coordinate axis.
     coord_cartesian(expand = 0) 
   if(group_num == 1){
-    ptop <- ptop #+ theme(legend.position = "none")
+    ptop <- ptop + theme(legend.position = "none")
   }
   if(plot_paras$SEM){
     # Add error lines
@@ -471,27 +494,13 @@ plotOneIntegratePlot <- function(plot_paras){
   return(all_plots)
 }
 # usage -------------------------------------------------------------------
-# setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
-# source("lib/processJSON.R")
-# 
-# coeragePlotMian(json_path, title_name)
-# 
-# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/mutliAveragePlot"
-# # title_name <- "title"
-# # coeragePlotMian(json_path, title_name)
-# # 
-# mergeAveragePlot(json_path)
-# mergeMultiVisResult(json_path)
+packages <- c(
+  "ggh4x", "tidyverse", "rtracklayer", "colorspace", "circlize",
+  "RColorBrewer", "purrr", "data.table", "RcppRoll", "zoo"
+)
 
-# # title_name <- "title"
-# json_path <- "/Users/benche/myProj/ngsPlot/Result/performanceCompare/ngsViz/p1_run_2/1.0"
-# mergeAveragePlot(json_path)
-# mergeMultiVisResult(json_path)
-
-json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4"
-mergeAveragePlot(json_path)
-# mergeMultiVisResult(json_path)
-
+# # Load all packages
+checkRequiredPackages(packages)
 
 
 

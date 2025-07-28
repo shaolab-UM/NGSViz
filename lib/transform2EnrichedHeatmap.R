@@ -83,35 +83,5 @@ plotEnrichedHeatmapMain <- function(json_path){
 }
 # start analysis ----------------------------------------------------------
 
-# transform2EnrichedHeatmap <- function(plot_paras){
-#   heatmap_files <- plot_paras$heatmap_mat_path
-#   data_mat <- read.csv(heatmap_files, row.names = 1) %>% as.data.frame()
-#   out_path <- plot_paras$output_path
-#   bg_col <- c("#Cb648b", "#679cd2")
-#   ht_list <- list()
-#   for (i in 1:nrow(data_mat)) {
-#     sample_name <- plot_paras$plot_title
-#     file_path <- sprintf("%s/%s__%s__%s", out_path, data_mat[i, 1],
-#                          data_mat[i, 2], data_mat[i, 3])
-#     ht <- plotEnrichedHeatmap(file_path, plot_paras, bg_col[i], sample_name)
-#     ht_list[[i]] <- ht
-#   }
-#   out_name <- sprintf("%s/heatmap.pdf", out_path)
-#   # merge plot list
-#   pdf(out_name, width = 15, height = 6, onefile = F)
-#   draw(Reduce("+", ht_list), ht_gap = unit(0.8, "cm"),
-#        heatmap_legend_side = "right")
-#   dev.off()
-# }
-
-
-
-
-# setwd("/Users/benche/myProj/ngsPlot/NGSViz/")
-# source("lib/processJSON.R")
-# 
-# # title_name <- "title"
-# json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4/H3K4_NGSViz_plotSetting.json"
-# plotEnrichedHeatmapMain(json_path)
 
 

@@ -1,11 +1,54 @@
+#!/usr/bin/env Rscript
+
+# Define the usage message for the script
+usage_message <- function() {
+  cat("
+Usage: Rscript your_script_name.R <gtf_file> <DB_name> <species> <annotatedNCRNA>
+
+Parameter descriptions:
+  <gtf_file>: Specifies the path to the GTF file.
+  <DB_name>: The name of the database.
+  <species>: The name of the species.
+  <annotatedNCRNA>: Indicates whether to refine annotations for ncRNA.
+
+Example:
+  Rscript your_script_name.R hg38.ncbiRefSeq.gtf Homo_sapiens RefSeq TRUE
+")
+}
+
+
 # build species reference genome based on the gtf file
-check_and_install_package <- function(package_name) {
-  if (!requireNamespace(package_name, quietly = TRUE)) {
-    if (!require("BiocManager", quietly = TRUE)) {
-      install.packages("BiocManager")
+checkRequiredPackages <- function(required_packages) {
+  # Loop through each package to check and load
+  for (pkg in required_packages) {
+    # Check if the package is installed
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
+      # Attempt to install the package
+      tryCatch({
+        install.packages(pkg, dependencies = TRUE)
+        message(paste0("Package '", pkg, "' installed successfully."))
+      }, error = function(e) {
+        # If installation fails, print error message and stop the script
+        stop(paste0("Error: Unable to install package '", pkg, "'. Please install this package manually and then run the script.\n",
+                    "Error message: ", e$message))
+      })
     }
-    BiocManager::install(package_name)
+    
+    # Attempt to load the package
+    # Use suppressPackageStartupMessages to avoid printing package startup messages
+    # Use tryCatch to capture potential errors during loading
+    tryCatch({
+      suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+      message(paste0("Package '", pkg, "' loaded successfully."))
+    }, error = function(e) {
+      # If loading fails, print error message and stop the script
+      stop(paste0("Error: Unable to load package '", pkg, "'. Please check if the installation is complete or if there are compatibility issues.\n",
+                  "Error message: ", e$message))
+    })
   }
+  
+  message("\nAll required packages have been installed and loaded.")
 }
 
 extractGTFName <- function(gtf_file){
@@ -40,7 +83,7 @@ buildDefaultTbl <- function(gtf_name_list, DB_name, species){
   region <- c("exon", "genebody", "tss", "tes")
   analysis_type <- c("exon", "transcript", "transcript", "transcript")
   biotype <- rep("protein_coding", 4)
-  point_lab <- c("Acceptor-Donor", "TSS-TES", "TSS", "TES")
+  point_lab <- c("TSS-TES", "TSS-TES", "TSS", "TES")
   flank_size <- c(500, 2000, 2000, 2000)
   name_prefix <- paste(gtf_name_list[1], DB_name, sep = '_')
   coord_tbl_name <- rep(name_prefix, 4)
@@ -60,7 +103,6 @@ buildDefaultTbl <- function(gtf_name_list, DB_name, species){
 }
 
 constructDB <- function(gtf_name_list, DB_name, default_tbl, gtf_df_filter, species){
-  library(RSQLite)
   # Create SQLite database connection
   name_prefix <- paste(gtf_name_list[1], DB_name, sep = '_')
   db_path <- paste0("DB/", species)
@@ -81,6 +123,7 @@ constructDB <- function(gtf_name_list, DB_name, default_tbl, gtf_df_filter, spec
                         overwrite = TRUE, row.names = FALSE)
   # Close database connection
   RSQLite::dbDisconnect(con)
+  message(sprintf("The DB has been constructed in: %s", db_file))
 }
 
 gtfProcess <- function(gtf_file, DB_name){
@@ -98,9 +141,6 @@ gtfProcess <- function(gtf_file, DB_name){
   nr_rows <- which(grepl("^NR", gtf_df$transcript_id))
   gtf_df$gene_biotype[nr_rows] <- "ncRNA"
   # filter item
-  #save_items <- c("protein_coding", "lncRNA", "snRNA", "scaRNA", "snoRNA", "sRNA",
-                 # "scRNA", "miRNA", "misc_RNA", "pseudogene")
-  #gtf_df_filter <- gtf_df[(gtf_df$transcript_biotype %in% save_items), ]
   save_column <- c("seqnames", "start", "end", "width", "strand", "type", 
                    "gene_biotype", "gene_id", "gene_name", "transcript_id")
   gtf_df_filter <- gtf_df[ ,save_column]
@@ -111,10 +151,6 @@ gtfProcess <- function(gtf_file, DB_name){
   colnames(gtf_df_filter)[c(1,7:10)] <- c("chrom", "biotype", "gid", "gname", "tid")
   gtf_df_filter <- gtf_df_filter[ ,-8]
   return(gtf_df_filter)
-  # default tabel
-  #default_tbl <- buildDefaultTbl(gtf_name_list, DB_name)
-  # constructDB
-  #constructDB(gtf_name_list, DB_name, default_tbl, gtf_df_filter)
 }
 
 getMapInfo <- function(ucsc_df, dataset = "hsapiens_gene_ensembl"){
@@ -151,165 +187,61 @@ convert_format <- function(input_string) {
   remaining_part <- strsplit(input_string, "_")[[1]][2]
   new_string <- paste0(first_letter, remaining_part, "_gene_ensembl")
   return(new_string)
-  return(new_string)
 }
 
-buildDBMain <- function(gtf_file, DB_name, species, file_name=NULL){
+buildDBMain <- function(gtf_file, DB_name, species, annotatedNCRNA = T){
   gtf_name_list <- extractGTFName(gtf_file)
   dataset <- convert_format(species)
+  message("Parsing the GTF file...")
   ucsc_df <- gtfProcess(gtf_file, DB_name)
-  gene_info <- getMapInfo(ucsc_df, dataset)
-  gene_info$gene_biotype[gene_info$gene_biotype == "protein_coding"] <- "ncRNA"
-  for (i in 1:dim(gene_info)[1]) {
-    ucsc_df$biotype[ucsc_df$tid == gene_info$refseq_ncrna[i]] <- gene_info$gene_biotype[i]
+  if(annotatedNCRNA){
+    # annotated the ncRNA with biomaRt
+    message("Annotating ncRNA...")
+    gene_info <- getMapInfo(ucsc_df, dataset)
+    if(!is.null(gene_info)){
+      gene_info$gene_biotype[gene_info$gene_biotype == "protein_coding"] <- "ncRNA"
+      for (i in 1:dim(gene_info)[1]) {
+        ucsc_df$biotype[ucsc_df$tid == gene_info$refseq_ncrna[i]] <- gene_info$gene_biotype[i]
+      }
+    }
   }
-  if(!is.null(file_name)){
-    anno_df <- readRefSeqFuncElems(file_name)
-    ucsc_df <- rbind(ucsc_df, anno_df)
-  }
+  
   # default tabel
   default_tbl <- buildDefaultTbl(gtf_name_list, DB_name, species)
   # constructDB
   constructDB(gtf_name_list, DB_name, default_tbl, ucsc_df, species)
-}
-
-addDefaultTid <- function(gtf_file, DB_name){
-  gtf_name_list <- extractGTFName(gtf_file)
-  species <- strsplit(gtf_file, "/")[[1]][2]
-  genome_version <- gtf_name_list[1]
-  db_path <- sprintf("DB/%s/NGSViz_%s_RefSeq.db", species, genome_version)
-  con <- dbConnect(RSQLite::SQLite(), dbname = db_path)
-  query_key <- sprintf("SELECT * FROM %s_RefSeq", genome_version)
-  print(sprintf("Query key is : %s", query_key))
-  tab_res <- dbGetQuery(con, query_key)
-  tab_res["DefaultChoose"] <- 0
-  result_df <- tab_res %>%
-    filter(type == "transcript") %>%
-    group_by(gname) %>%
-    slice_max(n = 1, order_by = width, with_ties = FALSE) %>%
-    ungroup()
-  tab_res$DefaultChoose[tab_res$type == "transcript" & (tab_res$tid %in% result_df$tid)] <- 1
-  # default tabel
-  default_tbl <- buildDefaultTbl(gtf_name_list, DB_name, species)
-  name_prefix <- paste(gtf_name_list[1], DB_name, sep = '_')
-  # constructDB
-  RSQLite::dbWriteTable(con, name_prefix, tab_res, 
-                        overwrite = TRUE, row.names = FALSE)
-  # Close database connection
-  RSQLite::dbDisconnect(con)
+  
 }
 
 
+mainDB <- function(args){
+  required_arg_count <- 4
+  if (length(args) == 0) {
+    # If no arguments are provided
+    message("No command line arguments detected.")
+    usage_message()
+    quit(save = "no", status = 1) # Exit script with non-zero status code, indicating an error
+  } else if (length(args) != required_arg_count) {
+    # If the number of arguments does not match
+    message(paste0("Incorrect number of arguments. ", required_arg_count, 
+                   " arguments are required, but only ", length(args), " were provided."))
+    usage_message()
+    quit(save = "no", status = 1) # Exit script
+  } else {
+    message("Command line arguments successfully received.")
+  }  
+  required_packages <- c("RSQLite", "dplyr", "rtracklayer", "biomaRt")
+  checkRequiredPackages(required_packages) 
+  # get the parameters values
+  gtf_file <- args[1]
+  DB_name <- args[2]
+  species <- args[3]
+  annotatedNCRNA <- args[4]
+  buildDBMain(gtf_file, DB_name, species, annotatedNCRNA)
+}
 
-check_and_install_package('rtracklayer')
-check_and_install_package('RSQLite')
-library(RSQLite)
-library(rtracklayer)
-library(dplyr)
-library(biomaRt)
-#proj_path <- '/Users/bencheye/myProj/ngsPlot/DB'
-proj_path <- "/Users/benche/myProj/ngsPlot/DB"
-setwd(proj_path)
-DB_name <- 'RefSeq'
+# Usage -------------------------------------------------------------------
 
-# human
-species <- "Homo_sapiens"
-# hg38
-gtf_file <- "gtf/Homo_sapiens/hg38/hg38.ncbiRefSeq.gtf"
-file_name <- "gtf/Homo_sapiens/hg38/refseq_element.bed"
-buildDBMain(gtf_file, DB_name, species, file_name=file_name)
-addDefaultTid(gtf_file, DB_name)
-# t2t
-gtf_file <- "gtf/Homo_sapiens/t2ths1/hs1.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-# hg19
-gtf_file <- "gtf/Homo_sapiens/hg19/hg19.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-
-# Mus_musculus
-species <- "Mus_musculus"
-# mm39
-gtf_file <- "gtf/Mus_musculus/mm39.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species, file_name=file_name)
-
-# mm10 -ucsc error
-gtf_file <- "gtf/Mus_musculus/mm10/mm10.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-file_name <- "gtf/Mus_musculus/mm10/RefSeq_Func_Elems.txt"
-buildDBMain(gtf_file, DB_name, species)
-# mm9
-gtf_file <- "gtf/Mus_musculus/mm9.refGene.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-# Papio
-species <- "Papio"
-# mm39
-gtf_file <- "gtf/Papio/mm39.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species, file_name=file_name)
-
-# Danio_rerio
-species <- "Danio_rerio"
-# danRer11
-gtf_file <- "gtf/Danio_rerio/danRer11.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-gtf_file <- "gtf/Danio_rerio/danRer10.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-gtf_file <- "gtf/Danio_rerio/danRer7.refGene.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-# Drosophila_melanogaster
-species <- "Drosophila_melanogaster"
-# danRer11
-gtf_file <- "gtf/Drosophila_melanogaster/dm6.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-gtf_file <- "gtf/Drosophila_melanogaster/dm3.refGene.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-# Felis_catus
-species <- "Felis_catus"
-# danRer11
-gtf_file <- "gtf/Felis_catus/felCat9.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-gtf_file <- "gtf/Felis_catus/felCat8.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-gtf_file <- "gtf/Felis_catus/felCat5.refGene.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-# Canis_familiaris
-species <- "Canis_familiaris"
-# danRer11
-gtf_file <- "gtf/Canis_familiaris/canFam6.ncbiRefSeq.gtf"
-addDefaultTid(gtf_file, DB_name)
-buildDBMain(gtf_file, DB_name, species)
-
-
-
-# db_info
-db_file <- 'DB/ngsplot2_Rattus_norvegicus_ensembl_mRatBN7_2.db'
-db_file <- 'DB/ngsplot2_Mus_musculus_ensembl_GRCm38_102.db'
-db_file <- 'DB/Homo_sapiens/NGSViz_hg19_RefSeq.db'
-con <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = db_file)
-# get the tables of DB
-dbListTables(con)
-# Close database connection
-query_key <- "SELECT * FROM Rattus_norvegicus_ensembl_mRatBN7_2"
-query_key <- "SELECT * FROM defaultTbl"
-query_key <- "SELECT * FROM hg19_RefSeq"
-results <- dbGetQuery(con, query_key)
-#RSQLite::dbDisconnect(con)
-query_key <- "SELECT * FROM defaultTbl"
-results1 <- dbGetQuery(con, query_key)
+# --- 1. Check command line arguments ---
+args <- commandArgs(trailingOnly = TRUE)
+mainDB(args)

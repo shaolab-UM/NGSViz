@@ -29,11 +29,3 @@ setPlotLegend <- function(plot_paras){
   return(legend_theme)
 }
 
-
-#legend.title = element_text(size = 10, color = "black"),
-# legend.position = c(0.7, 1),
-# legend.justification = c(0, 1),
-# legend.spacing.y = unit(0.1, 'cm'),
-# legend.key.height = unit(0.1, 'cm'),
-#legend.box = "rect",  # 
-#legend.box.background = element_rect(size = 1, colour = "black"), 

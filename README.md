@@ -1,29 +1,55 @@
 # NGSVir User Guide
 
----
-
-## Table of Contents
+# Table of Contents
 
 - [Introduction](#introduction)
+  - [Typical Analysis Workflow](#typical-analysis-workflow)
 - [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Main modules and script description](#Main modules and script description)
-  - [1. Java Calculation Module (`NGSViz-1.0-SNAPSHOT.jar`)](#1-java-calculation-module-ngsviz-10-snapshotjar)
-  - [2. R Shiny Interactive Interface](#2-r-shiny-interactive-interface)
-  - [3. Visualization and Analysis R Scripts](#3-visualization-and-analysis-r-scripts)
-  - [4. Reference Database Construction Script](#4-reference-database-construction-script)
-- [Parameter Descriptions](#parameter-descriptions)
+  - [GitHub Installation](#github-installation)
+  - [Install and Run Using a Container](#install-and-run-using-a-container)
+    - [Run with Docker](#run-with-docker)
+    - [Run with Singularity](#run-with-singularity)
+    - [Run with Apptainer](#run-with-apptainer)
+- [Main Modules and Script Description](#main-modules-and-script-description)
+  - [Database](#database)
+    - [Chromosome Naming Compatibility When Processing BAM Files](#chromosome-naming-compatibility-when-processing-bam-files)
+    - [Database Structure and Functionality](#database-structure-and-functionality)
+    - [Reference Database](#reference-database)
+    - [Modify the Built-in Database Path](#modify-the-built-in-database-path)
+    - [Merge Database](#merge-database)
+    - [Build a Reference Database (Optional)](#build-a-reference-database-optional)
+    - [Custom Functional Element Database](#custom-functional-element-database)
+  - [Computational Module Based on Java](#computational-module-based-on-java)
+    - [Feature](#feature)
+    - [Usage](#usage)
+    - [Parameters](#parameters)
+    - [Command-Line Parameters Description](#command-line-parameters-description)
+    - [Computation Module Result Interpretation](#computation-module-result-interpretation)
+    - [Read-Aware Shift in ChIP-seq and CUT&Tag Analysis](#read-aware-shift-in-chip-seq-and-cuttag-analysis)
+  - [Visualization Mode Based on R](#visualization-mode-based-on-r)
+    - [Main Script and Functionality](#main-script-and-functionality)
+    - [Adjustable Plotting Options](#adjustable-plotting-options)
+  - [Command Line Interface (CLI)](#command-line-interface-cli)
+  - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
+    - [Launching ngsViz RShiny Interface](#launching-ngsviz-rshiny-interface)
+    - [Running the Calculation Module](#running-the-calculation-module)
+    - [Running the Visualization Module](#running-the-visualization-module)
 - [Examples](#examples)
-- [FAQ](#faq)
-- [References & Acknowledgements](#references--acknowledgements)
+  - [Point Mode](#point-mode)
+  - [Broad Mode](#broad-mode)
+  - [Exon Mode](#exon-mode)
+  - [Multi-sample Mode](#multi-sample-mode)
+  - [Other Features](#other-features)
+- [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
+- [References and Acknowledgments](#references-and-acknowledgments)
 
 ---
 
-## Introduction
+## 📘 Introduction
 
 **NGSViz** is an analysis and visualization tool for high-throughput sequencing (NGS) data, supporting input files in BAM format, integrating an efficient Java computing engine, flexible R visualization scripts, and an interactive R Shiny interface, providing a variety of commonly used built-in genomic functional element databases, suitable for various scenarios such as genomic coverage and enrichment analysis.
 
-###  **Typical Analysis Workflow**
+###  Typical Analysis Workflow
 
 1. **Prepare the Reference Database**
 
@@ -38,6 +64,17 @@
 
    - Start the program either through the RShiny interface or by executing the command-line tool with appropriate parameters.
 
+   ```
+   # GUI mode
+   ## run Rshiny
+   R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
+   # CLI mode
+   ## 1. Run java calculation module
+   java -jar ngsViz-10.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
+   ## 1. Run visualization moddule
+   Rscript lib/ngsVizPlotMain.R -O <output>
+   ```
+
 4. **Set Required Parameters**
 
    - Specify the reference genome version (`-G`), region type (`-R`), analysis title (`-T`), input file (`-I`), and output path (`-O`).
@@ -50,13 +87,17 @@
 
 6. **Visualize the Results**
 
+   For result visualization, there are two options: either use the three individual visualization modules within R shiny, or directly generate the visualizations results using the `ngsVizPlotMain.R` wrapper script. Users can fine-tune the output image's visualization effects by modifying the default parameters in the configuration file.
+   
+   **visualization modules within R shiny**:
+   
    - **SingleCoveragePlot** for individual samples.
    - **MultiSamplePlot** for average and integrated views.
    - **QCPlot** for PCA and correlation analysis across samples.
 
 ---
 
-## Installation
+## ⚙️Installation
 
 ### GitHub installation
 
@@ -64,13 +105,12 @@
 
 ```bash
 git clone git@github.com:shaolab-UM/NGSViz.git
-cd NGSViz
 ```
 
 #### 2. Install dependency environment
 
 - All dependent runtime environments are recommended to be installed using conda by `conda env create -f requirement.yml`
-  - Install the Java runtime environment; it is recommended Java 8 and above versions
+  - Install the Java runtime environment; it is recommended Java 17 and above versions
   - Install R and its dependencies, R version 4.0 and above
 
 
@@ -90,10 +130,10 @@ cd NGSViz
           "version": "1.0"
       },
       "toolParas": {
-          "tool_path": "/yourPath/NGSViz",
-          "db_path": "/yourPath/NGSViz/database/genomeCoordinate.db",
+          "tool_path": "/ngsViz",
+          "db_path": "/ngsViz/database/genomeCoordinate.db",
           "tool_name": "NGSViz-1.0.jar",
-          "java_path": "/usr/bin/java"
+          "java_path": "/usr/local/envs/ngsViz/bin/java"
       }
   }
   ```
@@ -106,24 +146,31 @@ cd NGSViz
 
 ```shell
 # pull the docker image of ngsViz
-docker pull imageName/imageId
+docker pull ngsviz/ngsviz:1.0
 # build the docker container
 docker run 
---appendonly yes
---name containerName 
---ipc host 
--dit imageName/imageId
+--name ngsViz 
+-p 3838:3838
+-v $localDataPath:/data  
+-dit ngsviz/ngsviz:1.0
 # Start container
-docker start containerName 
+docker start ngsViz 
 # Enter the container
-docker attach containerName 
+docker attach ngsViz 
 ```
 
+`-v`: Mount the local `localDataPath` to the container's `/data` to facilitate data communication between the local system and the container.
 
+`-p`: Connect the local machine's port 3838 to the container's port 3838 to enable access to the RShiny interface in the container via http://localhost:3838.
 
 #### Run with singularity
 
+You can also build a **Singularity image** based on our **Docker image** for use with Singularity. Here's how:
 
+```singularity exec your-image.sif java -version
+singularity build ngsviz.sif docker://ngsviz/ngsviz:1.0
+singularity exec ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+```
 
 #### Run with Apptainer
 
@@ -133,22 +180,20 @@ If the system lacks a container runtime environment, it is recommended to use Co
 # install the Apptainer
 conda install conda-forge::apptainer
 # 1.1 Pull Docker container image
-apptainer pull docker://ubuntu:20.04
+apptainer pull docker://ngsviz/ngsviz:1.0
 # 1.2 Run Docker container
-apptainer run docker://ubuntu:20.04
+apptainer run docker://ngsviz/ngsviz:1.0
 # 2. Run Singularity container
-apptainer run ubuntu_20.04.sif
+apptainer run ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
-
-
 
 ---
 
-## Main modules and script description
+## 🧩Main modules and script description
 
 ### Database
 
-#### 🧬 Chromosome Naming Compatibility When Processing BAM Files
+#### Chromosome Naming Compatibility When Processing BAM Files
 
 When processing BAM files, it's important to ensure consistency between the reference genome used for alignment and the corresponding GTF annotation file. Different genome sources may use different chromosome naming conventions, which can lead to mismatches during downstream analysis.
 
@@ -172,7 +217,7 @@ The database includes a table named `defaultTbl` and multiple installed database
 | Column | Item              | Description                                                  |
 | ------ | ----------------- | ------------------------------------------------------------ |
 | 1      | Species           | Species name (e.g., *Homo sapiens*, *Mus musculus*)          |
-| 2      | CoordinateTblName | Table name containing genomic feature coordinates            |
+| 2      | CoordinateTblName | Table name containing genomic feature coordinates (e.g., hg19_RefSeq) |
 | 3      | DB                | Source of annotation database (e.g., RefSeq)                 |
 | 4      | Genome            | Reference genome version (e.g., hg38, mm10)                  |
 | 5      | Region            | Type of genomic region (e.g., gene body, tss, tes, exon)     |
@@ -180,7 +225,6 @@ The database includes a table named `defaultTbl` and multiple installed database
 | 7      | Biotype           | Gene classification (e.g., protein-coding, lncRNA, pseudogene) |
 | 8      | PointLab          | Labeled point of interest (e.g., TSS, TES)                   |
 | 9      | FlankSize         | Flanking region size added upstream and downstream of the query region |
-| 10     | DefaultChoose     | Indicates the default transcript selected when multiple exist (longest one) |
 
 - **`CoordinateTblName`**
   These tables contain genomic elements of interest along with their coordinate information. They are used by the program to retrieve relevant genomic features for analysis. `DefaultChooseSpecifies` the default representative transcript, chosen as the longest when multiple transcripts are present.`Biotype` indicates the gene type, such as protein-coding or non-coding RNA. `type` specifies whether the entry represents a transcript or an exon.
@@ -205,27 +249,24 @@ This program offers a reference database that supports multiple species and geno
 You can access and download the pre-built genomic functional element databases from the following link:
 [**Download Link – Pre-built Database of Genomic Functional Elements**](https://drive.google.com/drive/folders/1h3tORc5PiZ_TTbIH9cH03O1wyqjhNMDz?usp=sharing).
 
-**Note:** All pre-built databases can be used independently. To activate a downloaded database, simply specify its path in the system configuration settings `NGSViz_setting.json`. Once configured, the program will recognize and utilize the selected database without requiring additional setup.
-
 Pre-built database of genomic functional elements
 
-|  Species  |         Species         | Genome Version |
-| :-------: | :---------------------: | :------------: |
-|   Human   |      Homo_sapiens       |      hg38      |
-|   Human   |      Homo_sapiens       |      t2t       |
-|   Human   |      Homo_sapiens       |      hg19      |
-|   Mouse   |      Mus_musculus       |      mm39      |
-|   Mouse   |      Mus_musculus       |      mm10      |
-|   Mouse   |      Mus_musculus       |      mm9       |
-| Zebrafish |       Danio_rerio       |    danRer11    |
-| Zebrafish |       Danio_rerio       |    danRer10    |
-| Zebrafish |       Danio_rerio       |    danRer7     |
-| Fruit fly | Drosophila_melanogaster |      Dm6       |
-| Fruit fly | Drosophila_melanogaster |      dm3       |
-|    Cat    |       Felis_catus       |    felCat9     |
-|    Cat    |       Felis_catus       |    felCat8     |
-|    Cat    |       Felis_catus       |    felCat5     |
-|    Dog    |    Canis_familiaris     |    canFam6     |
+| Organism  |     Scientific Name     | Genome Version | Annotation Source        |
+| :-------: | :---------------------: | :------------: | ------------------------ |
+|   Human   |      Homo_sapiens       |      hg38      | UCSC (RefSeq annotation) |
+|   Human   |      Homo_sapiens       |      hg19      | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       |      mm39      | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       |      mm10      | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       |      mm9       | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       |    danRer11    | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       |    danRer10    | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       |    danRer7     | UCSC (RefSeq annotation) |
+| Fruit fly | Drosophila_melanogaster |      Dm6       | UCSC (RefSeq annotation) |
+| Fruit fly | Drosophila_melanogaster |      dm3       | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       |    felCat9     | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       |    felCat8     | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       |    felCat5     | UCSC (RefSeq annotation) |
+|    Dog    |    Canis_familiaris     |    canFam6     | UCSC (RefSeq annotation) |
 
 #### Modify the build-in batabase path
 
@@ -237,9 +278,7 @@ However, in environments such as containers, this database may be mounted in rea
 
 To merge a new database into the program’s existing reference database, use the `-DB` parameter to specify the path of the database to be imported. The database can either be downloaded from our cloud storage or built manually using the provided script `lib/buildRefDB.R`.
 
-The target database for merging is determined by the `db_path` specified in the ngsViz system configuration file.
-
-By specifying the database path to be imported using the `-DB` parameter, a database can be merged into the database that the program depends on. The database to be imported can be downloaded from our cloud storage, or customize the build according to our build database script`lib/buildRefDB.R`. The database of this program is specified in the path of the ngsViz system configuration.
+> **⚠️Note:** All pre-built databases can be used independently. To activate a downloaded database, simply specify its path in the system configuration settings `NGSViz_setting.json`. Once configured, the program will recognize and utilize the selected database without requiring additional setup.
 
 ```shell
 inport_db_path=$YOUR_PATH/NGSViz_hg19_RefSeq.db
@@ -248,20 +287,28 @@ java -jar ngsViz_1.0.jar -DB $inport_db_path
 
 #### Build a reference database (optional)
 
-If the pre-built databases do not include the species or genome version you require, you can build a custom reference database using the script `lib/buildRefDB.R`. This script constructs the database based on a genomic annotation file in GTF format.
+If the pre-built databases do not include the species or genome version you require, you can build a custom reference database using the script `lib/buildRefDB.R`. This script constructs the database based on a genomic annotation file in GTF format. The parameter  `annotatedNCRNA` is used to specify whether to further annotate ncRNA using the `biomaRt` package, annotating it into more specific types such as lncRNA, etc. `F` indicates that no annotation will be performed.
 
-Usage:
+> ⚠️**Note:** It is important to note that the name of the GTF file in the specified path must be in the format of the genome version, such as genome_version.annotation_type.gtf. For example, `hg38.ncbiRefSeq.gtf`.
+>
+> ------
+>
+> ⚠️**Note:** If you're using an Ensembl GTF file, you'll need to **add the "chr" prefix** to the chromosome names.
+
+**Usage:**
 
 ```bash
-Rscript lib/buildRefDB.R -g reference.gtf -o database/
+Rscript lib/buildRefDB.R <gtf_file> <DB_name> <species> <annotatedNCRNA>
 ```
 
 **Parameter Description**
 
-| Parameter |            Description            |       Example       |
-| :-------: | :-------------------------------: | :-----------------: |
-|    -g     | Reference genome annotation (GTF) | -g Homo_sapiens.gtf |
-|    -o     | Output directory for the database |    -o database/     |
+|   Parameter    |                    Description                     |       Example       |
+| :------------: | :------------------------------------------------: | :-----------------: |
+|    gtf_file    |         Specifies the path to the GTF file         | hg38.ncbiRefSeq.gtf |
+|    DB_name     |             The name of the database.              |       RefSeq        |
+|    species     |              The name of the species.              |    Homo_sapiens     |
+| annotatedNCRNA | Indicates whether to refine annotations for ncRNA. |          F          |
 
 #### **Custom Functional Element Database**
 
@@ -280,22 +327,20 @@ In addition to the built-in databases, the program also supports user-defined fu
 |   5    |           Gene Name           |
 |   6    |         Transcript ID         |
 
-
-
 ---
 
 ### Computational Module Based on Java
 
 #### Feature
 
-- Efficiently process BAM files, calculate genomic coverage.
-- Multithreading concurrency, supports large-scale data
 - No environment dependencies
+- Multithreading concurrency, supports large-scale data
+- Efficiently process BAM files, calculate genomic coverage.
 
 #### Usage
 
 ```bash
-java -jar NGSViz-1.0-SNAPSHOT.jar [参数]
+java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 ```
 
 #### Parameters
@@ -311,7 +356,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [参数]
 |      -CP       | sys_config_path |       -        |     Path to system configuration file      |
 |      -BD       |   bedDB_path    |       -        | Path to custom functional element database |
 |       -X       |      genes      |      all       |         List of genes for analysis         |
-|       -A       |  analysis_type  |   transcript   |              Type of analysis              |
+|      -BS       |   batch_size    |      2000      |        batch size for gene parallel        |
 |       -B       |     biotype     | protein_coding |                Gene biotype                |
 |       -F       |  flank_region   |      2000      |        Flanking region size (in bp)        |
 |       -N       |  flank_factor   |      0.0       |        Flanking size scaling factor        |
@@ -327,14 +372,14 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [参数]
 
   > ⚠️ **Important:** The selected reference genome version must match the genome version used during read alignment. Mismatches may lead to inaccurate signal interpretation and erroneous results.
 
-- **`-R`**: (**Required parameters**) Defines the region type for analysis. Supported values include `tes`, `tss`, and `genebody`. 
+- **`-R`**: (**Required parameters**) Defines the region type for analysis. Supported values include `tes`, `tss`,  `genebody` and `exon`. 
 - **`-T`**:  (**Required parameters**) Sets the title of the analysis. 
 -  **`-I`**: (**Required parameters**) Specifies the bam input file path. The calculation module supports only one BAM file per analysis. Alternatively, you can input two BAM files using the **Signal BAM** and **Input BAM** fields (Signal BAM:Input BAM). In this case, the second BAM file will be used as a background signal for normalization.
 -  **`-O`**: (**Required parameters**) Defines the output directory path. 
 - **`-DB`**: Specifies the path to a new database that should be integrated into the tool's dependency database. 
 -  **`-CP`**: Specifies the path to a user-defined configuration file. 
 -  **`-X`**: Specifies the path to a gene list subset for analysis. The default is `all`, meaning all genes will be analyzed. 
--  **`-A`**: Defines the analysis type, either `transcript` or `exon`. 
+-  **`-BS`**: Defines the batch size for gene parallel. 
 -  **`-B`**: Specifies the biotype to be analyzed, such as `protein_coding` or non-coding RNAs (e.g., `lncRNA`, `ncRNA`). The default value is `protein_coding`, which is suitable for most standard gene expression and regulatory analyses.
 -  **`-F`**: Sets the flanking region size. This parameter defines the number of base pairs to include upstream and downstream of the target genomic feature (e.g., TSS, TES, or gene body). Flanking regions are commonly used in functional element analysis to capture regulatory signals or transcriptional activity adjacent to the feature of interest. By default, the flanking region size is set to **2000 bp**, which typically provides sufficient context for most analyses. Users can adjust this value based on the resolution and scope of their study.
 -  **`-N`**: Sets the flanking size factor. This parameter is used specifically in genebody mode to dynamically determine the size of the flanking regions. Instead of using a fixed number of base pairs, the flanking region size is calculated as a proportion of the gene body length: flanking size = gene body length × flanking size factor.
@@ -352,9 +397,11 @@ This program processes the input BAM file and generates an intermediate output i
 - **Columns** correspond to data points.
 - **Values** indicate the physical coverage over the query regions, which include each region of interest extended by a user-defined upstream and downstream flanking size.
 
-The coverage values are scaled according to the resolution of each data point
+The coverage values are scaled according to the resolution of each data point. The coverage values are scaled using the **average coverage** within each data point's resolution window  and normalized using **CPM (Counts Per Million)** to ensure comparability across samples. This ensures that the resulting matrix reflects normalized physical coverage across query regions, accounting for differences in sequencing depth and resolution.
 
-The coverage values are scaled using the **average coverage** within each data point's resolution window  and normalized using **CPM (Counts Per Million)** to ensure comparability across samples. This ensures that the resulting matrix reflects normalized physical coverage across query regions, accounting for differences in sequencing depth and resolution.
+If Input BAM is provided, signals will be further corrected based on its values `log2(signal/input)`. 
+
+Alternatively, signals will also be corrected if scale_ratio is specified `signal*scale_ratio`.
 
 Additionally, the program generates a default **JSON configuration file** containing recommended parameters for downstream visualization tasks.
 
@@ -450,6 +497,14 @@ Processing Method
   | `line_size`        | Thickness of lines used in the plot.                         |
   | `ystrip_text_size` | Font size of text in the y-axis strip (e.g., facet labels).  |
 
+#### Visualization Input
+
+For visualization input, you only need to specify the path to the generated JSON files, and the script will parse the configuration parameters to create the plots. If users need to fine-tune the output image conditions, they can modify the corresponding parameter values in the configuration file.
+
+Specifically, for multi-sample mode, users can create a new folder, copy the JSON configuration files from multiple analysis results into this path, and then specify this path. The system will automatically identify and analyze the multiple samples.
+
+---
+
 ### Command Line Interface (CLI)
 
 1. Run the calculation module
@@ -470,7 +525,7 @@ Processing Method
 - At the end of the calculation module running, a csv file of the coverage matrix and a json format plot configuration file will be generated. You can fine-tune visualization results by modifying the default plotting parameters provided in the JSON configuration file. For detailed explanations of the plotting parameters, refer to the **Parameter Explanation Section**. Use the following command to specify the path to the folder containing the JSON configuration file for visualization. Optionally, you can place JSON configuration files for multiple sample analysis results in the same directory and specify this path in the script to enable integrated visualization across samples.
 
   ```shell
-  Rscript lib/ngsVizPlotMain.R $JSON_path
+  Rscript lib/ngsVizPlotMain.R <JSON_path>
   ```
 
 **Visualization Outputs:**
@@ -484,13 +539,31 @@ Processing Method
 
 **Note:** QC visualization is only available when more than two samples are provided.
 
-
+---
 
 ### **Graphical User Interface (GUI)**
 
 1. **Launching ngsViz RShiny Interface**
 
 To begin, start the ngsViz RShiny application. This will open the interactive interface where you can access both the calculation, visualization modules and help document.
+
+```
+conda activate ngsViz
+# Run rshiny
+R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
+```
+
+After a successful run, the terminal will display:
+ Listening on http://0.0.0.0:3838
+
+- If you are using a local Linux desktop environment, open your browser and visit: http://localhost:3838.
+
+- If you are running on a remote server and want to access it with your local browser, set up port forwarding. Then, open your browser and visit: http://localhost:3838.
+
+  ```
+  ssh -L 3838:localhost:3838 youruser@yourserver
+  ```
+
 
 2. **Running the Calculation Module**
 
@@ -552,49 +625,57 @@ Steps:
 2. Enter the folder path.
 3. Click **Start Parsing to Plot** to generate PCA and correlation plots for sample coverage.
 
-#### 
+---
 
+## 🧪 Example
 
-
-
-
-
-
-## **Example**
-
-### 1. Point Mode - H3K4me3
-
-
+### Point Mode
 
 ```shell
 java -jar NGSViz-1.0.jar 
--G hg19 
+-G hg38 
 -R TSS 
 -T H3K4me3
--I bam_path
--O output_dir
+-I example/K562_H3K4me3-ENCFF752MYF_5p.bam
+-O Result
 -P 8
+Rscript lib/ngsVizPlotMain.R Result/H3K4me3
 ```
 
+### Broad Mode
 
+```
+java -jar NGSViz-1.0.jar 
+-G hg38 
+-R genebody 
+-T H3K36me3
+-I example/K562_H3K36me3-ENCFF975JFV_5P.bam
+-O Result
+-P 8
+Rscript lib/ngsVizPlotMain.R Result/H3K36me3
+```
 
+### Exon Mode
 
+```
+java -jar NGSViz-1.0.jar 
+-G hg38 
+-R exon 
+-T RNAseq
+-I example/RNAseq_ENCFF675YXM_1P.bam
+-O Result
+-P 8
+Rscript lib/ngsVizPlotMain.R Result/RNAseq
+```
 
+---
 
-
-## **Frequently Asked Questions (FAQ)**
+## ❓ Frequently Asked Questions (FAQ)
 
 **Q1:** I get an error saying “Database not found” when running the program.
 **A:** Please make sure you have built the reference database using the `buildRefDB.R` script. Then, specify the correct path to the database using the appropriate parameter when running the program.
 
 ---
 
-
-
-## **References and Acknowledgments**
-
-- This project draws inspiration from several excellent open-source tools, including deepTools and ngs.plot.
-- For questions or suggestions, feel free to submit an issue or contact the author, **[Benchen Ye](yc47650@um.edu.mo)**.
-
-
+For questions or suggestions, feel free to submit an issue or contact the author, **[Benchen Ye](yc47650@um.edu.mo)**.
 
