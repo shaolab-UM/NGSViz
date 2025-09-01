@@ -106,20 +106,6 @@ corPlot <- function(json_path, heatmapMat_rowMerge, width = 600, height=600, dpi
   cor_matrix <- cor(heatmapMat_rowMerge)
   file_name <- sprintf("%s/correlation_plot.tiff", json_path)
   # plot
-  corrplot(cor_matrix,
-           method = "circle",
-           type = "upper",
-           diag = T,
-           tl.col = "black",
-           addgrid.col = "black",
-           tl.cex = 1.2,           
-           number.cex = 1.2, 
-           rect.lwd = 3,
-           tl.srt = 45,
-           addCoef.col = "grey",
-           addCoefasPercent = TRUE,  
-           mar = c(0, 0, 0, 0)
-  )    
   tiff(file_name, width = width, height = height, res = dpi)
   corrplot(cor_matrix,
            method = "circle",
@@ -136,6 +122,20 @@ corPlot <- function(json_path, heatmapMat_rowMerge, width = 600, height=600, dpi
            mar = c(0, 0, 0, 0)
   )    
   dev.off()
+  corrplot(cor_matrix,
+           method = "circle",
+           type = "upper",
+           diag = T,
+           tl.col = "black",
+           addgrid.col = "black",
+           tl.cex = 1.2,           
+           number.cex = 1.2, 
+           rect.lwd = 3,
+           tl.srt = 45,
+           addCoef.col = "grey",
+           addCoefasPercent = TRUE,  
+           mar = c(0, 0, 0, 0)
+  )
 }
 
 # PCA ---------------------------------------------------------------------
