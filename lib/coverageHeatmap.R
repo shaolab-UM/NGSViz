@@ -283,6 +283,7 @@ averageCovPlot <- function(sorted_df, plot_paras){
     # Specified color
     # scale_color_brewer(palette = "Set1") + 
     scale_color_manual(values = plot_paras$split_color[1:split_num]) +
+    coord_cartesian(ylim = c(0, max(mat_df$Density)*1.1))+
     xlab("") + ylab("") +
     myTheme(plot_paras) + 
     theme(
@@ -297,7 +298,7 @@ averageCovPlot <- function(sorted_df, plot_paras){
     # facet_wrap(~sample, nrow = 1) + 
     labs(title = plot_title) + 
   # Remove the gap between the heatmap edge and the coordinate axis.
-  coord_cartesian(expand = 0) 
+  coord_cartesian(expand = 1) 
   if(split_num == 1){
     ptop <- ptop + theme(legend.position = "none")
   }
@@ -370,6 +371,7 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name = ""){
     # Specified color
     # scale_color_brewer(palette = "Set1") + 
     scale_color_manual(values = plot_paras$split_color) +
+    coord_cartesian(ylim = c(0, max(merge_df$Density)*1.1))+
     xlab("") + ylab("") +
     # add the axis-x label
     scale_x_continuous(breaks = axis_pos, labels = axis_name) +
@@ -385,14 +387,14 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name = ""){
     # facet_wrap(~sample, nrow = 1) + 
     labs(title = title_name) + 
     # Remove the gap between the heatmap edge and the coordinate axis.
-    coord_cartesian(expand = 0) 
+    coord_cartesian(expand = 1) 
   if(group_num == 1){
     ptop <- ptop + theme(legend.position = "none")
   }
-  if(plot_paras$SEM){
-    # Add error lines
-    ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM), alpha = 0.3)
-  }
+  # if(plot_paras$SEM){
+  #   # Add error lines
+  #   ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM), alpha = 0.3)
+  # }
   return(ptop)
 }
 

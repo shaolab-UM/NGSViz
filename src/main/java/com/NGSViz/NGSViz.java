@@ -18,10 +18,14 @@ public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
         args = new String[]{
                 "-G", "hg38",
-                "-R", "genebody",
+                "-R", "tss",
                 //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
-                "-T", "sg1-79-Input",
+                "-T", "lung",
+                "-I", "/Users/benche/myProj/ngsPlot/Data/featurePlot/feature_fig3D/lung-H3K4me3-ENCFF822ITP.bam",
+                "-O", "/Users/benche/myProj/ngsPlot/Result/feature/20251010_Result/lung-H3K4me3-ENCFF822ITP",
+                "-S", "1",
                 "-CP", "-",
+                "-NF", "F",
                 //"-BS", "1000",
                 "-P", "8",
                 //"-FL", "150",
@@ -35,12 +39,12 @@ public class NGSViz {
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
-                "-I", "/Users/benche/myProj/AML_K79/ProYuan_liulu_cuttag/results/bam/bam/sg1-79-2_bowtie2_sorted.bam:/Users/benche/myProj/AML_K79/ProYuan_liulu_cuttag/results/bam/bam/sgNC-ctrl_bowtie2_sorted.bam",
+
                 //"-I", "/Users/benche/myProj/ngsPlot/Test/AGSsgTFDP1-3-2.bam",
                 //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
                 //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
                 //"-O", "/Users/benche/myProj/ngsPlot/Output/NewTest",
-                "-O", "/Users/benche/myProj/ngsPlot/Test",
+
                 //"-F", "protein_coding",
                 //"-M", "bin",
                 //"-F", "2000"

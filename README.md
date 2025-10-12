@@ -365,6 +365,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |      -FL       |    frag_len     |      150       |              Fragment length               |
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
 |       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
+|      -NF       |   new_forder    |     false      |           Create Results Folder            |
 
 #### Command-Line Parameters Description
 
@@ -387,7 +388,8 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 -  **`-MQ`**: Sets the minimum mapping quality threshold for filtering aligned reads. Reads below this threshold will be excluded. 
 -  **`-FL`**: Specifies the fragment length, which should be set according to the library size. This is used for correcting single-end sequencing on the negative strand. 
 -  **`-P`**: Defines the number of CPU cores to use for parallel processing. 
--  **`-S`**:Define a scaling factor, for example, for spike-in normalization.
+-  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
+-  **`-NF`**: Whether a new folder will be created to store the results.
 
 #### **Computation Module Result Interpretation**
 

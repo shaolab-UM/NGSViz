@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Samples/sample_info.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualize_performance.R" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +37,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.NGSViz [package].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -102,6 +105,10 @@
       <workItem from="1756692612188" duration="27935000" />
       <workItem from="1756864544280" duration="5811000" />
       <workItem from="1756971091456" duration="3732000" />
+      <workItem from="1758539790220" duration="337000" />
+      <workItem from="1758710931257" duration="11681000" />
+      <workItem from="1759911746279" duration="6540000" />
+      <workItem from="1760247752392" duration="971000" />
     </task>
     <servers />
   </component>
