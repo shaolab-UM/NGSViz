@@ -176,7 +176,7 @@ runPCA <- function(heatmapMat_rowMerge, json_path){
 
 # usage -------------------------------------------------------------------
 packages <- c(
-  "corrplot", "ggrepel"
+  "corrplot", "ggrepel", "FactoMineR"
 )
 
 # # Load all packages

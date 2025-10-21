@@ -37,9 +37,10 @@ packages <- c(
   "shiny", "bs4Dash", "dplyr", "readr", "plotly", "leaflet", "DT", 
   "fresh", "future", "promises", "RSQLite", "processx", "jsonlite", 
   "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles", "circlize",
-  "EnrichedHeatmap", "here", "corrplot", "ggrepel", "reshape2", "aplot",
+  "here", "corrplot", "ggrepel", "reshape2", "aplot",
   "ggh4x", "tidyverse", "rtracklayer", "colorspace", "zoo", "corrplot", 
-  "RColorBrewer", "purrr", "data.table", "RcppRoll", "ggrepel", "cowplot"
+  "RColorBrewer", "purrr", "data.table", "RcppRoll", "ggrepel", "cowplot",
+  "FactoMineR"
 )
 
 # # Load all packages

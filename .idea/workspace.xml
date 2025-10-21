@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Samples/sample_info.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/coverageHeatmap.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualize_performance.R" beforeDir="false" />
-    </list>
+    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -108,7 +101,7 @@
       <workItem from="1758539790220" duration="337000" />
       <workItem from="1758710931257" duration="11681000" />
       <workItem from="1759911746279" duration="6540000" />
-      <workItem from="1760247752392" duration="971000" />
+      <workItem from="1760247752392" duration="1586000" />
     </task>
     <servers />
   </component>
