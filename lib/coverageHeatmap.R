@@ -7,7 +7,7 @@ myTheme <- function(plot_paras){
     theme(
       text = element_text(family = plot_paras$text_family, colour="black"),
       # size and color of panel.border
-      panel.border = element_rect(size = plot_paras$border_size, 
+      panel.border = element_rect(linewidth = plot_paras$border_size, 
                                   colour = "black"),
       panel.grid = element_blank(),
       axis.text.x = element_text(size = plot_paras$axis_text_x_size, face = face_item),
