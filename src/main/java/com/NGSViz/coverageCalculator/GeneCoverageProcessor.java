@@ -13,6 +13,7 @@ import htsjdk.samtools.ValidationStringency;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GeneCoverageProcessor {
     private static final int num_datapoints = InputParameterAttributes.num_datapoints;
@@ -32,25 +33,30 @@ public class GeneCoverageProcessor {
     }
 
     // Define an inner class to encapsulate the calculation results of each chromosome task.
+    static class CoverageRow {
+        final int index;
+        final String geneName;
+        final double[] coverage;
+
+        CoverageRow(int index, String geneName, double[] coverage) {
+            this.index = index;
+            this.geneName = geneName;
+            this.coverage = coverage;
+        }
+    }
+
     static class BatchResult {
-        // Storage of the coverage data for all genes on the chromosome (gene index -> coverage array)
-        Map<Integer, double[]> coverageData;
-        // Store the names of all genes on the chromosome (gene index -> gene name)
-        Map<Integer, String> geneNames;
-        public BatchResult() {
-            this.coverageData = new HashMap<>();
-            this.geneNames = new HashMap<>();
+        final List<CoverageRow> rows;
+
+        public BatchResult(int capacity) {
+            this.rows = new ArrayList<>(capacity);
         }
     }
 
     public Map<String, Object> buildCoverageMatrix() throws IOException {
         // Create result matrix
         SparseMatrix coverage_scaled_matrix = new SparseMatrix(record_name_list.size(), num_datapoints + 1);
-        // Initialize the gene name list, used to record the final sequence
-        List<String> final_record_names = new ArrayList<>(record_name_list.size());
-        for (int i = 0; i < record_name_list.size(); i++) {
-            final_record_names.add(null);
-        }
+        String[] final_record_names = new String[record_name_list.size()];
 
         // Get the library size of bam file
         long library_size = bam_obj.getLibrarySize();
@@ -58,29 +64,45 @@ public class GeneCoverageProcessor {
 
         System.out.println("--- Starting coverage calculation group by chromosomes ----");
         // Create a ForkJoinPool for parallel processing.
-        ForkJoinPool customThreadPool = new ForkJoinPool(core_num);
-        // Store all the Future objects returned by the chromosome task
-        List<Future<BatchResult>> futures = new ArrayList<>();
+        ExecutorService customThreadPool = Executors.newFixedThreadPool(core_num);
+        CompletionService<BatchResult> completionService = new ExecutorCompletionService<>(customThreadPool);
+        AtomicInteger taskCount = new AtomicInteger(0);
 
         try {
             // Submit each chromosome's processing task to the thread pool
             geneList_batches.forEach((batch_num, transcriptList) -> {
                 // Each chromosome task opens its own SamReader
                 Callable<BatchResult> chromosomeTask = () -> {
-                    BatchResult result = new BatchResult();
+                    List<Transcript> sortedTranscripts = new ArrayList<>(transcriptList);
+                    sortedTranscripts.sort(Comparator
+                            .comparing(Transcript::getChrLab)
+                            .thenComparingInt(Transcript::getStartPos));
+
+                    BatchResult result = new BatchResult(sortedTranscripts.size());
+                    Map<String, String> chrCache = new HashMap<>();
+                    Set<String> warnedMissing = new HashSet<>();
                     try (SamReader reader = SamReaderFactory.makeDefault()
                             .validationStringency(ValidationStringency.SILENT)
                             .open(bam_obj.getBamFile())) {
-                        // Traverse all genes on the current chromosome
-                        for (Transcript gene_coord : transcriptList) {
+                        // Traverse all genes on the current batch
+                        for (Transcript gene_coord : sortedTranscripts) {
                             String chr_name = gene_coord.getChrLab();
                             String no_chr_name = gene_coord.getNoChrLab();
                             // Check if the chromosome exists in the BAM file.
-                            String actualChrName = ReadBam.checkChromosomeInBam(bam_chromosomes_list, chr_name, no_chr_name);
+                            String chrCacheKey = chr_name + "|" + no_chr_name;
+                            String actualChrName;
+                            if (chrCache.containsKey(chrCacheKey)) {
+                                actualChrName = chrCache.get(chrCacheKey);
+                            } else {
+                                actualChrName = ReadBam.checkChromosomeInBam(bam_chromosomes_list, chr_name, no_chr_name);
+                                chrCache.put(chrCacheKey, actualChrName);
+                            }
                             //If the queried chromosome is not in the chromosomes of the bam file.
                             if (actualChrName == null) {
-                                System.err.println("Warning: Chromosome '" + chr_name + "' not found in BAM. Skipping associated records.");
-                                return result;
+                                if (warnedMissing.add(chrCacheKey)) {
+                                    System.err.println("Warning: Chromosome '" + chr_name + "' not found in BAM. Skipping associated records.");
+                                }
+                                continue;
                             }
                             // Invoke the method for calculating the physical coverage.
                             EachCoverageResult CoverageScaled = ProcessEachQueryCoorRecord.processRecord2(
@@ -90,9 +112,8 @@ public class GeneCoverageProcessor {
                             // Obtain gene index and name
                             int index = gene_coord.getIndex();
                             String geneName = gene_coord.getRecordName();
-                            // Store the results in the local result Map of the current chromosome task
-                            result.coverageData.put(index, CoverageScaled.getScaledCoverage());
-                            result.geneNames.put(index, geneName);
+                            // Store the results in the local result list of the current batch task
+                            result.rows.add(new CoverageRow(index, geneName, CoverageScaled.getScaledCoverage()));
                         }
                     } catch (Exception e) {
                         System.err.println("Error processing batch " + batch_num + ": " + e.getMessage());
@@ -100,18 +121,19 @@ public class GeneCoverageProcessor {
                     }
                     return result; // Return the computational result of the chromosome task
                 };
-                futures.add(customThreadPool.submit(chromosomeTask)); // Submit the task and collect Future
+                completionService.submit(chromosomeTask); // Submit the task and collect Future
+                taskCount.incrementAndGet();
             });
 
             // --- Aggregation Phase: Collect and merge all threads' local results ---
             System.out.println("--- Consolidating results ----");
-            for (Future<BatchResult> future : futures) {
+            for (int i = 0; i < taskCount.get(); i++) {
                 try {
-                    BatchResult chrResult = future.get(); // Block until the task is completed and the result is obtained.
+                    BatchResult chrResult = completionService.take().get(); // Block until the task is completed and the result is obtained.
                     // Merge the local results into the final shared matrix and list.
-                    chrResult.coverageData.forEach(coverage_scaled_matrix::setRow); // SparseMatrix.setRow(index, double[])
-                    for (Map.Entry<Integer, String> entry : chrResult.geneNames.entrySet()) {
-                        ((ArrayList<String>) final_record_names).set(entry.getKey(), entry.getValue());
+                    for (CoverageRow row : chrResult.rows) {
+                        coverage_scaled_matrix.setRow(row.index, row.coverage);
+                        final_record_names[row.index] = row.geneName;
                     }
 
                 } catch (InterruptedException | ExecutionException e) {
@@ -136,7 +158,7 @@ public class GeneCoverageProcessor {
         }
 
         Map<String, Object> coverage_map = new HashMap<>();
-        coverage_map.put("record_names", final_record_names);
+        coverage_map.put("record_names", Arrays.asList(final_record_names));
         coverage_map.put("cov_mat", coverage_scaled_matrix);
         return coverage_map;
     }

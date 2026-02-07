@@ -88,7 +88,7 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         plot_parameters.put("middle_datapoints", middle_points);
         plot_parameters.put("flanking_region_datapoints", flank_points);
         plot_parameters.put("SEM", true);
-        plot_parameters.put("smooth", false);
+        plot_parameters.put("smooth", true);
         // create JSONArray to save list data
         JSONArray sample_array = new JSONArray();
         sample_array = buildJsonListConfig(sample_array, sample_list);
@@ -98,7 +98,7 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         // create the output_paras JSONObject
         JSONObject output_paras = new JSONObject();
         output_paras.put("output_path", output_path);
-        output_paras.put("width", sample_list.size()*10);
+        output_paras.put("width", sample_list.size()*12);
         output_paras.put("high", 12);
         output_paras.put("dpi", 300);
         output_paras.put("file_type", "tiff");

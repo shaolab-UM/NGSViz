@@ -16,39 +16,39 @@ import static com.NGSViz.configSet.InputParameterAttributes.*;
  */
 public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
-        args = new String[]{
-                "-G", "hg38",
-                "-R", "tss",
-                //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
-                "-T", "lung",
-                "-I", "/Users/benche/myProj/ngsPlot/Data/featurePlot/feature_fig3D/lung-H3K4me3-ENCFF822ITP.bam",
-                "-O", "/Users/benche/myProj/ngsPlot/Result/feature/20251010_Result/lung-H3K4me3-ENCFF822ITP",
-                "-S", "1",
-                "-CP", "-",
-                "-NF", "F",
-                //"-BS", "1000",
-                "-P", "8",
-                //"-FL", "150",
-                //"-DB", "/Users/benche/myProj/ngsPlot/DB/DB/Mus_musculus/NGSViz_mm39_RefSeq.db",
-               // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
-                // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
-                //"-T", "GeneName",
-                //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
-                //"-R", "tss",
-                //"-R", "tes",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
-
-                //"-I", "/Users/benche/myProj/ngsPlot/Test/AGSsgTFDP1-3-2.bam",
-                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
-                //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
-                //"-O", "/Users/benche/myProj/ngsPlot/Output/NewTest",
-
-                //"-F", "protein_coding",
-                //"-M", "bin",
-                //"-F", "2000"
-        };
+//        args = new String[]{
+//                "-G", "hg38",
+//                "-R", "genebody",
+//                //"-CP", "/Users/benche/myProj/ngsPlot/NGSViz/NGSViz_setting.json",
+//                "-T", "sgNSD1-K36me2",
+//                "-I", "/Users/benche/myProj/AML_K79/20251127_thiredBatch_chipseq/bowtie_alignment/sgNSD1-K36me2_rmDup.bam",
+//                "-O", "/Users/benche/myProj/AML_K79/20251127_thiredBatch_chipseq/bowtie_alignment/results_ngsViz",
+//                "-S", "1",
+//                "-CP", "-",
+//                "-NF", "F",
+//                //"-BS", "1000",
+//                "-P", "8",
+//                //"-FL", "150",
+//                //"-DB", "/Users/benche/myProj/ngsPlot/DB/DB/Mus_musculus/NGSViz_mm39_RefSeq.db",
+//               // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
+//                // "-BD", "/Users/benche/myProj/ngsPlot/hg38_ngsViz.bed",
+//                //"-T", "GeneName",
+//                //"-E", "/Users/bencheye/myProj/ngsPlot/Data/genelist.txt",
+//                //"-R", "tss",
+//                //"-R", "tes",
+//                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k4me3.1M.bam",
+//                //"-I", "/Users/benche/myProj/ngsPlot/Data/GSE209153_H3K4me3_sample/GSE209153_H3K4me3_0.1.sorted.bam",
+//                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.H3k27me3.1M.bam",
+//
+//                //"-I", "/Users/benche/myProj/ngsPlot/Test/AGSsgTFDP1-3-2.bam",
+//                //"-I", "/Users/benche/myProj/ngsPlot/Data/hesc.RNAseq.1M.bam",
+//                //"-C", "/Users/bencheye/myProj/ngsPlot/Data/input_para.txt",
+//                //"-O", "/Users/benche/myProj/ngsPlot/Output/NewTest",
+//
+//                //"-F", "protein_coding",
+//                //"-M", "bin",
+//                //"-F", "2000"
+//        };
         long startTimeMillis = System.currentTimeMillis();
 
         ProcessInputParameters.processInputParameter(args);

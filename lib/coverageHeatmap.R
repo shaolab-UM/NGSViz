@@ -203,7 +203,7 @@ coverageHeatmap <- function(sorted_df, plot_paras){
   # process the Outlier
   # Calculate the 0th percentile (minimum value) and the 99th percentile
   lower_color_limit <- quantile(sorted_df$Coverage, 0, na.rm = TRUE)
-  upper_color_limit <- quantile(sorted_df$Coverage, 0.99, na.rm = TRUE)
+  upper_color_limit <- quantile(sorted_df$Coverage, 0.95, na.rm = TRUE)
   # If the upper and lower limits are the same 
   # for example, if there are very few data points or values are very concentrated
   if (abs(upper_color_limit - lower_color_limit) < 1e-9) { 

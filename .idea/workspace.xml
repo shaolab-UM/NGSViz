@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="" />
+    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NGSViz-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz-1.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/coverageHeatmap.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/coverageHeatmap.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/NGSViz.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GenerateJsonConfig.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -102,6 +108,13 @@
       <workItem from="1758710931257" duration="11681000" />
       <workItem from="1759911746279" duration="6540000" />
       <workItem from="1760247752392" duration="1586000" />
+      <workItem from="1764560387356" duration="8306000" />
+      <workItem from="1765282519227" duration="1526000" />
+      <workItem from="1765524113723" duration="2793000" />
+      <workItem from="1765631717092" duration="119000" />
+      <workItem from="1765963711517" duration="791000" />
+      <workItem from="1767076720195" duration="311000" />
+      <workItem from="1767679950378" duration="3669000" />
     </task>
     <servers />
   </component>

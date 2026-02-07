@@ -1,6 +1,5 @@
 package com.NGSViz.coverageCalculator;
 
-import com.NGSViz.ReadBam.ReadBam;
 import htsjdk.samtools.*;
 import htsjdk.samtools.util.Interval;
 import java.util.*;
@@ -27,8 +26,8 @@ public class PhysicalCoverageCalculator {
 
         // *** Use try-with-resources to ensure the iterator is closed ***
         try (SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end)) {
-            // create a list (length = rangeLen, value = 0)
-            int[] coverage = new int[range_len];
+            // Use a difference array to avoid per-base increments for each read.
+            int[] coverageDiff = new int[range_len + 1];
             while (iterator.hasNext()) {
                 SAMRecord bam_record = iterator.next();
                 // filter the bam alignment for each read, true filter, false not filter
@@ -59,7 +58,7 @@ public class PhysicalCoverageCalculator {
                     // is quite complex and might be simplified. Ensure it's correct for your needs.
                     // It looks like it tries to clip the read to the query range.
                     // A simpler way often involves calculating intersection.
-                    int current_align_end = align_pos_start + align_width ; // End exclusive for easier length calc
+                    int current_align_end = align_pos_start + align_width; // End exclusive for easier length calc
 
                     // Calculate overlap with query range [query_range_start, query_range_end]
                     int overlap_start = Math.max(align_pos_start, query_range_start);
@@ -69,9 +68,19 @@ public class PhysicalCoverageCalculator {
 
                     if (effective_width > 0) {
                         int pos_start_in_coverage_array = overlap_start - query_range_start;
-                        coverage = physicalCoverageCalculate(coverage, pos_start_in_coverage_array, effective_width);
+                        int pos_end_in_coverage_array = pos_start_in_coverage_array + effective_width;
+                        if (pos_start_in_coverage_array >= 0 && pos_end_in_coverage_array <= range_len) {
+                            coverageDiff[pos_start_in_coverage_array]++;
+                            coverageDiff[pos_end_in_coverage_array]--;
+                        }
                     }
                 }
+            }
+            int[] coverage = new int[range_len];
+            int running = 0;
+            for (int i = 0; i < range_len; i++) {
+                running += coverageDiff[i];
+                coverage[i] = running;
             }
             return coverage;
         } // The iterator automatically closes here.
