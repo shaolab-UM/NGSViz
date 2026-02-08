@@ -47,7 +47,7 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Set cores number
             core_num = setParameterValue(core_num,"-P", args, i);
             // Algorithm for coverage vector normalization (scale data)
-            scaler_method = setParameterValue(scaler_method,"-M", args, i);
+            bin_method = setParameterValue(bin_method,"-BM", args, i);
             // Gene chunk size
             BATCH_SIZE = setParameterValue(BATCH_SIZE,"-CZ", args, i);
             // Mapping quality cutoff
@@ -59,6 +59,7 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Image output forbidden tag
             //fi_tag = setParameterValue(fi_tag,"-FI", args, i);
             new_forder = setParameterValue(new_forder,"-NF", args, i);
+            CenterMode = setParameterValue(CenterMode,"-CM", args, i);
         }
     }
 
@@ -88,10 +89,10 @@ public class GetInputParameterValue extends InputParameterAttributes {
         }
         return var_name;
     }
-    public static double setParameterValue(double var_name, String parameter, String [] args, int index){
+    public static Double setParameterValue(Double var_name, String parameter, String [] args, int index){
         String res_out = getParameterValue(parameter, args, index);
         if (res_out != null) {
-            double converted_number = Double.parseDouble(res_out);
+            Double converted_number = Double.parseDouble(res_out);
             var_name = converted_number;
         }
         return var_name;

@@ -142,4 +142,36 @@ public class Matrix2CSV {
         saveMatrix2CSVOptimized(file_path, matrix_data, col_names);
     }
 
+    // [CHANGED] Export gene-level read counts as a two-column matrix.
+    public static void saveGeneReadCount2CSV(String file_path, List<String> gene_names, int[] read_counts) {
+        if (gene_names == null || read_counts == null) {
+            throw new IllegalArgumentException("gene_names and read_counts cannot be null");
+        }
+        if (gene_names.size() != read_counts.length) {
+            throw new IllegalArgumentException("gene_names and read_counts must have the same length");
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path), DEFAULT_BUFFER_SIZE)) {
+            StringBuilder buffer = new StringBuilder(STRING_BUILDER_INITIAL_CAPACITY);
+            buffer.append("gene_name,read_count").append('\n');
+            writer.write(buffer.toString());
+
+            for (int i = 0; i < read_counts.length; i++) {
+                buffer.setLength(0);
+                String geneName = gene_names.get(i);
+                if (geneName == null) {
+                    geneName = "";
+                }
+                buffer.append(geneName)
+                        .append(',')
+                        .append(read_counts[i])
+                        .append('\n');
+                writer.write(buffer.toString());
+            }
+            System.out.println("Gene read-count matrix saved to " + file_path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

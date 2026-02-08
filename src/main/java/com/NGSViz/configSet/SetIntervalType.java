@@ -25,3 +25,4 @@ public class SetIntervalType{
         return interval_type;
     };
 }
+ 

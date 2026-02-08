@@ -1,9 +1,13 @@
 package com.NGSViz.coverageCalculator;
 
+import com.NGSViz.ReadBam.QueryGenomeRange;
+import com.NGSViz.ReadBam.ReadRecordProcess;
+import com.NGSViz.configSet.InputParameterAttributes;
+import com.NGSViz.sqldbOperate.ProcessEachQueryCoorRecord;
 import htsjdk.samtools.*;
 import htsjdk.samtools.util.Interval;
+
 import java.util.*;
-import com.NGSViz.ReadBam.ReadRecordProcess;
 
 /**
  * @author Benchen Ye
@@ -12,7 +16,26 @@ import com.NGSViz.ReadBam.ReadRecordProcess;
  */
 public class PhysicalCoverageCalculator {
 
+    private static final int frag_len = InputParameterAttributes.frag_len;
 
+    // [CHANGED] Batch result now contains both coverage vectors and read counts per transcript.
+    public static class BatchCoverageResult {
+        private final Map<Integer, int[]> coverageByRecord;
+        private final Map<Integer, Integer> readCountByRecord;
+
+        public BatchCoverageResult(Map<Integer, int[]> coverageByRecord, Map<Integer, Integer> readCountByRecord) {
+            this.coverageByRecord = coverageByRecord;
+            this.readCountByRecord = readCountByRecord;
+        }
+
+        public Map<Integer, int[]> getCoverageByRecord() {
+            return coverageByRecord;
+        }
+
+        public Map<Integer, Integer> getReadCountByRecord() {
+            return readCountByRecord;
+        }
+    }
 
     public static int[] calculatePhysicalCoverage2(SamReader bam_reader,
                                                    Interval interval_range,
@@ -21,48 +44,33 @@ public class PhysicalCoverageCalculator {
         String chr_name = interval_range.getContig();
         int query_range_start = interval_range.getStart();
         int query_range_end = interval_range.getEnd();
-        // gene range (length in the genome)
         int range_len = query_range_end - query_range_start + 1;
 
-        // *** Use try-with-resources to ensure the iterator is closed ***
         try (SAMRecordIterator iterator = bam_reader.queryContained(chr_name, query_range_start, query_range_end)) {
-            // Use a difference array to avoid per-base increments for each read.
             int[] coverageDiff = new int[range_len + 1];
             while (iterator.hasNext()) {
                 SAMRecord bam_record = iterator.next();
-                // filter the bam alignment for each read, true filter, false not filter
                 boolean filterRes = ReadRecordProcess.filterOneReadAlign(bam_record, query_strand);
                 if (filterRes) continue;
 
-                //boolean paired_lab = ReadRecordProcess.checkPairedRecord(bam_record); // unused variable?
                 boolean isPairedEnd = bam_record.getReadPairedFlag();
                 if (bam_record.getReadUnmappedFlag()) continue;
-                // bam filter
-                // get the alignment read information
                 List<Integer> read_align_info;
-                if(isPairedEnd){
-                    //if (!bam_record.getFirstOfPairFlag()) continue;
-                    if (!bam_record.getProperPairFlag()) continue;
+                if (isPairedEnd) {
+                    // [CHANGED] Count one end per proper pair to avoid double counting fragments.
+                    if (!bam_record.getProperPairFlag() || !bam_record.getFirstOfPairFlag()) continue;
                     read_align_info = ReadRecordProcess.getPairedReadAlignmentInfo(bam_record);
                 } else {
                     read_align_info = ReadRecordProcess.getReadAlignmentInfo(bam_record, interval_range);
                 }
 
                 if (read_align_info.get(0) != 0) {
-                    //System.out.println("--- Processing a read: " + read_align_info);
                     int align_pos_start = read_align_info.get(0);
                     int align_width = read_align_info.get(1);
-                    // int align_pos_end = align_pos_start + align_width -1; // Unused after calculation logic
+                    int current_align_end = align_pos_start + align_width;
 
-                    // The following block of logic for align_width adjustment based on interval_range
-                    // is quite complex and might be simplified. Ensure it's correct for your needs.
-                    // It looks like it tries to clip the read to the query range.
-                    // A simpler way often involves calculating intersection.
-                    int current_align_end = align_pos_start + align_width; // End exclusive for easier length calc
-
-                    // Calculate overlap with query range [query_range_start, query_range_end]
                     int overlap_start = Math.max(align_pos_start, query_range_start);
-                    int overlap_end = Math.min(current_align_end, query_range_end ); // +1 because query_range_end is inclusive
+                    int overlap_end = Math.min(current_align_end, query_range_end);
 
                     int effective_width = overlap_end - overlap_start;
 
@@ -83,24 +91,131 @@ public class PhysicalCoverageCalculator {
                 coverage[i] = running;
             }
             return coverage;
-        } // The iterator automatically closes here.
+        }
         catch (Exception e) {
-            // Handle or rethrow exceptions if the iterator fails to acquire
             System.err.println("Error creating iterator for " + chr_name + ":" + query_range_start + "-" + query_range_end + ": " + e.getMessage());
             throw new RuntimeException("Failed to process interval: " + e.getMessage(), e);
         }
     }
 
-    // calculate the physical coverage for a reads in query range using primitive array
+    // [CHANGED] Chunk-level single scan: merge intervals, scan once, dispatch reads.
+    public static BatchCoverageResult calculatePhysicalCoverageBatch(
+            SamReader bam_reader,
+            List<ProcessEachQueryCoorRecord.RecordContext> contexts
+    ) {
+        Map<Integer, int[]> coverageMap = new HashMap<>();
+        Map<Integer, Integer> readCountMap = new HashMap<>();
+        if (contexts == null || contexts.isEmpty()) {
+            return new BatchCoverageResult(coverageMap, readCountMap);
+        }
+
+        List<Interval> intervals = new ArrayList<>(contexts.size());
+        Map<Integer, int[]> coverageDiffByRecord = new HashMap<>(contexts.size());
+
+        for (ProcessEachQueryCoorRecord.RecordContext ctx : contexts) {
+            int rangeLen = ctx.intervalRange.getEnd() - ctx.intervalRange.getStart() + 1;
+            coverageDiffByRecord.put(ctx.transcript.getIndex(), new int[rangeLen + 1]);
+            readCountMap.put(ctx.transcript.getIndex(), 0);
+            intervals.add(ctx.intervalRange);
+        }
+
+        QueryInterval[] mergedIntervals = QueryGenomeRange.mergeIntervals(intervals, bam_reader.getFileHeader());
+
+        try (SAMRecordIterator iterator = bam_reader.query(mergedIntervals, false)) {
+            while (iterator.hasNext()) {
+                SAMRecord bamRecord = iterator.next();
+
+                if (bamRecord.getReadUnmappedFlag()) continue;
+                // [CHANGED] Count one end per proper pair to avoid double counting fragments.
+                if (bamRecord.getReadPairedFlag() &&
+                        (!bamRecord.getProperPairFlag() || !bamRecord.getFirstOfPairFlag())) continue;
+
+                int[] readSpan = getReadSpan(bamRecord);
+                if (readSpan == null) continue;
+                int readStart = readSpan[0];
+                int readEndExclusive = readSpan[1];
+
+                for (ProcessEachQueryCoorRecord.RecordContext ctx : contexts) {
+                    Interval interval = ctx.intervalRange;
+                    if (!interval.getContig().equals(bamRecord.getReferenceName())) {
+                        continue;
+                    }
+
+                    int queryStart = interval.getStart();
+                    int queryEndExclusive = interval.getEnd() + 1;
+                    int overlapStart = Math.max(readStart, queryStart);
+                    int overlapEnd = Math.min(readEndExclusive, queryEndExclusive);
+                    if (overlapEnd <= overlapStart) {
+                        continue;
+                    }
+
+                    boolean filterRes = ReadRecordProcess.filterOneReadAlign(bamRecord, ctx.queryStrand);
+                    if (filterRes) {
+                        continue;
+                    }
+
+                    int posStart = overlapStart - queryStart;
+                    int posEnd = overlapEnd - queryStart;
+                    int[] diff = coverageDiffByRecord.get(ctx.transcript.getIndex());
+                    if (posStart >= 0 && posEnd <= diff.length - 1) {
+                        diff[posStart]++;
+                        diff[posEnd]--;
+                        // [CHANGED] Count reads that physically overlap this transcript interval.
+                        readCountMap.merge(ctx.transcript.getIndex(), 1, Integer::sum);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed batch coverage scan: " + e.getMessage(), e);
+        }
+
+        for (ProcessEachQueryCoorRecord.RecordContext ctx : contexts) {
+            int[] diff = coverageDiffByRecord.get(ctx.transcript.getIndex());
+            int[] coverage = new int[diff.length - 1];
+            int running = 0;
+            for (int i = 0; i < coverage.length; i++) {
+                running += diff[i];
+                coverage[i] = running;
+            }
+            coverageMap.put(ctx.transcript.getIndex(), coverage);
+        }
+
+        return new BatchCoverageResult(coverageMap, readCountMap);
+    }
+
+    // [CHANGED] Read span extraction without per-gene range dependency.
+    private static int[] getReadSpan(SAMRecord bamRecord) {
+        int alignStart;
+        int readWidth;
+
+        if (bamRecord.getReadPairedFlag()) {
+            List<Integer> alignInfo = ReadRecordProcess.getPairedReadAlignmentInfo(bamRecord);
+            alignStart = alignInfo.get(0);
+            readWidth = alignInfo.get(1);
+        } else {
+            alignStart = bamRecord.getAlignmentStart();
+            int readLength = bamRecord.getReadLength();
+            if (bamRecord.getReadNegativeStrandFlag()) {
+                alignStart = alignStart + readLength - frag_len;
+            }
+            readWidth = frag_len;
+        }
+
+        if (readWidth <= 0) {
+            return null;
+        }
+
+        return new int[]{alignStart, alignStart + readWidth};
+    }
+
     public static int[] physicalCoverageCalculate(int[] physical_coverage,
-                                                          int align_start_pos,
-                                                          int read_width) {
+                                                  int align_start_pos,
+                                                  int read_width) {
         if (align_start_pos < 0 || align_start_pos + read_width > physical_coverage.length) {
             throw new IllegalArgumentException("Invalid range: align_start_pos=" + align_start_pos +
                     ", read_width=" + read_width + ", array length=" + physical_coverage.length);
         }
 
-        // Direct array access - no boxing/unboxing overhead
         for (int i = align_start_pos; i < align_start_pos + read_width; i++) {
             physical_coverage[i]++;
         }

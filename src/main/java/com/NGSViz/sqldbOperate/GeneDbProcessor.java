@@ -15,8 +15,8 @@ public class GeneDbProcessor extends DBAtribute{
     private static final int BATCH_SIZE = InputParameterAttributes.BATCH_SIZE;
 
     public static void processGeneData(String tbl_name,
-                                String biotype,
-                                String type) throws SQLException {
+                                       String biotype,
+                                       String type) throws SQLException {
 
         if (BATCH_SIZE <= 0) {
             throw new IllegalArgumentException("batchSize must be positive");

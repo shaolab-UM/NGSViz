@@ -28,6 +28,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static String sample_subset;
     private static String group_subset;
     private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
+    private static String read_count_file_name = "gene_read_count.csv";
     private static boolean input_mode = false;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
@@ -36,6 +37,7 @@ public class MainCalculator extends InputParameterAttributes {
     private static Map<Integer, List<Transcript>> geneList_batches;
     private static Set<String> record_name_list;
     private static List<String> row_names;
+    private static int[] read_counts;
     private static Map<String, List<Transcript>> exon_gene_map;
 
 
@@ -83,9 +85,10 @@ public class MainCalculator extends InputParameterAttributes {
 
             // Use optimized processor instead of old method
             GeneCoverageProcessor genesProcess = new GeneCoverageProcessor(bamObj, geneList_batches, record_name_list);
-            Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix();
+            Map<String, Object> coverage_map = genesProcess.buildCoverageMatrix(scale_ratio);
             row_names = (List<String>) coverage_map.get("record_names");
             coverage_scaled_matrix = (SparseMatrix) coverage_map.get("cov_mat");
+            read_counts = (int[]) coverage_map.get("read_counts");
 
             if(input_mode){
                 // calculate background
@@ -94,7 +97,8 @@ public class MainCalculator extends InputParameterAttributes {
                 BAMAttribute bamObj_bkg = new BAMAttribute(bam_file_bkg);
                 GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bamObj_bkg, geneList_batches, record_name_list);
                 // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
-                Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix();
+                Double input_scale_ratio = null;
+                Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix(input_scale_ratio);
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
                 // adjust the coverage matrix based on the input / IgG
                 coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,
@@ -110,11 +114,14 @@ public class MainCalculator extends InputParameterAttributes {
             //
             JSONObject OutFileList = new JSONObject();
             String heatmap_data_path = cleaned_path + "/" + bam_name + "_" + heatmap_file_name;
+            String read_count_data_path = cleaned_path + "/" + bam_name + "_" + read_count_file_name;
             OutFileList.put("heatmapDataFile", heatmap_data_path);
+            OutFileList.put("readCountFile", read_count_data_path);
             jsonArray.put(OutFileList);
 
             // output the result
             Matrix2CSV.saveMatrix2CSV(heatmap_data_path, coverage_scaled_matrix, row_names);
+            Matrix2CSV.saveGeneReadCount2CSV(read_count_data_path, row_names, read_counts);
         }
         config_obj.put("OutputFile", jsonArray);
         String plot_json_name = title + "_NGSViz_plotSetting.json";

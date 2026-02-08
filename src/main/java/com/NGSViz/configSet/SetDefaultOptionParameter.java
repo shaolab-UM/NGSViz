@@ -35,8 +35,8 @@ public class SetDefaultOptionParameter extends InputParameterAttributes {
         if (core_num == 0){
             System.out.println("core_num: " + core_num);
         }
-        if (scaler_method.equals("bin")) {
-            System.out.println("scaler_method: " + scaler_method);
+        if (bin_method.equals("median")) {
+            System.out.println("bin_method: " + bin_method);
         }
         int chunk_size;
         if (BATCH_SIZE == 500){

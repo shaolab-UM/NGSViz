@@ -33,7 +33,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         checkValue01(robust, "-RB");
         checkValue01(scale_ratio, "-S");
         checkValueGreater0(core_num, "-P");
-        checkScaleMethod(scaler_method);
+        checkBinMethod(bin_method);
         checkValueGreater0(BATCH_SIZE, "-BS");
         checkValueGreater0(min_mapq, "-MQ");
         checkValueGreater0(frag_len, "-FL");
@@ -95,12 +95,12 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         }
     }
     // check value
-    public static void checkScaleMethod (String check_value){
-        String [] legal_list = {"bin", "spline"};
-        boolean value = check_value.equals(legal_list[0]) || check_value.equals(legal_list[1]);
+    public static void checkBinMethod (String check_value){
+        String [] legal_list = {"mean", "median", "max"};
+        boolean value = check_value.equals(legal_list[0]) || check_value.equals(legal_list[1]) || check_value.equals(legal_list[2]);
         if (!value){
-            System.out.println("Your input paramter -AL `" + check_value +  "` is illegal item!");
-            System.out.println("-AL must be `bin` or `spline`!");
+            System.out.println("Your input paramter -BM `" + check_value +  "` is illegal item!");
+            System.out.println("-BM must be `mean` , `median`, `max`!");
             System.exit(-1);
         }
     }

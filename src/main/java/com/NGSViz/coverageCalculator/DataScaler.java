@@ -3,6 +3,11 @@ package com.NGSViz.coverageCalculator;
 import com.NGSViz.configSet.InputParameterAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static com.NGSViz.configSet.InputParameterAttributes.CenterMode;
+import static org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics.aggregate;
 
 /**
  * @author Benchen Ye
@@ -14,44 +19,42 @@ public class DataScaler {
     private static int flank_points = InputParameterAttributes.flank_points+1;
     private static int middle_points = InputParameterAttributes.middle_points;
 
-    public static double[] getCoverageScaled(int[] physical_coverage, String method, int flank_size) {
+    public static double[] getCoverageScaled(int[] physical_coverage, String bin_method, int flank_size) {
         double[] coverage_scaled = new double[num_datapoints];
-        double[] head_cov_scaled = new double[0];
-        double[] tail_cov_scaled = new double[0];
-        double[] mid_cov_scaled = new double[0];
-
-        // Convert to primitive arrays for better performance
-        int[] head_cov = new int[flank_size];
-        int[] tail_cov = new int[flank_size];
-        int[] mid_cov = new int[physical_coverage.length - 2 * flank_size];
 
         // Here, the points of bin need to match the division of datapoint.
         if (interval_type.equals("point_interval")) {
-            if (method.equals("bin")) {
-                coverage_scaled = bin(physical_coverage, num_datapoints);
-            } else if (method.equals("spline")) {
-                coverage_scaled = spline(physical_coverage, num_datapoints);
-            } else {
-                throw new IllegalArgumentException("Unknown scaling method: " + method);
-            }
+            coverage_scaled = bin(physical_coverage, num_datapoints, bin_method);
         } else if (interval_type.equals("broad_interval")) {
+            if (CenterMode) {
+                coverage_scaled = centerScaleByGeneCenter(
+                        physical_coverage,
+                        flank_size,
+                        num_datapoints,
+                        bin_method
+                );
+            } else {
+                // 你现在已有的逻辑
+            }
+            double[] head_cov_scaled;
+            double[] tail_cov_scaled;
+            double[] mid_cov_scaled;
+            // Convert to primitive arrays for better performance
+            int[] head_cov = new int[flank_size];
+            int[] tail_cov = new int[flank_size];
+            int[] mid_cov = new int[physical_coverage.length - 2 * flank_size];
+
             // Copy head region
             System.arraycopy(physical_coverage, 0, head_cov, 0, flank_size);
             // Copy tail region
             System.arraycopy(physical_coverage, physical_coverage.length - flank_size, tail_cov, 0, flank_size);
             // Copy middle region
             System.arraycopy(physical_coverage, flank_size, mid_cov, 0, mid_cov.length);
-            if (method.equals("bin")) {
-                head_cov_scaled = bin(head_cov, flank_points);
-                mid_cov_scaled = bin(mid_cov, middle_points);
-                tail_cov_scaled = bin(tail_cov, flank_points);
-            } else if (method.equals("spline")) {
-                head_cov_scaled = spline(head_cov, flank_points);
-                mid_cov_scaled = spline(mid_cov, middle_points);
-                tail_cov_scaled = spline(tail_cov, flank_points);
-            } else {
-                throw new IllegalArgumentException("Unknown scaling method: " + method);
-            }
+
+            head_cov_scaled = bin(head_cov, flank_points, bin_method);
+            mid_cov_scaled = bin(mid_cov, middle_points, bin_method);
+            tail_cov_scaled = bin(tail_cov, flank_points, bin_method);
+
             // Scale each region
             // Combine scaled regions
             for (int i = 0; i < (flank_points-1); i++) { //20
@@ -63,11 +66,81 @@ public class DataScaler {
             for (int j = 0; j < (middle_points-2); j++) { //61
                 coverage_scaled[flank_points + j] = mid_cov_scaled[j+1];
             }
-            /*System.arraycopy(head_cov_scaled, 0, coverage_scaled, 0, head_cov_scaled.length);
-            System.arraycopy(mid_cov_scaled, 0, coverage_scaled, head_cov_scaled.length, mid_cov_scaled.length);
-            System.arraycopy(tail_cov_scaled, 0, coverage_scaled, head_cov_scaled.length + mid_cov_scaled.length, tail_cov_scaled.length);*/
+
         }
         return coverage_scaled;
+    }
+
+    private static double[] centerScaleByGeneCenter(
+            int[] physical_coverage,
+            int flank_size,
+            int num_datapoints,
+            String bin_method) {
+
+        double[] result = new double[num_datapoints];
+
+        int L = physical_coverage.length;
+        int gene_start = flank_size;
+        int gene_end = L - flank_size - 1;
+
+        double gene_center = (gene_start + gene_end) / 2.0;
+
+        double left_bound  = -gene_center;
+        double right_bound = (L - 1) - gene_center;
+        double span = right_bound - left_bound;
+
+        // bins
+        List<List<Integer>> bins = new ArrayList<>(num_datapoints);
+        for (int i = 0; i < num_datapoints; i++) {
+            bins.add(new ArrayList<>());
+        }
+
+        //
+        for (int i = 0; i < L; i++) {
+            double relative_pos = i - gene_center;
+            int bin = (int) Math.floor(
+                    (relative_pos - left_bound) / span * (num_datapoints - 1)
+            );
+
+            // clamp
+            if (bin < 0) bin = 0;
+            if (bin >= num_datapoints) bin = num_datapoints - 1;
+
+            bins.get(bin).add(physical_coverage[i]);
+        }
+
+        //
+        for (int i = 0; i < num_datapoints; i++) {
+            result[i] = aggregate(bins.get(i), bin_method);
+        }
+
+        return result;
+    }
+
+    private static double aggregate(List<Integer> values, String method) {
+        if (values.isEmpty()) return 0.0;
+
+        switch (method) {
+            case "mean":
+                double sum = 0;
+                for (int v : values) sum += v;
+                return sum / values.size();
+            case "median":
+                int n = values.size();
+                Collections.sort(values);
+
+                if (n % 2 == 1) {
+                    return values.get(n / 2);
+                } else {
+                    return (values.get(n / 2 - 1) + values.get(n / 2)) / 2.0;
+                }
+            case "max":
+                int m = Integer.MIN_VALUE;
+                for (int v : values) m = Math.max(m, v);
+                return m;
+            default:
+                throw new IllegalArgumentException("Unknown bin method: " + method);
+        }
     }
 
 
@@ -77,7 +150,7 @@ public class DataScaler {
     //   num_datapoints: int, number of data points to plot
     // Output:
     //   coverage_scaled: List<Double> of binned values
-    public static double[] bin(int[] coverage_list, int num_points){
+    public static double[] bin(int[] coverage_list, int num_points, String bin_method){
         int total_size = coverage_list.length;
         int chunk_size = total_size / num_points;
         int[] boundaries = new int[num_points + 1];
@@ -87,19 +160,56 @@ public class DataScaler {
         boundaries[num_points] = total_size; // Ensure last boundary is correct
         
         double[] coverage_scaled = new double[num_points];
+
         for (int i = 0; i < num_points; i++) {
             int start = boundaries[i];
             int end = boundaries[i + 1];
-            
-            double sum = 0;
             int count = end - start;
-            
-            for (int j = start; j < end; j++) {
-                sum += coverage_list[j];
+
+            if (count <= 0) {
+                coverage_scaled[i] = 0;
+                continue;
             }
-            
-            coverage_scaled[i] = count > 0 ? sum / count : 0;
+
+            if (bin_method.equalsIgnoreCase("mean")) {
+
+                double sum = 0;
+                for (int j = start; j < end; j++) {
+                    sum += coverage_list[j];
+                }
+                coverage_scaled[i] = sum / count;
+
+            } else if (bin_method.equalsIgnoreCase("max")) {
+
+                int max = coverage_list[start];
+                for (int j = start + 1; j < end; j++) {
+                    if (coverage_list[j] > max) {
+                        max = coverage_list[j];
+                    }
+                }
+                coverage_scaled[i] = max;
+
+            } else if (bin_method.equalsIgnoreCase("median")) {
+
+                int[] temp = new int[count];
+                for (int j = 0; j < count; j++) {
+                    temp[j] = coverage_list[start + j];
+                }
+
+                Arrays.sort(temp);
+
+                if (count % 2 == 1) {
+                    coverage_scaled[i] = temp[count / 2];
+                } else {
+                    coverage_scaled[i] =
+                            (temp[count / 2 - 1] + temp[count / 2]) / 2.0;
+                }
+
+            } else {
+                throw new IllegalArgumentException("Unknown bin_method: " + bin_method);
+            }
         }
+
         return coverage_scaled;
     }
 

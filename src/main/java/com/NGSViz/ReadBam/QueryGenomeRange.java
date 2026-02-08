@@ -19,9 +19,7 @@ public class QueryGenomeRange {
     private static int flank_size;
     private static Interval interval_range;
     private static String region_plot = InputParameterAttributes.region_type;
-    private static String scaler_method = InputParameterAttributes.scaler_method;
     private static double flank_factor = InputParameterAttributes.flank_factor;
-    private static String analysis_type = InputParameterAttributes.analysis_type;
     private static String interval_type = InputParameterAttributes.interval_type;
 
     // calculate the range coordinate of point interval of query gene

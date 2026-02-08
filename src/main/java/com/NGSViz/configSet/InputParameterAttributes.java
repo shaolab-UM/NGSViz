@@ -14,7 +14,7 @@ public class InputParameterAttributes {
     // necessary parameters
     public static String genome = null; //-G
     public static String region_type = null; //-R
-    public static String input_file = null; // -C
+    public static String input_file = null; // -I
     public static String output_path = null; //-O
     public static String title = null; //-T
     //
@@ -29,6 +29,7 @@ public class InputParameterAttributes {
     public static int num_datapoints = 100;
     public static int middle_points = 0;
     public static int flank_points = 0;
+    public static boolean CenterMode = false; // center mode -CM
     public static String sys_config_name = "NGSViz_setting.json";
     public static String config_name = "NGSVir_running_config.json";
     public static String sys_config_path = ""; // -CP //
@@ -49,9 +50,9 @@ public class InputParameterAttributes {
     public static double flank_factor = 0.0; // -N
     public static double robust = 0.0; //-RB
     public static double random_sampling_rate =0.0;
-    public static double scale_ratio = 1.0;//-S
+    public static Double scale_ratio = null;//-S
     public static int core_num = 1; //-P
-    public static String scaler_method = "bin"; //-AL
+    public static String bin_method = "median"; //-BM
     public static int BATCH_SIZE = 500; //-CS
     public static int min_mapq = 20; //-MQ
     public static int frag_len = 150; //-FL
