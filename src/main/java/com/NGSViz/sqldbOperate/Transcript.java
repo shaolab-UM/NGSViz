@@ -41,6 +41,10 @@ public class Transcript {
         this.index = indexCounter++;
     }
 
+    public static void resetIndexCounter() {
+        indexCounter = 0;
+    }
+
     public String getRecordName(){
         return record_name;
     }

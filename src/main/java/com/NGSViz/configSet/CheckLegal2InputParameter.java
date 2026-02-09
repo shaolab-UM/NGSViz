@@ -31,7 +31,7 @@ public class CheckLegal2InputParameter extends InputParameterAttributes {
         checkValueGreater0(flank_region, "-F");
         checkValue01(flank_factor, "-N");
         checkValue01(robust, "-RB");
-        checkValue01(scale_ratio, "-S");
+        //checkValue01(scale_ratio, "-S");
         checkValueGreater0(core_num, "-P");
         checkBinMethod(bin_method);
         checkValueGreater0(BATCH_SIZE, "-BS");

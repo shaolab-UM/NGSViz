@@ -84,13 +84,14 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         JSONArray region_labelsArray = new JSONArray();
         if (CenterMode) {
             plot_parameters.put("region_labels", "Center");
-
+            plot_parameters.put("interval_type", "point_interval");
         } else {
             region_labelsArray = buildJsonListConfig(region_labelsArray, region_labels);
             plot_parameters.put("region_labels", region_labelsArray);
+            plot_parameters.put("interval_type", interval_type);
         }
         //plot_parameters.put("region_labels", region_labelsArray);
-        plot_parameters.put("interval_type", interval_type);
+
         plot_parameters.put("num_datapoints", num_datapoints);
         plot_parameters.put("middle_datapoints", middle_points);
         plot_parameters.put("flanking_region_datapoints", flank_points);

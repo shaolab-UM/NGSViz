@@ -317,6 +317,7 @@ In addition to the built-in databases, the program also supports user-defined fu
 - The custom database must be **tab-delimited** and **must not contain a header row**.
 - Each row should represent a functional genomic element.
 - The database must not contain redundant entries, as the program will read and process all records sequentially.
+- Minimum required columns are **1–3** (`Chromosome`, `Start`, `End`). If optional columns are missing, NGSViz will assume **`+` strand** and auto-generate stable element IDs from coordinates.
 
 | Column |          Description          |
 | :----: | :---------------------------: |
@@ -366,6 +367,8 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
 |       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
 |      -NF       |   new_forder    |     false      |           Create Results Folder            |
+|      -BM       |   bin_method    |     median     |                 Bin method                 |
+|      -CM       |   Centermode    |     false      |          Whether plot with center          |
 
 #### Command-Line Parameters Description
 
@@ -680,4 +683,3 @@ Rscript lib/ngsVizPlotMain.R Result/RNAseq
 ---
 
 For questions or suggestions, feel free to submit an issue or contact the author, **[Benchen Ye](yc47650@um.edu.mo)**.
-

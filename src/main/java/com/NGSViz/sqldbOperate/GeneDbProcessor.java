@@ -17,6 +17,9 @@ public class GeneDbProcessor extends DBAtribute{
     public static void processGeneData(String tbl_name,
                                        String biotype,
                                        String type) throws SQLException {
+        record_name_list.clear();
+        geneList_batches.clear();
+        Transcript.resetIndexCounter();
 
         if (BATCH_SIZE <= 0) {
             throw new IllegalArgumentException("batchSize must be positive");
@@ -76,4 +79,3 @@ public class GeneDbProcessor extends DBAtribute{
         geneList_batches = bed_transcriptBatches;
     }
 }
-

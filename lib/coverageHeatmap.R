@@ -427,7 +427,7 @@ mergeMultiVisResult <- function(json_path, out_path = ""){
   return(all_plots)
 }
 
-mergeAveragePlot <- function(json_path, title_name = ""){
+mergeAveragePlot <- function(json_path, subgenes_list = NULL, title_name = ""){
   # get the json file name list
   plot_para_list <- getJsonFiles(json_path)
   merge_df <- data.frame()
@@ -436,6 +436,17 @@ mergeAveragePlot <- function(json_path, title_name = ""){
     plot_paras_path <- file.path(json_path, plot_paras_name)
     plot_paras <- getPlotJsonParas(plot_paras_path)
     sorted_df <- preparePlotData(plot_paras)
+    # update subset
+    sorted_df$GeneName <- ifelse(
+      grepl(":", sorted_df$Gene),
+      sub(":.*$", "", sorted_df$Gene),
+      sorted_df$Gene
+    )
+    
+    if(length(subgenes_list) > 0){
+      sorted_df <- sorted_df[sorted_df$GeneName %in% subgenes_list, ]
+    }
+    
     mat_df <- sorted_df %>%
       group_by(Split, XAsis) %>%
       summarise(
