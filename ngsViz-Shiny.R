@@ -5,6 +5,7 @@ checkRequiredPackages <- function(required_packages) {
       tryCatch(
         {
           install.packages(pkg, dependencies = TRUE)
+          #pak::pkg_install(pkg)
           message(paste0("Package '", pkg, "' installed successfully."))
         },
         error = function(e) {
@@ -40,13 +41,15 @@ checkRequiredPackages <- function(required_packages) {
 }
 
 packages <- c(
-  "shiny", "bs4Dash", "dplyr", "readr", "plotly", "leaflet", "DT",
-  "fresh", "future", "promises", "RSQLite", "processx", "jsonlite",
-  "ggplot2", "markdown", "tidyr", "ggsci", "shinyFiles", "circlize",
-  "here", "corrplot", "ggrepel", "reshape2", "aplot",
-  "ggh4x", "tidyverse", "rtracklayer", "colorspace", "zoo",
-  "RColorBrewer", "purrr", "data.table", "RcppRoll", "cowplot",
-  "FactoMineR"
+  "fresh", "shinyFiles", "plotly", "ggrepel", "tidyverse", 
+  "FactoMineR", "aplot","ggh4x", "circlize",
+  "future", "RSQLite", "markdown", "ggsci", "here", "corrplot", "reshape2",  "zoo","RcppRoll",
+  "dplyr", "readr",   "DT",
+  "promises", "processx", "jsonlite",
+  "ggplot2", "tidyr",
+  "colorspace",
+  "RColorBrewer", "purrr", "data.table",  "cowplot",
+  "shiny", "bs4Dash","leaflet"
 )
 
 checkRequiredPackages(packages)

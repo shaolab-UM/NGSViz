@@ -19,6 +19,7 @@
     - [Merge Database](#merge-database)
     - [Build a Reference Database (Optional)](#build-a-reference-database-optional)
     - [Custom Functional Element Database](#custom-functional-element-database)
+    - [Intergenic Region Annotation](#Intergenic Region Annotation)
   - [Computational Module Based on Java](#computational-module-based-on-java)
     - [Feature](#feature)
     - [Usage](#usage)
@@ -330,6 +331,12 @@ In addition to the built-in databases, the program also supports user-defined fu
 
 ---
 
+#### **Intergenic Region Annotation** 
+
+NGSViz provides built-in **intergenic region annotations** for both **human and mouse**, which are included in the database for convenient and direct use. Users can specify the desired intergenic annotation file using the **`-BD`** parameter when running the program. These annotations are fully formatted and require no additional preprocessing, enabling straightforward exploration and visualization of genomic features within intergenic regions.
+
+---
+
 ### Computational Module Based on Java
 
 #### Feature
@@ -393,6 +400,9 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 -  **`-P`**: Defines the number of CPU cores to use for parallel processing. 
 -  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
 -  **`-NF`**: Whether a new folder will be created to store the results.
+- **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `median`). This determines how values within each bin are summarized.
+
+  **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
 
 #### **Computation Module Result Interpretation**
 

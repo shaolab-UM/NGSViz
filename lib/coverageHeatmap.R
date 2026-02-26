@@ -44,6 +44,15 @@ heatmapTheme <- function(){
 
 # build species reference genome based on the gtf file
 checkRequiredPackages <- function(required_packages) {
+  if (!requireNamespace("pak", quietly = TRUE)) {
+    install.packages(
+      "pak",
+      repos = sprintf(
+        "https://r-lib.github.io/p/pak/stable/%s/%s/%s",
+        .Platform$pkgType, R.Version()$os, R.Version()$arch
+      )
+    )
+  }
   # Loop through each package to check and load
   for (pkg in required_packages) {
     # Check if the package is installed
@@ -51,7 +60,8 @@ checkRequiredPackages <- function(required_packages) {
       message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
       # Attempt to install the package
       tryCatch({
-        install.packages(pkg, dependencies = TRUE)
+        #install.packages(pkg, dependencies = TRUE)
+        pak::pkg_install(pkg)
         message(paste0("Package '", pkg, "' installed successfully."))
       }, error = function(e) {
         # If installation fails, print error message and stop the script
