@@ -5,7 +5,7 @@
     "toolParas": {
         "tool_path": "/Users/benche/myProj/ngsPlot/NGSViz",
         "db_path": "/Users/benche/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db",
-        "tool_name": "NGSViz-1.0.jar",
+        "tool_name": "NGSViz-1.1.jar",
         "java_path": "/usr/bin/java"
     }
 }
