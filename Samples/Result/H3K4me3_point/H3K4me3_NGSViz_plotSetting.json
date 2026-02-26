@@ -1,0 +1,71 @@
+{
+    "versionParameters": {"version": "1.0"},
+    "output_paras": {
+        "top_bottom_ratio": [
+            1,
+            3
+        ],
+        "high": 12,
+        "file_type": "tiff",
+        "width": 12,
+        "output_path": "Samples/Result/H3K4me3_point",
+        "dpi": 300
+    },
+    "OutputFile": [{
+        "heatmapDataFile": "Samples/Result/H3K4me3_point/K562_H3K4me3-ENCFF752MYF_5p_coverage_matrix_heatmap.csv",
+        "readCountFile": "Samples/Result/H3K4me3_point/K562_H3K4me3-ENCFF752MYF_5p_gene_read_count.csv"
+    }],
+    "split_paras": {
+        "hc_m": "ward.D",
+        "gene_list_file": "",
+        "split_mode": "cluster",
+        "cluster_num": 1,
+        "sub_gene_list": ["all"],
+        "dist_m": "euclidean"
+    },
+    "plot_parameters": {
+        "flank_size": 2000,
+        "CenterMode": false,
+        "num_datapoints": 100,
+        "region_labels": ["TSS"],
+        "SEM": true,
+        "plot_title": ["H3K4me3"],
+        "middle_datapoints": 1,
+        "flanking_region_datapoints": 50,
+        "sample_list": ["SmapleName"],
+        "interval_type": "point_interval",
+        "smooth": true
+    },
+    "theme_paras": {
+        "title_size": 11,
+        "legend_size": 10,
+        "title_color": "black",
+        "dash_color": "black",
+        "axis_text_x_size": 10,
+        "text_family": "sans",
+        "axis_text_y_size": 10,
+        "dash_size": 0.6,
+        "sample_color": [
+            "#66C2A5",
+            "#FC8D62",
+            "#8DA0CB",
+            "#E78AC3",
+            "#A6D854",
+            "#FFD92F"
+        ],
+        "text_face": "bold",
+        "split_color": [
+            "#BC3C29FF",
+            "#0072B5FF",
+            "#E18727FF",
+            "#20854EFF",
+            "#7876B1FF",
+            "#6F99ADFF"
+        ],
+        "title_hjust": 0.5,
+        "border_size": 1.2,
+        "legend_text_size": 10,
+        "line_size": 0.8,
+        "ystrip_text_size": 8
+    }
+}

@@ -133,7 +133,7 @@ git clone git@github.com:shaolab-UM/NGSViz.git
       "toolParas": {
           "tool_path": "/ngsViz",
           "db_path": "/ngsViz/database/genomeCoordinate.db",
-          "tool_name": "NGSViz-1.0.jar",
+          "tool_name": "NGSViz-1.1.jar",
           "java_path": "/usr/local/envs/ngsViz/bin/java"
       }
   }
@@ -647,40 +647,55 @@ Steps:
 ### Point Mode
 
 ```shell
-java -jar NGSViz-1.0.jar 
--G hg38 
--R TSS 
--T H3K4me3
--I example/K562_H3K4me3-ENCFF752MYF_5p.bam
--O Result
+java -jar NGSViz-1.1.jar \
+-G hg38 \
+-R tss \
+-T H3K4me3 \
+-I Samples/K562_H3K4me3-ENCFF752MYF_5p.bam \
+-O Samples/Result/H3K4me3_point \
 -P 8
-Rscript lib/ngsVizPlotMain.R Result/H3K4me3
+Rscript lib/ngsVizPlotMain.R Samples/Result/H3K4me3_point
 ```
 
 ### Broad Mode
 
 ```
-java -jar NGSViz-1.0.jar 
--G hg38 
--R genebody 
--T H3K36me3
--I example/K562_H3K36me3-ENCFF975JFV_5P.bam
--O Result
+java -jar NGSViz-1.1.jar \
+-G hg38 \
+-R genebody \
+-T H3K36me3 \
+-I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
+-O Samples/Result/K36me3_broad \
 -P 8
-Rscript lib/ngsVizPlotMain.R Result/H3K36me3
+Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_broad
 ```
 
-### Exon Mode
+### Center Mode
 
 ```
-java -jar NGSViz-1.0.jar 
--G hg38 
--R exon 
--T RNAseq
--I example/RNAseq_ENCFF675YXM_1P.bam
--O Result
+java -jar NGSViz-1.1.jar \
+-G hg38 \
+-R genebody \
+-T H3K36me3 \
+-I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
+-O Samples/Result/K36me3_center \
+-CM true \
 -P 8
-Rscript lib/ngsVizPlotMain.R Result/RNAseq
+Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_center
+```
+
+### Intergenic Mode
+
+```
+java -jar NGSViz-1.1.jar \
+-G hg38 \
+-R genebody \
+-T H3K36me3 \
+-I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
+-O Samples/Result/K36me3_intergenic \
+-BD database/hg38_intergenic_regions_greater_1kb.bed \
+-P 8
+Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_intergenic
 ```
 
 ---
