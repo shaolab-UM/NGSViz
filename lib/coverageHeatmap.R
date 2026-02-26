@@ -518,7 +518,7 @@ plotOneIntegratePlot <- function(plot_paras){
 }
 # usage -------------------------------------------------------------------
 packages <- c(
-  "ggh4x", "tidyverse", "rtracklayer", "colorspace", "circlize",
+  "ggh4x", "tidyverse", "colorspace", "circlize",
   "RColorBrewer", "purrr", "data.table", "RcppRoll", "zoo"
 )
 

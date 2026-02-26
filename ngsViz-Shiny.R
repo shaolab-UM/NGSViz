@@ -1,24 +1,24 @@
 checkRequiredPackages <- function(required_packages) {
   for (pkg in unique(required_packages)) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
-      tryCatch(
-        {
-          install.packages(pkg, dependencies = TRUE)
-          #pak::pkg_install(pkg)
-          message(paste0("Package '", pkg, "' installed successfully."))
-        },
-        error = function(e) {
-          stop(
-            paste0(
-              "Error: Unable to install package '", pkg,
-              "'. Please install this package manually and then run the script.\n",
-              "Error message: ", e$message
-            )
-          )
-        }
-      )
-    }
+    # if (!requireNamespace(pkg, quietly = TRUE)) {
+    #   message(paste0("Package '", pkg, "' is not installed, attempting to install..."))
+    #   tryCatch(
+    #     {
+    #       install.packages(pkg, dependencies = TRUE)
+    #       #pak::pkg_install(pkg)
+    #       message(paste0("Package '", pkg, "' installed successfully."))
+    #     },
+    #     error = function(e) {
+    #       stop(
+    #         paste0(
+    #           "Error: Unable to install package '", pkg,
+    #           "'. Please install this package manually and then run the script.\n",
+    #           "Error message: ", e$message
+    #         )
+    #       )
+    #     }
+    #   )
+    # }
 
     tryCatch(
       {
