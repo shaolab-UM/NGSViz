@@ -44,3 +44,9 @@ genomeCoordinate.db
 /Users/bencheye/myProj/ngsPlot/NGSPlot2/genomeCoordinate.db
 /Users/bencheye/myProj/ngsPlot/NGSPlot2/coordinate_db.db
 .Rproj.user
+
+# Audit directory
+audit/
+
+# AGENTS.md
+AGENTS.md
