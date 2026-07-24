@@ -1,8 +1,5 @@
 package com.NGSViz.sqldbOperate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Benchen Ye
  * @create 2025-02--19:56
@@ -16,7 +13,6 @@ public class Transcript {
     private String query_strand;
     private String chr_lab;
     private String no_chr_lab;
-    private static Map<String, Object> record = new HashMap<>();
     private int index;
     // Static counter, initialized to 0
     private static int indexCounter = 0;
@@ -74,18 +70,6 @@ public class Transcript {
 
     public String getQueryStrand() {
         return query_strand;
-    }
-
-    public Map<String, Object> getQueryCoord(){
-        record.put("index", index);
-        record.put("chrom", chr_lab);
-        record.put("nochr_name", no_chr_lab);
-        //record.put("gene_name", gene_name);
-        record.put("start", start_pos);
-        record.put("end", end_pos);
-        record.put("strand", query_strand);
-        record.put("record_name", record_name);
-        return record;
     }
 
     @Override
