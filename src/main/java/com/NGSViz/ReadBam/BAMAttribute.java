@@ -27,30 +27,7 @@ public class BAMAttribute {
         SamReaderFactory factory = SamReaderFactory.makeDefault();
 
         try (SamReader bamReader = factory.open(bamFile);) {
-            if (!bamReader.hasIndex()) {
-                throw new IOException(
-                        "BAM index not found for '" + bamFile.getAbsolutePath()
-                                + "'. Create a BAI or CSI index with: samtools index "
-                                + bamFile.getAbsolutePath()
-                );
-            }
-            SAMFileHeader.SortOrder sortOrder = bamReader.getFileHeader().getSortOrder();
-            if (sortOrder != SAMFileHeader.SortOrder.coordinate) {
-                throw new IOException(
-                        "BAM file must be coordinate-sorted for indexed interval queries: '"
-                                + bamFile.getAbsolutePath() + "'. Header sort order is '"
-                                + sortOrder + "'."
-                );
-            }
-            try {
-                bamReader.indexing().getIndex();
-            } catch (RuntimeException e) {
-                throw new IOException(
-                        "BAM index is unreadable or incompatible with '"
-                                + bamFile.getAbsolutePath() + "'.",
-                        e
-                );
-            }
+            validateBamForIndexedQueries(bamReader, bamFile);
             // Retrieve chromosome list
             bam_chromosomes_list = getChromosomesFromHeader(bamReader);
             LibraryStats stats = calculateLibraryStats(bamReader);
@@ -62,6 +39,36 @@ public class BAMAttribute {
             InputParameterAttributes.header = header;
         } catch (NoSuchElementException e) {
             throw new IOException("Failed to read BAM file: " + e.getMessage(), e);
+        }
+    }
+
+    private static void validateBamForIndexedQueries(
+            SamReader bamReader,
+            File bamFile
+    ) throws IOException {
+        if (!bamReader.hasIndex()) {
+            throw new IOException(
+                    "BAM index not found for '" + bamFile.getAbsolutePath()
+                            + "'. Create a BAI or CSI index with: samtools index "
+                            + bamFile.getAbsolutePath()
+            );
+        }
+        SAMFileHeader.SortOrder sortOrder = bamReader.getFileHeader().getSortOrder();
+        if (sortOrder != SAMFileHeader.SortOrder.coordinate) {
+            throw new IOException(
+                    "BAM file must be coordinate-sorted for indexed interval queries: '"
+                            + bamFile.getAbsolutePath() + "'. Header sort order is '"
+                            + sortOrder + "'."
+            );
+        }
+        try {
+            bamReader.indexing().getIndex();
+        } catch (RuntimeException e) {
+            throw new IOException(
+                    "BAM index is unreadable or incompatible with '"
+                            + bamFile.getAbsolutePath() + "'.",
+                    e
+            );
         }
     }
 

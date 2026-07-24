@@ -59,7 +59,7 @@
 
 2. **Prepare BAM files to analyse.** 
 
-   > ⚠️ **Note:** BAM files require a corresponding bam index file (bai) to be provided. If a BAM index is not available, it must be generated using SAMtools.
+   > ⚠️ **Note:** BAM files must be coordinate-sorted and have a readable BAI or CSI index. If necessary, run `samtools sort` followed by `samtools index` before analysis.
 
 3. **Launch the RShiny Interface or Run via Command Line**
 
