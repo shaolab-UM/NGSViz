@@ -6,6 +6,9 @@ package com.NGSViz.configSet;
  */
 public class DataPointNum extends InputParameterAttributes{
     public static void getDataPointNum() {
+        if (num_datapoints < 100) {
+            throw new IllegalArgumentException("The number of data points must be greater than 100.");
+        }
         if (interval_type.equals("point_interval")) {
             middle_points = 1;
             flank_points = num_datapoints/2;

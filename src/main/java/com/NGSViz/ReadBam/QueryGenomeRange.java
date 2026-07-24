@@ -26,8 +26,9 @@ public class QueryGenomeRange {
     public static Interval getQueryBamGranges(String chr_name, int middle_point){
         Interval interval_range;
         int query_start = middle_point - flanking_size - buf_size;
-        if(query_start < 0){
-            query_start = 0;
+        // htsjdk Interval uses 1-based closed coordinates; minimum valid start is 1.
+        if(query_start < 1){
+            query_start = 1;
         }
         int query_end = middle_point + flanking_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);
@@ -55,8 +56,9 @@ public class QueryGenomeRange {
     {
         Interval interval_range;
         int query_start = start_pos - flank_size - buf_size;
-        if(query_start < 0){
-            query_start = 0;
+        // htsjdk Interval uses 1-based closed coordinates; minimum valid start is 1.
+        if(query_start < 1){
+            query_start = 1;
         }
         int query_end = end_pos + flank_size + buf_size;
         interval_range = new Interval(chr_name, query_start, query_end);

@@ -166,11 +166,10 @@ docker attach ngsViz
 
 #### Run with singularity
 
-You can also build a **Singularity image** based on our **Docker image** for use with Singularity. Here's how:
+You can also download the **Singularity image** from https://drive.google.com/file/d/1ESj9COZq8fWrOuepn1v-ibVKQczJUHrY/view?usp=sharing. Here's how:
 
 ```singularity exec your-image.sif java -version
-singularity build ngsviz.sif docker://ngsviz/ngsviz:1.0
-singularity exec ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+singularity exec ngsviz_v1.1.sif java -jar ngsViz-1.1.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 #### Run with Apptainer
@@ -180,12 +179,8 @@ If the system lacks a container runtime environment, it is recommended to use Co
 ```shell
 # install the Apptainer
 conda install conda-forge::apptainer
-# 1.1 Pull Docker container image
-apptainer pull docker://ngsviz/ngsviz:1.0
-# 1.2 Run Docker container
-apptainer run docker://ngsviz/ngsviz:1.0
-# 2. Run Singularity container
-apptainer run ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+# Run Singularity container
+apptainer run ngsviz_v1.1.sif java -jar ngsViz-1.1.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 ---
@@ -401,8 +396,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 -  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
 -  **`-NF`**: Whether a new folder will be created to store the results.
 - **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `median`). This determines how values within each bin are summarized.
-
-  **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
+- **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
 
 #### **Computation Module Result Interpretation**
 
@@ -527,11 +521,11 @@ Specifically, for multi-sample mode, users can create a new folder, copy the JSO
 - Specify five mandatory parameter values and optional parameter values as needed. The specific meanings of the parameters are detailed in the **Parameter Explanation Section** below. Examples are provided as follows:
 
   ```shell
-  java -jar NGSViz-1.0-SNAPSHOT.jar 
-  -G hg38 
-  -R TSS 
-  -T analysis_title
-  -I bam_path
+  java -jar NGSViz-1.0-SNAPSHOT.jar \
+  -G hg38 \
+  -R tss \
+  -T analysis_title \
+  -I bam_path \
   -O output_dir
   ```
 

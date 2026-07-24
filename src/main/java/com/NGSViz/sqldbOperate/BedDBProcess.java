@@ -51,7 +51,9 @@ public class BedDBProcess {
                 int start_pos;
                 int end_pos;
                 try {
-                    start_pos = Integer.parseInt(records[1]);
+                    // BED format is 0-based half-open [start, end).
+                    // Convert to 1-based closed [start, end] for internal consistency with GTF/GFF.
+                    start_pos = Integer.parseInt(records[1]) + 1;
                     end_pos = Integer.parseInt(records[2]);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid BED coordinates (start/end must be integers): " + line, e);
@@ -96,6 +98,7 @@ public class BedDBProcess {
                     throw new IllegalArgumentException("Invalid BED coordinates (start > end): " + line);
                 }
                 // Keep for compatibility; current pipeline doesn't use it.
+                // After 0->1-based conversion, end_pos - start_pos + 1 is correct for 1-based closed interval.
                 int width = end_pos - start_pos + 1;
 
                 String nochr_name = chr_name.replace("chr", "");

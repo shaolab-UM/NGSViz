@@ -12,7 +12,7 @@ Parameter descriptions:
   <annotatedNCRNA>: Indicates whether to refine annotations for ncRNA.
 
 Example:
-  Rscript your_script_name.R hg38.ncbiRefSeq.gtf Homo_sapiens RefSeq TRUE
+  Rscript your_script_name.R hg38.ncbiRefSeq.gtf Homo_sapiens RefSeq FALSE
 ")
 }
 
@@ -136,7 +136,7 @@ gtfProcess <- function(gtf_file, DB_name){
   gtf_df <- gtf_df %>% filter(!grepl("^LOC", gene_name))
   gtf_df$transcript_id <- sub("\\.[0-9]+$", "", gtf_df$transcript_id)
   gtf_df$exon_id <- sub("\\.[0-9]+$", "", gtf_df$exon_id)
-  gtf_df$exon_id <- sub("\\.[0-9]+$", "", gtf_df$exon_id)
+
   gtf_df['gene_biotype'] <- "protein_coding"
   nr_rows <- which(grepl("^NR", gtf_df$transcript_id))
   gtf_df$gene_biotype[nr_rows] <- "ncRNA"
@@ -164,22 +164,6 @@ getMapInfo <- function(ucsc_df, dataset = "hsapiens_gene_ensembl"){
                    values = gene_names,  
                    mart = ensembl)
   return(gene_info)
-}
-
-readRefSeqFuncElems <- function(file_name){
-  anno_df <- read.csv(file_name, sep = '\t', header = F)
-  items <- c("enhancer", "CpG_island", "silencer", "DNase_I_hypersensitive_site",
-             "promoter", "transcriptional_cis_regulatory_region", "insulator")
-  anno_df <- anno_df[anno_df$V4 %in% items, c(1:4,6)]
-  colnames(anno_df) <- c("chrom", "start", "end", "biotype", "strand")
-  anno_df$biotype[anno_df$biotype == "DNase_I_hypersensitive_site"] <- "DHS"
-  anno_df$biotype[anno_df$biotype == "transcriptional_cis_regulatory_region"] <- "TCRR"
-  anno_df['width'] <- anno_df$end - anno_df$start
-  anno_df['type'] <- "FuncElems"
-  anno_df <- anno_df[ ,c(1:3,6,5,7,4)]
-  anno_df["tid"] <- anno_df["gname"]<- "-"
-  anno_df <- anno_df %>% filter(!grepl("_", chrom))
-  return(anno_df)
 }
 
 convert_format <- function(input_string) {
@@ -236,7 +220,7 @@ mainDB <- function(args){
   gtf_file <- args[1]
   DB_name <- args[2]
   species <- args[3]
-  annotatedNCRNA <- args[4]
+  annotatedNCRNA <- toupper(args[4]) == "TRUE"
   buildDBMain(gtf_file, DB_name, species, annotatedNCRNA)
 }
 
