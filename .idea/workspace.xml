@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_setting.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_setting.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/buildRefDB.R" beforeDir="false" afterPath="$PROJECT_DIR$/lib/buildRefDB.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/QueryGenomeRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/ReadBam/QueryGenomeRange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/DataPointNum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/BedDBProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/sqldbOperate/BedDBProcess.java" afterDir="false" />
-    </list>
+    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -141,7 +132,7 @@
       <workItem from="1770630487401" duration="775000" />
       <workItem from="1770645378315" duration="72000" />
       <workItem from="1770647580122" duration="1892000" />
-      <workItem from="1784817525899" duration="5228000" />
+      <workItem from="1784817525899" duration="5833000" />
     </task>
     <servers />
   </component>
