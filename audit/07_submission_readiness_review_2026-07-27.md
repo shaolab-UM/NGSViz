@@ -10,7 +10,7 @@
 
 ## 结论
 
-当前版本不建议直接投稿或发布。确认存在 6 个会影响覆盖度、归一化或多样本处理结果的问题，并且基线测试未通过。
+当前版本不建议直接投稿或发布。确认存在 11 个会影响覆盖度、归一化、多样本处理或 exon 模式结果的问题，并且基线测试未通过。
 
 ## 已确认问题
 
@@ -172,6 +172,109 @@
 
 - CPM 值被系统性压低，不同 BAM 中低 MAPQ 比例差异会转化为额外批次偏差。
 
+### [P0] exon 模型在不同 transcript 之间共享并覆盖坐标列表
+
+证据：
+
+- `src/main/java/com/NGSViz/sqldbOperate/exonMode/ExonModelData.java:31-33` 只创建一次 `start_list`、`end_list` 和 `width_list`。
+- `ExonModelData.java:49-52` 把这些列表传给 `OneEnstAllExonCoorClass`。
+- `ExonModelData.java:55-57` 随后直接 `clear()` 同一批列表，并继续为下一个 transcript 复用。
+- `src/main/java/com/NGSViz/sqldbOperate/exonMode/OneEnstAllExonCoorClass.java:35-37` 直接保存传入引用，没有进行 defensive copy。
+
+最小验证：
+
+- 创建 `tx1` 并传入 `[100, 200]`、`[150, 250]`；
+- 清空原列表并写入下一 transcript 的 `[900]`、`[950]`；
+- `tx1.getStartList()` 和 `tx1.getEndList()` 随即变成 `[900]`、`[950]`。
+
+实际行为：
+
+- 已存入 `exon_matrix` 的 transcript 会随着后续循环被改写；
+- 多个 transcript 最终可能共享最后处理的一组 exon 坐标。
+
+额外证据：
+
+- `ExonModelData.java:59-64` 开始新 transcript 时没有设置 `end_enst = query_end`；
+- `end_enst` 只在同一 transcript 的后续行中于 `ExonModelData.java:65-72` 更新；
+- 单外显子 transcript 可能继承上一 transcript 的 `end_enst` 或保留初始值 0。
+
+预期行为：
+
+- 每个 transcript 必须保存独立的坐标列表副本；
+- 新 transcript 第一条记录应同时初始化 start 和 end；
+- SQL 查询应明确按 `tid` 和 exon 坐标排序，不能依赖未声明的返回顺序。
+
+影响：
+
+- 当前 exon 模式可能把其他 transcript 的 exon 坐标用于覆盖度提取，属于投稿阻断级科学正确性问题。
+
+### [P1] exon coverage 提取存在闭区间错误和零填充污染
+
+证据：
+
+- `src/main/java/com/NGSViz/sqldbOperate/exonMode/CoverageExonSubset.java:24-25` 将数据库 exon 坐标映射为数组索引。
+- `CoverageExonSubset.java:32-34` 使用 `j < exon_end`，对 1-based closed exon 坐标漏掉每个 exon 的最后一个碱基。
+- `CoverageExonSubset.java:21` 按完整基因组查询范围分配输出数组，而不是按 exon 总宽分配。
+- `CoverageExonSubset.java:22-35` 只从数组前端连续写入 exon coverage，剩余位置保持为零。
+- `src/main/java/com/NGSViz/sqldbOperate/ProcessEachQueryCoorRecord.java:104-112` 随后直接对该零填充数组执行 buffer trimming 和 scaling。
+
+实际行为：
+
+- exon 末端碱基丢失；
+- 输出包含与 exon 总宽无关的尾部零值；
+- 这些零值进入后续分箱，压低 exon profile。
+
+预期行为：
+
+- 按内部 1-based closed 语义完整提取 `[exon_start, exon_end]`；
+- 输出数组长度应等于所选 exon 的总参考宽度；
+- buffer/flank 与 exon 拼接的顺序和坐标语义应明确。
+
+### [P1] broad-interval 尾侧分箱重复首 bin 并丢失末 bin
+
+证据：
+
+- 默认配置下 `DataScaler.java:17-20` 得到内部 `num_datapoints=101`、`flank_points=21`、`middle_points=61`。
+- `DataScaler.java:60-63` 把 `tail_cov_scaled[0..19]` 写入结果索引 `81..100`。
+- `DataScaler.java:65` 又使用 `tail_cov_scaled[0]` 构建索引 80 的边界混合点。
+- `tail_cov_scaled[20]` 在整个拼接过程中从未使用。
+
+最小验证：
+
+- 使用 21 个 head bins、61 个 middle bins 和 21 个 tail bins；
+- 输出索引 80 为预期混合值 85；
+- 输出索引 81 再次使用 `tail[0]=100`；
+- 输出索引 100 为 `tail[19]=119`，最后的 `tail[20]=120` 丢失。
+
+实际行为：
+
+- 尾侧第一个 bin 被重复贡献；
+- 最远端尾侧 bin 被丢弃；
+- broad-interval profile 的左右侧翼不对称。
+
+预期行为：
+
+- 边界混合点使用 `tail[0]` 后，后续位置应使用 `tail[1..20]`。
+
+### [P1] RShiny 默认 scale ratio 会绕过 CPM
+
+证据：
+
+- `lib/shiny/ui_builder.R:73` 将 `dashS` 默认值设为 1。
+- `lib/shiny/server_builder.R:186` 每次运行都把该值作为 `-S` 传给 Java。
+- `src/main/java/com/NGSViz/configSet/InputParameterAttributes.java:53` 的 CLI 默认值为 `null`。
+- `src/main/java/com/NGSViz/coverageCalculator/EachCoverageResult.java:29-36` 在 `scale_ratio != null` 时只执行 `coverage * scale_ratio`，不执行 CPM。
+
+实际行为：
+
+- Shiny 默认运行传入 `-S 1`，得到原始 coverage，而 CLI 默认运行得到 CPM；
+- 同一数据在 Shiny 与 CLI 中产生不同量纲。
+
+预期行为：
+
+- Shiny 默认不传 `-S`，或提供可表达 `null` 的开关；
+- 只有明确启用 spike-in calibration 时才传入 scale ratio。
+
 ## 发布阻断项
 
 ### [P1] 当前 Maven 测试不通过
@@ -205,13 +308,29 @@ mvn test
 - BAM 索引缺失、索引损坏和非 coordinate-sorted BAM 已有测试覆盖并通过。
 - `Transcript` 共享记录 Map 问题已由 context-based 路径替代，本轮未发现对应回归证据。
 - POM 的重复依赖、动态 `RELEASE` 版本和缺失 compiler plugin 版本会产生构建警告，但本轮未将其计为科学结果 bug。
+- `processJSON.R` 返回的 Java/JAR/数据库四元素向量由 Shiny 按索引拆解，并非直接作为 Java 命令执行；不列为启动参数 bug。
+- `PhysicalCoverageCalculator.calculatePhysicalCoverage2()` 的 `queryContained` 只由仓库内未被主流程调用的旧 `processRecord2()` 使用；暂列旧 API 风险，不计入当前批量主路径 bug。
+- `BAMAttribute.detectChromosomeFormat()` 接受所有以 `chr` 开头的 contig，因此 `chrUn_*` 不会被拒绝；不采用该项 Kimi 候选描述。
+
+## Kimi Code 独立复核
+
+- Kimi Code 会话恢复后独立支持了原报告中的 8 项判断，没有提供反证。
+- Kimi 新增候选经主审查员复核后：
+  - 接受：exon coverage 提取、Shiny scale ratio、broad-interval 尾侧分箱问题；
+  - 纠正：broad-interval 问题不是索引 80 被覆盖，而是 `tail[0]` 重复、`tail[20]` 丢失；
+  - 降级：`queryContained` 仅影响当前仓库未调用的旧 API；
+  - 排除：`processJSON.R` 命令向量和 `chrUn_*` contig 两项描述。
+- 主审查员额外发现并验证了 Kimi 未报告的 exon 坐标列表共享问题。
 
 ## 建议修复顺序
 
-1. 先修复链特异性过滤覆盖问题，并补充 duplicate、低 MAPQ、unmapped 与 same/opposite 组合测试。
-2. 将每个样本的 Input 模式改为循环局部状态，并补充混合 `signal:input` 与单 BAM 列表测试。
-3. 修复 Center 模式分支并明确其坐标语义。
-4. 统一 coverage 与 library size 的过滤策略，同时排除 secondary/supplementary。
-5. 明确 CIGAR/RNA-seq 支持边界，并实现 alignment-block coverage 或限制输入。
-6. 加入 contig length 右边界裁剪和端粒附近回归测试。
-7. 修复 `QueryGenomeRangeTest` 的配置缓存问题，恢复全套测试通过。
+1. 先修复 exon 模型的共享列表、end 初始化和查询排序问题，并为多 transcript/单 exon 情形添加测试。
+2. 修复 exon coverage 拼接的闭区间和输出长度问题。
+3. 修复链特异性过滤覆盖问题，并补充 duplicate、低 MAPQ、unmapped 与 same/opposite 组合测试。
+4. 将每个样本的 Input 模式改为循环局部状态，并补充混合 `signal:input` 与单 BAM 列表测试。
+5. 修复 Center 模式与 broad-interval 尾侧分箱，并明确坐标语义。
+6. 统一 coverage 与 library size 的过滤策略，同时排除 secondary/supplementary。
+7. 明确 CIGAR/RNA-seq 支持边界，并实现 alignment-block coverage 或限制输入。
+8. 修正 Shiny 默认归一化行为，加入 Shiny/CLI 等价性测试。
+9. 加入 contig length 右边界裁剪和端粒附近回归测试。
+10. 修复 `QueryGenomeRangeTest` 的配置缓存问题，恢复全套测试通过。
