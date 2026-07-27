@@ -48,5 +48,11 @@ genomeCoordinate.db
 # Audit directory
 audit/
 
+# Analysis logs
+log/
+
+# Local test runner
+run_tests.sh
+
 # AGENTS.md
 AGENTS.md
