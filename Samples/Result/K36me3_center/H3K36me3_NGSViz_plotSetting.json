@@ -32,7 +32,7 @@
         "plot_title": ["H3K36me3"],
         "middle_datapoints": 1,
         "flanking_region_datapoints": 50,
-        "sample_list": ["SmapleName"],
+        "sample_list": ["SampleName"],
         "interval_type": "point_interval",
         "smooth": true
     },

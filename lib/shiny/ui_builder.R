@@ -132,7 +132,7 @@ build_single_coverage_tab <- function(app_context) {
         column(4, selectInput("SEM", "Whether show SEM:", choices = c("TRUE", "FALSE"), selected = "TRUE"))
       ),
       fluidRow(
-        column(4, selectInput("smooth", "Whether smooth the plot:", choices = c("FALSE", "TRUE"), selected = "FALSE"))
+        column(4, selectInput("smooth", "Whether smooth the plot:", choices = c("FALSE", "TRUE"), selected = "TRUE"))
       ),
       hr(),
       h5("Gene Split Parameters"),

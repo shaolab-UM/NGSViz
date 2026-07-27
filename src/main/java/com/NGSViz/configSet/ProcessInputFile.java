@@ -17,7 +17,7 @@ public class ProcessInputFile extends InputParameterAttributes {
             gene_list.add(genes);
             analysis_title.add(title);
             group_list.add("GroupName");
-            sample_list.add("SmapleName");
+            sample_list.add("SampleName");
         }else if(file_type.equals("txt")){
             Map<String, Object> res_list = ReadTextFile.readTxtConfigFile(input_file);
             if(res_list != null){

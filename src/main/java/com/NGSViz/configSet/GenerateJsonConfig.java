@@ -62,12 +62,28 @@ public class GenerateJsonConfig extends InputParameterAttributes {
 
     public static JSONObject transformParas2JsonConfig() {
         List<String> sample_color = Arrays.asList(
-                // default color panel is set2
-                "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"
+                // default color panel is npg (Nature Publishing Group)
+                "#E64B35FF",
+                "#4DBBD5FF",
+                "#00A087FF",
+                "#3C5488FF",
+                "#F39B7FFF",
+                "#8491B4FF",
+                "#91D1C2FF",
+                "#DC0000FF",
+                "#7E6148FF"
         );
         List<String> split_color = Arrays.asList(
-                // default color panel is nejm
-                "#BC3C29FF", "#0072B5FF", "#E18727FF", "#20854EFF", "#7876B1FF", "#6F99ADFF"
+                // default color panel is lancet (The Lancet)
+                "#00468BFF",
+                "#ED0000FF",
+                "#42B540FF",
+                "#0099B4FF",
+                "#925E9FFF",
+                "#FDAF91FF",
+                "#AD002AFF",
+                "#ADB6B6FF",
+                "#1B1919FF"
         );
 
         // Define the structure of the JSON data using Maps

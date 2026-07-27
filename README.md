@@ -359,7 +359,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |      -CP       | sys_config_path |       -        |     Path to system configuration file      |
 |      -BD       |   bedDB_path    |       -        | Path to custom functional element database |
 |       -X       |      genes      |      all       |         List of genes for analysis         |
-|      -BS       |   batch_size    |      2000      |        batch size for gene parallel        |
+|      -BS       |   batch_size    |      500      |        batch size for gene parallel        |
 |       -B       |     biotype     | protein_coding |                Gene biotype                |
 |       -F       |  flank_region   |      2000      |        Flanking region size (in bp)        |
 |       -N       |  flank_factor   |      0.0       |        Flanking size scaling factor        |
@@ -367,7 +367,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |      -MQ       |    min_mapq     |       20       |     Minimum mapping quality threshold      |
 |      -FL       |    frag_len     |      150       |              Fragment length               |
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
-|       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
+|       -S       |   scale_ratio   |       null     |     Scaling ratio for signal intensity     |
 |      -NF       |   new_forder    |     false      |           Create Results Folder            |
 |      -BM       |   bin_method    |     median     |                 Bin method                 |
 |      -CM       |   Centermode    |     false      |          Whether plot with center          |
