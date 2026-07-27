@@ -34,7 +34,7 @@ public class DataScaler {
                         bin_method
                 );
             } else {
-                // 你现在已有的逻辑
+
             }
             double[] head_cov_scaled;
             double[] tail_cov_scaled;
