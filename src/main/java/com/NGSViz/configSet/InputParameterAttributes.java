@@ -52,7 +52,7 @@ public class InputParameterAttributes {
     public static double random_sampling_rate =0.0;
     public static Double scale_ratio = null;//-S
     public static int core_num = 1; //-P
-    public static String bin_method = "median"; //-BM
+    public static String bin_method = "mean"; //-BM
     public static int BATCH_SIZE = 500; //-BS
     public static int min_mapq = 20; //-MQ
     public static int frag_len = 150; //-FL

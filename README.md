@@ -2,47 +2,7 @@
 
 # Table of Contents
 
-- [Introduction](#introduction)
-  - [Typical Analysis Workflow](#typical-analysis-workflow)
-- [Installation](#installation)
-  - [GitHub Installation](#github-installation)
-  - [Install and Run Using a Container](#install-and-run-using-a-container)
-    - [Run with Docker](#run-with-docker)
-    - [Run with Singularity](#run-with-singularity)
-    - [Run with Apptainer](#run-with-apptainer)
-- [Main Modules and Script Description](#main-modules-and-script-description)
-  - [Database](#database)
-    - [Chromosome Naming Compatibility When Processing BAM Files](#chromosome-naming-compatibility-when-processing-bam-files)
-    - [Database Structure and Functionality](#database-structure-and-functionality)
-    - [Reference Database](#reference-database)
-    - [Modify the Built-in Database Path](#modify-the-built-in-database-path)
-    - [Merge Database](#merge-database)
-    - [Build a Reference Database (Optional)](#build-a-reference-database-optional)
-    - [Custom Functional Element Database](#custom-functional-element-database)
-    - [Intergenic Region Annotation](#Intergenic Region Annotation)
-  - [Computational Module Based on Java](#computational-module-based-on-java)
-    - [Feature](#feature)
-    - [Usage](#usage)
-    - [Parameters](#parameters)
-    - [Command-Line Parameters Description](#command-line-parameters-description)
-    - [Computation Module Result Interpretation](#computation-module-result-interpretation)
-    - [Read-Aware Shift in ChIP-seq and CUT&Tag Analysis](#read-aware-shift-in-chip-seq-and-cuttag-analysis)
-  - [Visualization Mode Based on R](#visualization-mode-based-on-r)
-    - [Main Script and Functionality](#main-script-and-functionality)
-    - [Adjustable Plotting Options](#adjustable-plotting-options)
-  - [Command Line Interface (CLI)](#command-line-interface-cli)
-  - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
-    - [Launching ngsViz RShiny Interface](#launching-ngsviz-rshiny-interface)
-    - [Running the Calculation Module](#running-the-calculation-module)
-    - [Running the Visualization Module](#running-the-visualization-module)
-- [Examples](#examples)
-  - [Point Mode](#point-mode)
-  - [Broad Mode](#broad-mode)
-  - [Exon Mode](#exon-mode)
-  - [Multi-sample Mode](#multi-sample-mode)
-  - [Other Features](#other-features)
-- [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
-- [References and Acknowledgments](#references-and-acknowledgments)
+[TOC]
 
 ---
 
@@ -71,7 +31,7 @@
    R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
    # CLI mode
    ## 1. Run java calculation module
-   java -jar ngsViz-1.2.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
+   java -jar NGSViz-1.2.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
    ## 1. Run visualization moddule
    Rscript lib/ngsVizPlotMain.R -O <output>
    ```
@@ -110,7 +70,7 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 
 #### 2. Install dependency environment
 
-- All dependent runtime environments are recommended to be installed using conda by `conda env create -f requirement.yml`
+- All dependent runtime environments are recommended to be installed using conda by `conda env create -f environment.yml`
   - Install the Java runtime environment; it is recommended Java 17 and above versions
   - Install R and its dependencies, R version 4.0 and above
 
@@ -149,10 +109,10 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 # pull the docker image of ngsViz
 docker pull ngsviz/ngsviz:1.0
 # build the docker container
-docker run 
---name ngsViz 
--p 3838:3838
--v $localDataPath:/data  
+docker run \
+--name ngsViz \
+-p 3838:3838 \
+-v $localDataPath:/data \  
 -dit ngsviz/ngsviz:1.0
 # Start container
 docker start ngsViz 
@@ -185,7 +145,7 @@ apptainer pull docker://ngsviz/ngsviz:1.0
 # 1.2 Run Docker container
 apptainer run docker://ngsviz/ngsviz:1.0
 # 2. Run Singularity container
-apptainer run ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+apptainer run ngsviz.sif java -jar ngsViz-1.0.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 ---
@@ -283,7 +243,7 @@ To merge a new database into the program’s existing reference database, use th
 
 ```shell
 inport_db_path=$YOUR_PATH/NGSViz_hg19_RefSeq.db
-java -jar ngsViz_1.2.jar -DB $inport_db_path
+java -jar NGSViz-1.2.jar -DB $inport_db_path
 ```
 
 #### Build a reference database (optional)
@@ -364,7 +324,7 @@ java -jar NGSViz-1.2.jar [parameter]
 |      -CP       | sys_config_path |       -        |     Path to system configuration file      |
 |      -BD       |   bedDB_path    |       -        | Path to custom functional element database |
 |       -X       |      genes      |      all       |         List of genes for analysis         |
-|      -BS       |   batch_size    |      2000      |        batch size for gene parallel        |
+|      -BS       |   batch_size    |      500       |        batch size for gene parallel        |
 |       -B       |     biotype     | protein_coding |                Gene biotype                |
 |       -F       |  flank_region   |      2000      |        Flanking region size (in bp)        |
 |       -N       |  flank_factor   |      0.0       |        Flanking size scaling factor        |
@@ -374,7 +334,7 @@ java -jar NGSViz-1.2.jar [parameter]
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
 |       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
 |      -NF       |   new_forder    |     false      |           Create Results Folder            |
-|      -BM       |   bin_method    |     median     |                 Bin method                 |
+|      -BM       |   bin_method    |      mean      |                 Bin method                 |
 |      -CM       |   Centermode    |     false      |          Whether plot with center          |
 
 #### Command-Line Parameters Description
@@ -412,7 +372,7 @@ This program processes the input BAM file and generates an intermediate output i
 - **Columns** correspond to data points.
 - **Values** indicate the physical coverage over the query regions, which include each region of interest extended by a user-defined upstream and downstream flanking size.
 
-The coverage values are scaled according to the resolution of each data point. The coverage values are scaled using the **average coverage** within each data point's resolution window  and normalized using **CPM (Counts Per Million)** to ensure comparability across samples. This ensures that the resulting matrix reflects normalized physical coverage across query regions, accounting for differences in sequencing depth and resolution.
+The coverage values within each resolution window are aggregated using the method specified by `-BM` (`mean`, `median`, or `max`; default: `mean`). Unless a spike-in scaling factor is provided, the aggregated coverage values are subsequently normalized to CPM (Counts Per Million) to account for differences in sequencing depth across samples.
 
 If Input BAM is provided, signals will be further corrected based on its values `log2(signal/input)`. 
 
@@ -527,11 +487,11 @@ Specifically, for multi-sample mode, users can create a new folder, copy the JSO
 - Specify five mandatory parameter values and optional parameter values as needed. The specific meanings of the parameters are detailed in the **Parameter Explanation Section** below. Examples are provided as follows:
 
   ```shell
-  java -jar NGSViz-1.2.jar 
-  -G hg38 
-  -R TSS 
-  -T analysis_title
-  -I bam_path
+  java -jar NGSViz-1.2.jar \ 
+  -G hg38 \
+  -R TSS \
+  -T analysis_title \
+  -I bam_path \
   -O output_dir
   ```
 
