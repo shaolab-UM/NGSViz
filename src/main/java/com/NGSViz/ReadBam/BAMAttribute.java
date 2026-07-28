@@ -110,6 +110,7 @@ public class BAMAttribute {
     }
 
     // Calculate the library size and determine the sequencing type.
+    // Calculate the library size and determine the sequencing type.
     private LibraryStats calculateLibraryStats(SamReader bamReader) {
         long librarySize = 0;
         boolean isPairedEnd = false;
@@ -131,10 +132,13 @@ public class BAMAttribute {
                     firstRecord = false;
                 }
 
-                // Only count reads that pass quality control, are non-repetitive, and have been compared.
+                // Core Repair: Exclude Secondary and Supplementary Comparisons
                 if (samRecord.getMappingQuality() >= 0 &&
                         !samRecord.getDuplicateReadFlag() &&
-                        !samRecord.getReadUnmappedFlag()) {
+                        !samRecord.getReadUnmappedFlag() &&
+                        !samRecord.isSecondaryAlignment() &&        // filter flag 0x100
+                        !samRecord.getSupplementaryAlignmentFlag()) // filter flag 0x800
+                {
                     librarySize++;
                 }
             }

@@ -26,16 +26,7 @@ public class DataScaler {
         if (interval_type.equals("point_interval")) {
             coverage_scaled = bin(physical_coverage, num_datapoints, bin_method);
         } else if (interval_type.equals("broad_interval")) {
-            if (CenterMode) {
-                coverage_scaled = centerScaleByGeneCenter(
-                        physical_coverage,
-                        flank_size,
-                        num_datapoints,
-                        bin_method
-                );
-            } else {
 
-            }
             double[] head_cov_scaled;
             double[] tail_cov_scaled;
             double[] mid_cov_scaled;
@@ -59,7 +50,7 @@ public class DataScaler {
             // Combine scaled regions
             for (int i = 0; i < (flank_points-1); i++) { //20
                 coverage_scaled[i] = head_cov_scaled[i];
-                coverage_scaled[num_datapoints - flank_points +1 + i] = tail_cov_scaled[i];
+                coverage_scaled[num_datapoints - flank_points + 1 + i] = tail_cov_scaled[i];
             }
             coverage_scaled[flank_points-1] = (head_cov_scaled[flank_points-1] + mid_cov_scaled[0])/2;
             coverage_scaled[num_datapoints - flank_points] = (tail_cov_scaled[0] + mid_cov_scaled[middle_points-1])/2;
@@ -71,51 +62,6 @@ public class DataScaler {
         return coverage_scaled;
     }
 
-    private static double[] centerScaleByGeneCenter(
-            int[] physical_coverage,
-            int flank_size,
-            int num_datapoints,
-            String bin_method) {
-
-        double[] result = new double[num_datapoints];
-
-        int L = physical_coverage.length;
-        int gene_start = flank_size;
-        int gene_end = L - flank_size - 1;
-
-        double gene_center = (gene_start + gene_end) / 2.0;
-
-        double left_bound  = -gene_center;
-        double right_bound = (L - 1) - gene_center;
-        double span = right_bound - left_bound;
-
-        // bins
-        List<List<Integer>> bins = new ArrayList<>(num_datapoints);
-        for (int i = 0; i < num_datapoints; i++) {
-            bins.add(new ArrayList<>());
-        }
-
-        //
-        for (int i = 0; i < L; i++) {
-            double relative_pos = i - gene_center;
-            int bin = (int) Math.floor(
-                    (relative_pos - left_bound) / span * (num_datapoints - 1)
-            );
-
-            // clamp
-            if (bin < 0) bin = 0;
-            if (bin >= num_datapoints) bin = num_datapoints - 1;
-
-            bins.get(bin).add(physical_coverage[i]);
-        }
-
-        //
-        for (int i = 0; i < num_datapoints; i++) {
-            result[i] = aggregate(bins.get(i), bin_method);
-        }
-
-        return result;
-    }
 
     private static double aggregate(List<Integer> values, String method) {
         if (values.isEmpty()) return 0.0;

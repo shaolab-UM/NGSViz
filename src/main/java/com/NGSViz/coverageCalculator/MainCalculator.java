@@ -21,15 +21,15 @@ import java.util.*;
  * @create 2024-11--14:47
  */
 public class MainCalculator extends InputParameterAttributes {
-    private static String bam_file;
-    private static String bam_file_bkg;
-    private static String gene_subset;
-    private static String title_subset;
-    private static String sample_subset;
-    private static String group_subset;
+    //private static String bam_file;
+    //private static String bam_file_bkg;
+    //private static String gene_subset;
+    //private static String title_subset;
+    //private static String sample_subset;
+    //private static String group_subset;
     private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
     private static String read_count_file_name = "gene_read_count.csv";
-    private static boolean input_mode = false;
+    //private static boolean input_mode = false;
     private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
     private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
     private static SparseMatrix coverage_scaled_matrix;
@@ -44,8 +44,11 @@ public class MainCalculator extends InputParameterAttributes {
     public static void mainCalculator() throws IOException {
         JSONArray jsonArray = new JSONArray();
         for (int i=0; i<bam_list.size(); i++) {
+            boolean input_mode = false;
+            String bam_file_bkg = null;
+
             String[] bam_file_list = bam_list.get(i).split(":", 2);
-            bam_file = bam_file_list[0];
+            String bam_file = bam_file_list[0];
             BAMAttribute bamObj = new BAMAttribute(bam_file);
             System.out.println("--- The bam file will be analysing: " + bam_file);
             // Is the input mode available? use input bam to adjust the signal
@@ -55,11 +58,11 @@ public class MainCalculator extends InputParameterAttributes {
                 System.out.println("--- Input pattern is available, the Input bam file is : " + bam_file_list[1]);
             }
 
-            gene_subset = gene_list.get(i);
+            String gene_subset = gene_list.get(i);
             System.out.println("The gene subset will be analysing: " + gene_subset);
-            title_subset = analysis_title.get(i);
-            group_subset = group_list.get(i);
-            sample_subset = sample_list.get(i);
+            String title_subset = analysis_title.get(i);
+            String group_subset = group_list.get(i);
+            String sample_subset = sample_list.get(i);
 
             System.out.println("The title subset will be analysing: " + title_subset);
             System.out.println("----------------------------------------");

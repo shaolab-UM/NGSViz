@@ -70,7 +70,7 @@ build_calculation_tab <- function(app_context) {
       ),
       fluidRow(
         column(4, numericInput("dashN", "Flanking size factor", value = 0, min = 0, max = 1)),
-        column(4, numericInput("dashS", "scale ratio (spike-in calibration)", value = 1, min = 0, max = 1)),
+        column(4, numericInput("dashS", "scale ratio (spike-in calibration)", value = NULL, min = 0, max = 1)),
         column(4, numericInput("dashDP", "Number of datapoints", value = 100, min = 0, max = 1000))
       ),
       fluidRow(

@@ -99,40 +99,45 @@ public class ReadRecordProcess {
     //   record: SAMRecord object, a record of a read including the query range
     //   min_mapq: the read will be filtered lower than the bam quality
     // Output: filter_res, true (read needed to be filtered)/false (read will be not filter)
-    public static boolean filterOneReadAlign(SAMRecord record, String query_strand){
-        String read_strand;
-        boolean strand_flag = record.getReadNegativeStrandFlag();
-        if (strand_flag){
-            read_strand = "-";
-        } else {
-            read_strand = "+";
-        }
-        boolean filter_res = false;
-        // create the filter
-        SamRecordFilter filter1 = new DuplicateReadFilter();
-        SamRecordFilter filter2 = new MappingQualityFilter(min_mapq);
-        // Duplicate Read
-        if(filter1.filterOut(record)){
-            filter_res = true;
-        }
-        // low alignment quality
-        if(filter2.filterOut(record)){
-            filter_res = true;
-        }
-        // Read Unmapped
+    public static boolean filterOneReadAlign(
+            SAMRecord record,
+            String query_strand) {
+
+        // Filter unmapped reads first
         if (record.getReadUnmappedFlag()) {
-            filter_res = true;
+            return true;
         }
-        // filter strand - OPTIMIZED: use equals() instead of ==
-        if(!"both".equals(strand_spec)){
-            if("same".equals(strand_spec)){
-                // the direction of strand is not same will be filtered (True)
-                filter_res = !query_strand.equals(read_strand);
+
+        // Filter reads with low mapping quality
+        if (record.getMappingQuality() < min_mapq) {
+            return true;
+        }
+
+        // Filter duplicate reads
+        if (record.getDuplicateReadFlag()) {
+            return true;
+        }
+
+         //Optional: filter secondary and supplementary alignments
+         if (record.getNotPrimaryAlignmentFlag() || record.getSupplementaryAlignmentFlag()) {
+             return true;
+         }
+
+        // Filter by strand
+        if (!"both".equals(strand_spec)) {
+            String read_strand = record.getReadNegativeStrandFlag() ? "-" : "+";
+
+            if ("same".equals(strand_spec)) {
+                return !query_strand.equals(read_strand);
+            } else if ("opposite".equals(strand_spec)) {
+                return query_strand.equals(read_strand);
             } else {
-                // the direction of strand is same will be filtered (True)
-                filter_res = query_strand.equals(read_strand);
+                throw new IllegalArgumentException(
+                        "Invalid strand_spec: " + strand_spec
+                );
             }
         }
-        return filter_res;
+
+        return false;
     }
 }

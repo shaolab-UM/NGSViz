@@ -59,7 +59,7 @@
 
 2. **Prepare BAM files to analyse.** 
 
-   > ⚠️ **Note:** BAM files must be coordinate-sorted and have a readable BAI or CSI index. If necessary, run `samtools sort` followed by `samtools index` before analysis.
+   > ⚠️ **Note:** BAM files require a corresponding bam index file (bai) to be provided. If a BAM index is not available, it must be generated using SAMtools.
 
 3. **Launch the RShiny Interface or Run via Command Line**
 
@@ -71,7 +71,7 @@
    R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
    # CLI mode
    ## 1. Run java calculation module
-   java -jar ngsViz-10.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
+   java -jar ngsViz-1.2.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
    ## 1. Run visualization moddule
    Rscript lib/ngsVizPlotMain.R -O <output>
    ```
@@ -128,13 +128,13 @@ git clone git@github.com:shaolab-UM/NGSViz.git
   ```json
   {
       "versionNum": {
-          "version": "1.0"
+          "version": "1.2"
       },
       "toolParas": {
-          "tool_path": "/ngsViz",
-          "db_path": "/ngsViz/database/genomeCoordinate.db",
-          "tool_name": "NGSViz-1.1.jar",
-          "java_path": "/usr/local/envs/ngsViz/bin/java"
+          "tool_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz",
+          "db_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db",
+          "tool_name": "NGSViz-1.2.jar",
+          "java_path": "/usr/bin/java"
       }
   }
   ```
@@ -166,10 +166,11 @@ docker attach ngsViz
 
 #### Run with singularity
 
-You can also download the **Singularity image** from https://drive.google.com/file/d/1ESj9COZq8fWrOuepn1v-ibVKQczJUHrY/view?usp=sharing. Here's how:
+You can also build a **Singularity image** based on our **Docker image** for use with Singularity. Here's how:
 
 ```singularity exec your-image.sif java -version
-singularity exec ngsviz_v1.1.sif java -jar ngsViz-1.1.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+singularity build ngsviz.sif docker://ngsviz/ngsviz:1.0
+singularity exec ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 #### Run with Apptainer
@@ -179,8 +180,12 @@ If the system lacks a container runtime environment, it is recommended to use Co
 ```shell
 # install the Apptainer
 conda install conda-forge::apptainer
-# Run Singularity container
-apptainer run ngsviz_v1.1.sif java -jar ngsViz-1.1.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+# 1.1 Pull Docker container image
+apptainer pull docker://ngsviz/ngsviz:1.0
+# 1.2 Run Docker container
+apptainer run docker://ngsviz/ngsviz:1.0
+# 2. Run Singularity container
+apptainer run ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 ---
@@ -278,7 +283,7 @@ To merge a new database into the program’s existing reference database, use th
 
 ```shell
 inport_db_path=$YOUR_PATH/NGSViz_hg19_RefSeq.db
-java -jar ngsViz_1.0.jar -DB $inport_db_path
+java -jar ngsViz_1.2.jar -DB $inport_db_path
 ```
 
 #### Build a reference database (optional)
@@ -343,7 +348,7 @@ NGSViz provides built-in **intergenic region annotations** for both **human and 
 #### Usage
 
 ```bash
-java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
+java -jar NGSViz-1.2.jar [parameter]
 ```
 
 #### Parameters
@@ -359,7 +364,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |      -CP       | sys_config_path |       -        |     Path to system configuration file      |
 |      -BD       |   bedDB_path    |       -        | Path to custom functional element database |
 |       -X       |      genes      |      all       |         List of genes for analysis         |
-|      -BS       |   batch_size    |      500      |        batch size for gene parallel        |
+|      -BS       |   batch_size    |      2000      |        batch size for gene parallel        |
 |       -B       |     biotype     | protein_coding |                Gene biotype                |
 |       -F       |  flank_region   |      2000      |        Flanking region size (in bp)        |
 |       -N       |  flank_factor   |      0.0       |        Flanking size scaling factor        |
@@ -367,7 +372,7 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 |      -MQ       |    min_mapq     |       20       |     Minimum mapping quality threshold      |
 |      -FL       |    frag_len     |      150       |              Fragment length               |
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
-|       -S       |   scale_ratio   |       null     |     Scaling ratio for signal intensity     |
+|       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
 |      -NF       |   new_forder    |     false      |           Create Results Folder            |
 |      -BM       |   bin_method    |     median     |                 Bin method                 |
 |      -CM       |   Centermode    |     false      |          Whether plot with center          |
@@ -396,7 +401,8 @@ java -jar NGSViz-1.0-SNAPSHOT.jar [parameter]
 -  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
 -  **`-NF`**: Whether a new folder will be created to store the results.
 - **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `median`). This determines how values within each bin are summarized.
-- **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
+
+  **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
 
 #### **Computation Module Result Interpretation**
 
@@ -521,11 +527,11 @@ Specifically, for multi-sample mode, users can create a new folder, copy the JSO
 - Specify five mandatory parameter values and optional parameter values as needed. The specific meanings of the parameters are detailed in the **Parameter Explanation Section** below. Examples are provided as follows:
 
   ```shell
-  java -jar NGSViz-1.0-SNAPSHOT.jar \
-  -G hg38 \
-  -R tss \
-  -T analysis_title \
-  -I bam_path \
+  java -jar NGSViz-1.2.jar 
+  -G hg38 
+  -R TSS 
+  -T analysis_title
+  -I bam_path
   -O output_dir
   ```
 
@@ -641,7 +647,7 @@ Steps:
 ### Point Mode
 
 ```shell
-java -jar NGSViz-1.1.jar \
+java -jar NGSViz-1.2.jar \
 -G hg38 \
 -R tss \
 -T H3K4me3 \
@@ -654,7 +660,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/H3K4me3_point
 ### Broad Mode
 
 ```
-java -jar NGSViz-1.1.jar \
+java -jar NGSViz-1.2.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \
@@ -667,7 +673,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_broad
 ### Center Mode
 
 ```
-java -jar NGSViz-1.1.jar \
+java -jar NGSViz-1.2.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \
@@ -681,7 +687,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_center
 ### Intergenic Mode
 
 ```
-java -jar NGSViz-1.1.jar \
+java -jar NGSViz-1.2.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \

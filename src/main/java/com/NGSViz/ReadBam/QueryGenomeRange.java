@@ -4,6 +4,7 @@ import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 import htsjdk.samtools.QueryInterval;
 import htsjdk.samtools.SAMFileHeader;
+import htsjdk.samtools.SAMSequenceRecord;
 import htsjdk.samtools.util.Interval;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class QueryGenomeRange {
             query_start = 1;
         }
         int query_end = middle_point + flanking_size + buf_size;
+
         interval_range = new Interval(chr_name, query_start, query_end);
         //System.out.println("The point interval range is: " + interval_range);
         return interval_range;
@@ -61,6 +63,18 @@ public class QueryGenomeRange {
             query_start = 1;
         }
         int query_end = end_pos + flank_size + buf_size;
+
+        SAMFileHeader header = InputParameterAttributes.header;
+        if (header != null) {
+            SAMSequenceRecord seq = header.getSequence(chr_name);
+            if (seq != null) {
+                int contigLen = seq.getSequenceLength();
+                if (query_end > contigLen) {
+                    query_end = contigLen;
+                }
+            }
+        }
+
         interval_range = new Interval(chr_name, query_start, query_end);
         //System.out.println("The large interval range is: " + interval_range);
         return interval_range;

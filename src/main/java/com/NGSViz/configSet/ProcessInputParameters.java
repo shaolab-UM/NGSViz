@@ -68,6 +68,10 @@ public class ProcessInputParameters extends InputParameterAttributes {
         tbl_name = GetRefDB.getTblName(genome, DB_type);
         // get the interval type
         interval_type = SetIntervalType.setIntervalTypeValue(region_labels);
+        // CenterMode: Treat the region as a point_interval anchored at the region's center.
+        if (CenterMode) { // && "genebody".equals(region_type)
+            interval_type = "point_interval";
+        }
         // get data points
         DataPointNum.getDataPointNum();
         // generate the plot parameters json file

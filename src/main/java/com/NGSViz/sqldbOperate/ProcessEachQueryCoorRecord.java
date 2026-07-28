@@ -11,6 +11,8 @@ import com.NGSViz.sqldbOperate.exonMode.CoverageExonSubset;
 import com.NGSViz.sqldbOperate.exonMode.ExonModelData;
 import htsjdk.samtools.SamReader;
 
+import static com.NGSViz.configSet.InputParameterAttributes.CenterMode;
+
 /**
  * @author Benchen Ye
  * @create 2024-10--16:16
@@ -42,14 +44,14 @@ public class ProcessEachQueryCoorRecord {
     }
 
     // [CHANGED] Keep original API, but delegate to context-based logic.
-    public static EachCoverageResult processRecord2(Transcript gene_coord, SamReader bam_reader,
-                                                    String chr_name) {
-        RecordContext ctx = buildRecordContext(gene_coord, chr_name);
-        int[] physical_coverage =
-                PhysicalCoverageCalculator.calculatePhysicalCoverage2(bam_reader, ctx.intervalRange,
-                        ctx.queryStrand);
-        return processRecordFromPhysicalCoverage(gene_coord, physical_coverage, ctx);
-    }
+//    public static EachCoverageResult processRecord2(Transcript gene_coord, SamReader bam_reader,
+//                                                    String chr_name) {
+//        RecordContext ctx = buildRecordContext(gene_coord, chr_name);
+//        int[] physical_coverage =
+//                PhysicalCoverageCalculator.calculatePhysicalCoverage2(bam_reader, ctx.intervalRange,
+//                        ctx.queryStrand);
+//        return processRecordFromPhysicalCoverage(gene_coord, physical_coverage, ctx);
+//    }
 
     // [CHANGED] Build interval/flank as local values (no shared mutable static state).
     public static RecordContext buildRecordContext(Transcript gene_coord, String chr_name) {
@@ -109,8 +111,8 @@ public class ProcessEachQueryCoorRecord {
         }
 
         physical_coverage = TrimBuffer.trimBuffer2(physical_coverage, buf_size);
+        //double[] coverage_scaled = DataScaler.getCoverageScaled(physical_coverage, bin_method, ctx.flankSize);
         double[] coverage_scaled = DataScaler.getCoverageScaled(physical_coverage, bin_method, ctx.flankSize);
-
         if (ctx.queryStrand.equals("-")) {
             reverseDoubleArray(coverage_scaled);
         }
@@ -134,14 +136,15 @@ public class ProcessEachQueryCoorRecord {
     }
 
     private static int getMiddlePointPos(int start_pos, int end_pos, String strand) {
-        int middle_point;
+        if (CenterMode) {
+            return (start_pos + end_pos) / 2;
+        }
         boolean cond_1 = region_plot.equals("tss") && strand.equals("+");
         boolean cond_2 = region_plot.equals("tes") && strand.equals("-");
         if (cond_1 || cond_2) {
-            middle_point = start_pos;
+            return start_pos;
         } else {
-            middle_point = end_pos;
+            return end_pos;
         }
-        return middle_point;
     }
 }
