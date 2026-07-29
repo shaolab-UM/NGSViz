@@ -91,10 +91,10 @@ git clone git@github.com:shaolab-UM/NGSViz.git
           "version": "1.2"
       },
       "toolParas": {
-          "tool_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz",
-          "db_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz/database/genomeCoordinate.db",
+          "tool_path": "/path/to/NGSViz",
+          "db_path": "/path/to/NGSViz/database/genomeCoordinate.db",
           "tool_name": "NGSViz-1.2.jar",
-          "java_path": "/usr/bin/java"
+          "java_path": "/usr/bin/java" 
       }
   }
   ```
@@ -107,13 +107,13 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 
 ```shell
 # pull the docker image of ngsViz
-docker pull ngsviz/ngsviz:1.0
+docker pull ngsviz/ngsviz:1.2
 # build the docker container
 docker run \
 --name ngsViz \
 -p 3838:3838 \
 -v $localDataPath:/data \  
--dit ngsviz/ngsviz:1.0
+-dit ngsviz/ngsviz:1.2
 # Start container
 docker start ngsViz 
 # Enter the container
@@ -129,7 +129,7 @@ docker attach ngsViz
 You can also build a **Singularity image** based on our **Docker image** for use with Singularity. Here's how:
 
 ```singularity exec your-image.sif java -version
-singularity build ngsviz.sif docker://ngsviz/ngsviz:1.0
+singularity build ngsviz.sif docker://ngsviz/ngsviz:1.2
 singularity exec ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
@@ -141,11 +141,11 @@ If the system lacks a container runtime environment, it is recommended to use Co
 # install the Apptainer
 conda install conda-forge::apptainer
 # 1.1 Pull Docker container image
-apptainer pull docker://ngsviz/ngsviz:1.0
+apptainer pull docker://ngsviz/ngsviz:1.2
 # 1.2 Run Docker container
-apptainer run docker://ngsviz/ngsviz:1.0
+apptainer run docker://ngsviz/ngsviz:1.2
 # 2. Run Singularity container
-apptainer run ngsviz.sif java -jar ngsViz-1.0.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+apptainer run ngsviz.sif java -jar ngsViz-1.2.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 ---
