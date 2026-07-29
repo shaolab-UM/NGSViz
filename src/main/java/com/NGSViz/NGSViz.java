@@ -16,6 +16,9 @@ import static com.NGSViz.configSet.InputParameterAttributes.*;
  */
 public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
+        if (CliOptions.handleInformationalOption(args)) {
+            return;
+        }
 
         long startTimeMillis = System.currentTimeMillis();
         // process the parameters

@@ -22,6 +22,8 @@ public class GetInputParameterValue extends InputParameterAttributes {
             // Option parameters
             // system config path
             sys_config_path = setParameterValue(sys_config_path,"-CP", args, i);
+            // AI YAML configuration path
+            ai_config_path = setParameterValue(ai_config_path,"-J", args, i);
             // Database
             DB_type = setParameterValue(DB_type,"-D", args, i);
             // gene list

@@ -31,7 +31,7 @@
    R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
    # CLI mode
    ## 1. Run java calculation module
-   java -jar NGSViz-1.2.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
+   java -jar NGSViz-1.3.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
    ## 1. Run visualization moddule
    Rscript lib/ngsVizPlotMain.R -O <output>
    ```
@@ -93,7 +93,7 @@ git clone git@github.com:shaolab-UM/NGSViz.git
       "toolParas": {
           "tool_path": "/path/to/NGSViz",
           "db_path": "/path/to/NGSViz/database/genomeCoordinate.db",
-          "tool_name": "NGSViz-1.2.jar",
+          "tool_name": "NGSViz-1.3.jar",
           "java_path": "/usr/bin/java" 
       }
   }
@@ -145,7 +145,7 @@ apptainer pull docker://ngsviz/ngsviz:1.2
 # 1.2 Run Docker container
 apptainer run docker://ngsviz/ngsviz:1.2
 # 2. Run Singularity container
-apptainer run ngsviz.sif java -jar ngsViz-1.2.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
+apptainer run ngsviz.sif java -jar ngsViz-1.3.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
 ```
 
 ---
@@ -243,7 +243,7 @@ To merge a new database into the program’s existing reference database, use th
 
 ```shell
 inport_db_path=$YOUR_PATH/NGSViz_hg19_RefSeq.db
-java -jar NGSViz-1.2.jar -DB $inport_db_path
+java -jar NGSViz-1.3.jar -DB $inport_db_path
 ```
 
 #### Build a reference database (optional)
@@ -308,13 +308,16 @@ NGSViz provides built-in **intergenic region annotations** for both **human and 
 #### Usage
 
 ```bash
-java -jar NGSViz-1.2.jar [parameter]
+java -jar NGSViz-1.3.jar [parameter]
 ```
 
 #### Parameters
 
 | Parameter Name |  Variable Name  | Default Value  |                Describtion                 |
 | :------------: | :-------------: | :------------: | :----------------------------------------: |
+|       -H       |        -        |       -        |        Print all command usage help        |
+|       -V       |        -        |       -        |       Print the current ngsViz version      |
+|       -J       | ai_config_path  |       -        |      Path to AI-supplied YAML config        |
 |       -G       |     genome      |       -        |         Reference genome database          |
 |       -R       |   region_type   |       -        |          Region type for analysis          |
 |       -T       |      title      |       -        |               Analysis title               |
@@ -339,6 +342,9 @@ java -jar NGSViz-1.2.jar [parameter]
 
 #### Command-Line Parameters Description
 
+- **`-H`**: Prints the complete Java command-line usage help and exits without starting an analysis.
+- **`-V`**: Prints the current version (`ngsViz 1.3`) and exits without starting an analysis.
+- **`-J`**: Specifies the path to a YAML configuration file supplied by the AI workflow.
 - **`-G`**: (**Required parameters**) Indicates the version of the reference genome to be used for analysis. The specified genome version **must exist in the database**.
 
   > ⚠️ **Important:** The selected reference genome version must match the genome version used during read alignment. Mismatches may lead to inaccurate signal interpretation and erroneous results.
@@ -487,7 +493,7 @@ Specifically, for multi-sample mode, users can create a new folder, copy the JSO
 - Specify five mandatory parameter values and optional parameter values as needed. The specific meanings of the parameters are detailed in the **Parameter Explanation Section** below. Examples are provided as follows:
 
   ```shell
-  java -jar NGSViz-1.2.jar \ 
+  java -jar NGSViz-1.3.jar \
   -G hg38 \
   -R TSS \
   -T analysis_title \
@@ -607,7 +613,7 @@ Steps:
 ### Point Mode
 
 ```shell
-java -jar NGSViz-1.2.jar \
+java -jar NGSViz-1.3.jar \
 -G hg38 \
 -R tss \
 -T H3K4me3 \
@@ -620,7 +626,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/H3K4me3_point
 ### Broad Mode
 
 ```
-java -jar NGSViz-1.2.jar \
+java -jar NGSViz-1.3.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \
@@ -633,7 +639,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_broad
 ### Center Mode
 
 ```
-java -jar NGSViz-1.2.jar \
+java -jar NGSViz-1.3.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \
@@ -647,7 +653,7 @@ Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_center
 ### Intergenic Mode
 
 ```
-java -jar NGSViz-1.2.jar \
+java -jar NGSViz-1.3.jar \
 -G hg38 \
 -R genebody \
 -T H3K36me3 \
