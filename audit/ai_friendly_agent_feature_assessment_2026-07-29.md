@@ -1,5 +1,7 @@
 # ngsViz AI 友好使用功能评估
 
+> **架构更新（2026-07-30）：** 用户决定不采用 Python Agent Adapter。本文关于 Python 适配层的建议仅保留为历史评估，不再执行。当前方案见 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
+
 ## 结论
 
 - 可行，整体难度为中等，不需要重写 Java 计算核心或 R 绘图模块。

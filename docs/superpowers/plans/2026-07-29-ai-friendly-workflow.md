@@ -1,5 +1,7 @@
 # ngsViz AI-Friendly Workflow Implementation Plan
 
+> **已废弃（2026-07-30）：** 本计划采用 Python Agent Adapter，与最新架构决定冲突，请勿执行。当前唯一活动计划为 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 在不修改 ngsViz 科学计算行为的前提下，增加可由 Codex 稳定调用的 YAML 配置、运行前检查、安全执行、结果验收和中文报告功能。

@@ -1,5 +1,7 @@
 # ngsViz AI-Friendly Progressive Upgrade Implementation Plan
 
+> **已废弃（2026-07-30）：** 本计划采用 Python Agent Adapter，与最新架构决定冲突，请勿执行。当前唯一活动计划为 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 通过渐进式模块升级，让 Codex 能把用户需求安全转换为 ngsViz 配置，完成环境与数据库检查、dry-run、Java/R 执行、结果验收和运行解读。
