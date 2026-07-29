@@ -4,7 +4,7 @@
 
 **Goal:** 不增加 Python Agent Adapter，通过增强 Java 计算 CLI、R 可视化 CLI 和 Codex Skill，让用户能够以自然语言安全、渐进地使用 ngsViz。
 
-**Architecture:** Java 计算模块与 R 可视化模块保持两个独立程序，各自提供 `describe`、`validate`、`run` 和机器可读 manifest。Java 不启动、检查或管理 R；R 不启动、检查或管理 Java；Codex Skill 根据用户需求分别调用两个原生入口。
+**Architecture:** Java 计算模块与 R 可视化模块保持两个独立程序，各自提供 `describe`、`validate`、`run` 和机器可读 manifest。Java 每个进程只处理一个 sample；Codex Skill 可读取包含 `samples[]` 的上层 analysis plan，将其展开为多个单样本请求并顺序调用 Java。R 可在计算完成后的任意时间独立调用，不由 Java 或批处理流程自动启动。
 
 **Tech Stack:** Java 9+、Maven、htsjdk、org.json、SQLite JDBC、R 4.x、jsonlite、现有 ngsViz R 绘图库、JUnit 5、R 自包含测试脚本。
 
@@ -15,6 +15,9 @@
 - Java 只负责计算环境、数据库、BAM/BED、coverage 计算和计算结果 manifest。
 - R 只负责可视化环境、绘图输入、图形生成和可视化 manifest。
 - Java 不得调用 `Rscript`；R 不得调用 `java -jar`。
+- Java `run-compute` 每次严格处理一个 signal sample，可选一个对应 control BAM。
+- 多个 sample 只能由 Codex Skill 顺序启动多个独立 Java 进程，不得在 Java 计算核心内增加批量循环。
+- Java 计算完成后不得自动启动 R；R 可在同一任务或后续独立任务中调用。
 - 保留现有 `java -jar NGSViz-1.2.jar -G ...` 和 `Rscript lib/ngsVizPlotMain.R <JSON_path>` 用法。
 - 不修改 coverage、坐标、TSS/TES、strand、binning、normalization 等科学行为。
 - 用户未明确提供的 genome、region、strand、fragment length、control、normalization 不得由 AI 猜测。
@@ -32,21 +35,24 @@
 ngsViz Codex Skill / Agent Guide
   ├─ 只计算
   │    ↓
-  │  Java describe
+  │  analysis_plan.json（可含 samples[]）
   │    ↓
-  │  Java validate-compute
+  │  Codex 展开单样本 compute_request.<sample_id>.json
   │    ↓
-  │  用户确认
+  │  Java describe / validate-compute
   │    ↓
-  │  Java run-compute
+  │  用户确认批次
   │    ↓
-  │  compute_manifest.json
+  │  按 samples[] 顺序逐个 Java run-compute
+  │    ↓
+  │  每个样本独立 compute_manifest.json
   │
   ├─ 只可视化已有结果
   │    ↓
-  │  R describe
+  │  单样本结果目录
+  │  或独立 visualization workspace
   │    ↓
-  │  R validate-plot
+  │  R describe / validate-plot
   │    ↓
   │  用户确认
   │    ↓
@@ -55,13 +61,15 @@ ngsViz Codex Skill / Agent Guide
   │  visualization_manifest.json
   │
   └─ 完整流程
-       Java 原生流程完成
+       多个 Java 单样本流程顺序完成
          ↓
-       Codex 读取 compute manifest
+       Codex 分别读取各 compute manifest
+         ↓
+       询问现在绘图还是以后再绘图
          ↓
        R 原生流程完成
          ↓
-       Codex 分别读取两个 manifest
+       Codex 分别读取各 compute manifest 与 visualization manifest
 ```
 
 ### Java 计算模块的唯一职责
@@ -71,11 +79,12 @@ ngsViz Codex Skill / Agent Guide
 - 调用现有 Java coverage 计算逻辑。
 - 生成 coverage CSV、read-count CSV、plot-setting JSON。
 - 生成 `compute_manifest.json`。
+- 一个 Java 进程只对一个 sample 生成一份 manifest。
 
 ### R 可视化模块的唯一职责
 
 - 检查 R 版本和绘图包。
-- 验证已有 plot-setting JSON 与 coverage CSV。
+- 验证一个或多个已有 plot-setting JSON 与 coverage CSV。
 - 调用现有 R 绘图函数。
 - 检查图片产物。
 - 生成 `visualization_manifest.json`。
@@ -83,11 +92,84 @@ ngsViz Codex Skill / Agent Guide
 ### Codex Skill 的唯一职责
 
 - 从用户需求提取参数。
+- 读取可包含多个 sample 的 `analysis_plan.json`。
+- 把每个 sample 展开为独立 Java 请求，并严格顺序执行。
 - 对缺失科学参数提问。
 - 生成 Java 计算请求 JSON。
 - 展示原生命令和验证结果。
 - 得到明确授权后分别调用 Java 或 R。
 - 基于 manifest 做有限解读。
+- 记录 `analysis_index.json`，只索引各 sample 的请求和 manifest，不替代单样本 manifest。
+- 用户以后单独要求可视化时，根据已有 manifest 重新建立可视化工作目录。
+
+### 两层计算配置
+
+`analysis_plan.json` 是 Codex Skill 的编排配置，不由 Java 或 R 直接读取：
+
+```json
+{
+  "schema_version": "1.0",
+  "analysis": {
+    "title": "K562_histone_TSS",
+    "genome": "hg19",
+    "region": "tss",
+    "database": "RefSeq",
+    "output_root": "agent_output/K562_histone_TSS"
+  },
+  "samples": [
+    {
+      "sample_id": "H3K4me3",
+      "sample_name": "K562_H3K4me3",
+      "group_name": "K562",
+      "signal_bam": "Samples/K562_H3K4me3-ENCFF752MYF_5p.bam",
+      "control_bam": null,
+      "scale_ratio": null
+    },
+    {
+      "sample_id": "H3K36me3",
+      "sample_name": "K562_H3K36me3",
+      "group_name": "K562",
+      "signal_bam": "Samples/K562_H3K36me3-ENCFF975JFV_5P.bam",
+      "control_bam": null,
+      "scale_ratio": null
+    }
+  ],
+  "execution": {
+    "mode": "sequential",
+    "failure_policy": "stop_on_error",
+    "visualization": "deferred"
+  }
+}
+```
+
+Codex 为每个元素生成独立 `compute_request.<sample_id>.json`。Java 请求中只能出现一个 `signal_bam` 和零或一个 `control_bam`；每个 sample 使用独立输出目录：
+
+```text
+<output_root>/
+├── H3K4me3/
+│   ├── compute_request.H3K4me3.json
+│   └── compute_manifest.json
+├── H3K36me3/
+│   ├── compute_request.H3K36me3.json
+│   └── compute_manifest.json
+└── analysis_index.json
+```
+
+默认 `failure_policy=stop_on_error`。可显式选择 `continue_on_error`，但 Codex 仍须等待当前 Java 进程退出并记录 manifest 后才能启动下一个，禁止并行启动。
+
+### 后置可视化
+
+计算阶段结束不自动创建图片。用户可立即绘图，也可在之后的新 Codex 任务中仅提供单样本输出目录或 `analysis_index.json`。
+
+多样本可视化时，Codex 新建独立目录：
+
+```text
+<output_root>/visualization_workspace/
+├── H3K4me3_NGSViz_plotSetting.json
+└── H3K36me3_NGSViz_plotSetting.json
+```
+
+只复制 plot-setting JSON，不移动、不覆盖 coverage CSV；JSON 内的 `OutputFile` 路径继续指向各自单样本结果。R 只读取这个工作目录，不读取 `analysis_plan.json`、`analysis_index.json` 或 BAM。
 
 ### 模块独立性验收
 
@@ -199,6 +281,9 @@ Rscript lib/ngsVizPlotMain.R output_dir
 5. 现有 plot-setting JSON 是 Java 输出、R 输入的唯一文件契约。
 6. 旧 CLI 必须向后兼容。
 7. 科学行为不在本次升级范围。
+8. Java 每次只计算一个 sample。
+9. AI 多样本模式由 Codex 顺序启动多个 Java 进程。
+10. R 可在计算后的任意时间独立调用。
 
 只读记录基线：
 - git commit
@@ -251,16 +336,20 @@ docs(agent): freeze native AI-friendly architecture
 1. describe、validate-compute、run-compute 三个子命令。
 2. 旧短参数入口的兼容规则。
 3. compute_request.json 的字段、类型、必填性、默认值来源和旧 flag 映射。
-4. 参数至少包括 title、genome、region、signal_bam、control_bam、output_dir、
+4. 每份 compute request 必须且只能描述一个 sample。
+5. 参数至少包括 sample_id、sample_name、group_name、title、genome、region、
+   signal_bam、control_bam、output_dir、
    system_config、database、analysis_type、biotype、flank_region、flank_factor、
    num_datapoints、scale_ratio、mapping_quality、fragment_length、cores、
    batch_size、bin_method、strand_specific、center_mode、custom_bed。
-5. null 不生成旧 flag。
-6. num_datapoints 最低为 100。
-7. validate-compute 只读且不创建输出目录。
-8. run-compute 只运行 Java，不启动 R。
-9. compute_manifest.json schema。
-10. 退出码和 JSON response envelope。
+6. sample_id、sample_name、group_name 是输出元数据，不改变 coverage 算法。
+7. request 中不得出现 samples 数组；出现时 validation 必须失败。
+8. null 不生成旧 flag。
+9. num_datapoints 最低为 100。
+10. validate-compute 只读且不创建输出目录。
+11. run-compute 只运行一个 sample 的 Java 计算，不启动 R。
+12. compute_manifest.json schema。
+13. 退出码和 JSON response envelope。
 
 遇到 README、Java 默认值和实际行为冲突时列出证据与行号，停止并等待用户裁决。
 
@@ -285,13 +374,15 @@ docs(java): define native computation CLI contract
 1. describe、validate-plot、run-plot 三个子命令。
 2. 旧单目录参数入口的兼容规则。
 3. R 只接收已有 JSON 目录，不运行 Java。
-4. validate-plot 检查 R 包、JSON schema、OutputFile、coverage CSV。
-5. run-plot 只调用现有绘图逻辑。
-6. visualization_manifest.json schema。
-7. coverage 数值列数等于
+4. 一个输入目录可包含一个或多个 plot-setting JSON。
+5. 单样本和多样本可视化使用同一个 R CLI。
+6. validate-plot 检查 R 包、JSON schema、OutputFile、coverage CSV。
+7. run-plot 只调用现有绘图逻辑。
+8. visualization_manifest.json schema。
+9. coverage 数值列数等于
    2 × flanking_region_datapoints + middle_datapoints。
-8. 图片缺失、空文件、NaN/Inf 和全零矩阵的状态规则。
-9. R 模块退出码和 JSON response envelope。
+10. 图片缺失、空文件、NaN/Inf 和全零矩阵的状态规则。
+11. R 模块退出码和 JSON response envelope。
 
 不得把 Java 环境、SQLite、BAM 或计算参数检查放入 R 契约。
 
@@ -304,26 +395,41 @@ docs(r): define native visualization CLI contract
 ```text
 请执行 Phase 1C，只创建 docs/ai-friendly/03_Codex编排与确认契约.md，不写代码。
 
-定义三条独立用户路径：
+定义四条独立用户路径：
 
-A. 只计算
-User request -> ask missing parameters -> compute request JSON ->
-Java validate -> show command -> user confirm -> Java run -> compute manifest
+A. 单样本只计算
+User request -> ask missing parameters -> one compute request JSON ->
+Java validate -> show command -> user confirm -> Java run -> one compute manifest
 
-B. 只可视化
+B. 多样本顺序计算
+User request -> analysis_plan.json with samples[] ->
+expand one compute request per sample -> validate all requests ->
+show ordered queue -> user confirms batch -> run Java one process at a time ->
+write analysis_index.json referencing each compute manifest
+
+C. 只可视化
 User supplies result directory -> R validate -> show command ->
 user confirm -> R run -> visualization manifest
 
-C. 完整流程
-完整执行 A；Java 完成并通过 compute manifest 后，单独询问是否运行 R；再执行 B。
+D. 完整流程
+完整执行 A 或 B；全部 Java 任务结束后，单独询问现在绘图还是以后再绘图。
+用户选择现在绘图时创建独立 visualization workspace 并执行 C；
+用户选择以后绘图时立即结束，后续可只执行 C。
 
 必须规定：
 - 首次请求默认只 validate，不直接 run。
+- Java request 一次只能包含一个 sample。
+- analysis_plan.json 可包含 samples[]，但只由 Codex Skill 读取。
+- 多样本必须串行，禁止并行 Java 进程。
+- 默认 failure_policy=stop_on_error。
+- continue_on_error 时仍须逐个等待、记录状态。
 - 用户只要求计算时不得自动绘图。
 - 用户只要求绘图时不得重新计算。
 - Java 完成不代表 R 完成。
+- R 可以在数小时或数天后独立调用。
 - 两个 manifest 分开报告。
 - 不存在统一 Python runner 或统一 runtime manifest。
+- analysis_index.json 只是 sample/request/manifest 索引，不是计算 manifest。
 - 未知科学参数必须向用户提问。
 
 提交：
@@ -333,8 +439,9 @@ docs(agent): define native Codex orchestration contract
 ### Phase 1 人工确认
 
 - [ ] compute_request.json 字段与 Java flag 一致
+- [ ] analysis_plan.json 与单样本 compute request 边界明确
 - [ ] R 输入契约与现有 plot-setting JSON 一致
-- [ ] 三条 Codex 用户路径符合预期
+- [ ] 四条 Codex 用户路径符合预期
 - [ ] 所有默认值冲突已由你裁决
 
 ---
@@ -443,6 +550,8 @@ feat(cli): add native Java command dispatcher
 
 ComputeRequest 字段必须严格来自
 docs/ai-friendly/01_Java计算CLI契约.md，不允许未知字段。
+每个 request 必须且只能包含一个 signal_bam；允许零或一个 control_bam；
+出现 samples 数组必须返回 exit code 2。
 
 检查：
 1. system config 和 JAR 信息。
@@ -465,6 +574,8 @@ validate-compute 必须：
 
 先写失败测试，覆盖：
 - 合法示例
+- sample_id、sample_name、group_name 元数据
+- request 出现 samples 数组
 - 缺失 genome
 - num_datapoints < 100
 - 非法数据库组合
@@ -523,12 +634,13 @@ feat(cli): add native computation validation
 1. 运行前重新调用 Phase 3 validator。
 2. 验证失败不得创建结果或调用 MainCalculator。
 3. 将 ComputeRequest 显式映射到现有 InputParameterAttributes。
-4. 调用现有 MainCalculator，不复制 coverage 逻辑。
-5. 不修改 DataScaler、PhysicalCoverageCalculator、GeneCoverageProcessor 等科学逻辑。
-6. 成功后检查 coverage CSV、read-count CSV、plot-setting JSON 存在且非空。
-7. 生成 output_dir/compute_manifest.json。
-8. Java 不检查图片、不加载 R 包、不运行 Rscript。
-9. 计算过程 stdout/stderr 写入 output_dir/NGSViz_compute.log，
+4. 将 sample_name 和 group_name 写入本次 plot-setting JSON 元数据。
+5. 调用现有 MainCalculator，不复制 coverage 逻辑。
+6. 不修改 DataScaler、PhysicalCoverageCalculator、GeneCoverageProcessor 等科学逻辑。
+7. 成功后检查 coverage CSV、read-count CSV、plot-setting JSON 存在且非空。
+8. 生成 output_dir/compute_manifest.json。
+9. Java 不检查图片、不加载 R 包、不运行 Rscript。
+10. 计算过程 stdout/stderr 写入 output_dir/NGSViz_compute.log，
    finally 中恢复原始 stream；CLI stdout 最终只输出一个 JSON response。
 
 compute manifest 必须包含：
@@ -539,6 +651,9 @@ compute manifest 必须包含：
 - finished_at
 - duration_ms
 - resolved_parameters
+- sample_id
+- sample_name
+- group_name
 - outputs.coverage_matrices
 - outputs.read_count_files
 - outputs.plot_setting_file
@@ -552,6 +667,7 @@ compute manifest 必须包含：
 - 缺失计算产物映射为 exit code 6
 - manifest 必需字段
 - manifest 中不出现 visualization_status
+- 单次调用只生成一个 sample 的 manifest
 - 计算日志不污染最终 JSON response
 
 验证：
@@ -614,12 +730,13 @@ validate-plot 检查：
 2. 现有绘图依赖包已安装，但不得自动安装。
 3. input_dir 存在。
 4. 至少一个 *_NGSViz_plotSetting.json。
-5. JSON 必需字段存在。
-6. OutputFile.heatmapDataFile 存在且非空。
-7. coverage CSV 可读、列数一致、数值无 NaN/Inf。
-8. 数值列数等于
+5. 对多个 JSON，sample_name 必须存在且唯一。
+6. JSON 必需字段存在。
+7. OutputFile.heatmapDataFile 存在且非空。
+8. coverage CSV 可读、列数一致、数值无 NaN/Inf。
+9. 数值列数等于
    2 * flanking_region_datapoints + middle_datapoints。
-9. 全零矩阵记录 warning。
+10. 全零矩阵记录 warning。
 
 安全：
 - 不调用 install.packages 或 pak::pkg_install。
@@ -628,7 +745,7 @@ validate-plot 检查：
 - JSON 输出通过 jsonlite::toJSON(auto_unbox=TRUE)。
 
 测试使用 tempdir fixture，覆盖正常、缺 JSON、缺 CSV、NaN、Inf、
-全零、列数不匹配和缺少 R 包的 response builder 行为。
+全零、列数不匹配、多个 JSON、重复 sample_name 和缺少 R 包的 response builder 行为。
 R 测试只使用 base R `stopifnot` 和临时目录，不新增 testthat 依赖。
 
 验证：
@@ -737,6 +854,8 @@ feat(r-cli): add native visualization run manifest
 
 - Create: `agent/ngsViz_agent.md`
 - Create: `.agents/skills/ngsviz-agent/SKILL.md`
+- Create: `docs/ai-friendly/schemas/analysis_plan.schema.json`
+- Create: `docs/ai-friendly/examples/analysis_plan.multi_sample.json`
 - Create: `tests/contracts/01_check_agent_guide.sh`
 
 ### Prompt
@@ -747,9 +866,9 @@ feat(r-cli): add native visualization run manifest
 注意：agent/ 目录只能包含 Markdown guide，不得包含 Python、Java、R、
 shell runner 或统一执行器。
 
-Agent Guide 必须包含三条路径：
+Agent Guide 必须包含四条路径：
 
-只计算：
+单样本只计算：
 Extract requirements
 -> write compute_request.json
 -> Java validate-compute
@@ -757,6 +876,18 @@ Extract requirements
 -> ask confirmation
 -> Java run-compute
 -> read compute_manifest.json
+
+多样本顺序计算：
+Extract shared parameters and samples[]
+-> write analysis_plan.json
+-> expand compute_request.<sample_id>.json
+-> validate every request
+-> show ordered queue
+-> ask one batch confirmation
+-> run one Java process and wait
+-> verify its compute manifest
+-> update analysis_index.json
+-> only then start the next sample
 
 只可视化：
 receive result directory
@@ -767,29 +898,52 @@ receive result directory
 -> read visualization_manifest.json
 
 完整流程：
-先完成只计算；单独询问是否继续可视化；用户确认后再完成只可视化。
+先完成单样本或多样本计算；单独询问现在绘图还是以后再绘图。
+选择以后绘图时结束。选择现在绘图时，新建 visualization workspace，
+只复制各 sample 的 plot-setting JSON，再完成只可视化。
 
 Skill 规则：
 - 未知科学参数必须提问。
 - 默认只 validate。
+- analysis_plan 允许 samples[]。
+- Java compute request 禁止 samples[]。
+- Java 进程严格串行；禁止并发运行 sample。
+- 默认 stop_on_error；continue_on_error 必须由用户明确选择。
+- 每个 sample 使用唯一 output_dir、sample_name 和 group_name。
 - 用户只要求计算时不得自动绘图。
 - 用户只要求绘图时不得重新计算。
+- 允许用户在后续新任务中只调用 R。
 - Java 失败时不得调用 R。
 - compute manifest 与 visualization manifest 分开报告。
 - 不生成统一 manifest。
+- analysis_index 只索引单样本 manifest，不汇总或改写科学结果。
 - 不把 Codex 自己的判断写入原始结果文件。
+
+analysis_plan.schema.json 必须规定：
+- analysis 为共享计算参数。
+- samples 为非空数组。
+- 每个 sample 必须有唯一 sample_id、sample_name、group_name、
+  signal_bam；control_bam 和 scale_ratio 可为 null。
+- execution.mode 只能为 sequential。
+- execution.failure_policy 为 stop_on_error 或 continue_on_error。
+- execution.visualization 为 deferred 或 after_compute。
+- 不允许 sample 覆盖 genome、region、strand、fragment length；
+  这些参数不一致时必须拆分为不同 analysis plan。
 
 契约脚本检查：
 - Guide 引用了六个原生子命令。
 - agent/ 下没有 .py、.R、.java、.sh 执行文件。
 - Skill 明确写出 Java 不调用 R、R 不调用 Java。
-- Skill 明确写出三个用户路径。
+- Skill 明确写出四个用户路径。
+- Skill 明确写出 Java 单样本和 Codex 顺序多样本。
+- 多样本示例的 sample_id、sample_name 和 output_dir 唯一。
 
 验证：
 bash tests/contracts/01_check_agent_guide.sh
 find agent -type f
 rg -n "validate-compute|run-compute|validate-plot|run-plot" \
   agent/ngsViz_agent.md .agents/skills/ngsviz-agent/SKILL.md
+Rscript -e 'x <- jsonlite::fromJSON("docs/ai-friendly/examples/analysis_plan.multi_sample.json"); stopifnot(length(x$samples$sample_id) >= 2, !anyDuplicated(x$samples$sample_id), !anyDuplicated(x$samples$sample_name))'
 
 提交：
 docs(agent): add native Java and R orchestration skill
@@ -815,13 +969,28 @@ Expected: 只调用 R validate-plot，不运行 Java。
 
 Expected: Java 流程结束后停止，不调用 R。
 
+```text
+使用 ngsviz-agent skill，按同一套 hg19 TSS 参数依次计算示例 H3K4me3
+和 H3K36me3 BAM，只做 validation，不运行。
+```
+
+Expected: 生成一个含两个 sample 的 analysis plan 和两个单样本 compute request，
+展示固定顺序，不并行、不调用 R。
+
+```text
+使用 ngsviz-agent skill，把昨天已经完成的 analysis_index.json 做多样本可视化。
+```
+
+Expected: 不调用 Java；新建 visualization workspace，复制各 sample 的
+plot-setting JSON，调用 R validate-plot 后等待确认。
+
 ---
 
 ## Phase 8 — 独立回归、完整 smoke test 与文档
 
 ### 目标
 
-分别验证 Java 计算和 R 可视化，再验证 Codex 顺序编排；任何一步都不让一个模块启动另一个模块。
+分别验证 Java 单样本计算、Codex 多样本顺序编排和 R 后置可视化；任何一步都不让一个模块启动另一个模块。
 
 ### Files
 
@@ -853,16 +1022,37 @@ java -jar target/NGSViz-1.0.jar validate-compute \
 
 展示结果并等待我明确批准。未批准不得运行计算。
 
-第三阶段：Java 真实 smoke test
-输出只能写入 agent_output/native_smoke_hg19_tss。
-运行 run-compute，检查 compute_manifest.json。
-确认 Java 过程没有启动 R，输出目录此时不要求存在新图片。
+第三阶段：多样本顺序 dry validation
+使用：
+docs/ai-friendly/examples/analysis_plan.multi_sample.json
 
-第四阶段：R 独立验证
+Codex 展开两个单样本 request，依次运行 validate-compute。
+确认：
+- 两个 request 都不含 samples 数组。
+- sample_id、sample_name、output_dir 唯一。
+- 第二个 validate 在第一个退出后才启动。
+- validation 阶段不创建计算结果。
+
+展示有序队列并等待我明确批准。未批准不得运行计算。
+
+第四阶段：Java 真实多样本 smoke test
+输出只能写入：
+- agent_output/native_smoke/H3K4me3
+- agent_output/native_smoke/H3K36me3
+
+严格按 analysis plan 顺序逐个运行 run-compute。
+每个进程结束后检查自己的 compute_manifest.json 并更新 analysis_index.json，
+再决定是否启动下一个。
+确认 Java 过程没有启动 R，两个输出目录此时不要求存在新图片。
+
+第五阶段：延迟 R 独立验证
+Java 阶段结束后先停止，模拟用户以后才要求绘图。
+新建 agent_output/native_smoke/visualization_workspace，
+只复制两个 plot-setting JSON。
 运行 validate-plot，展示结果并再次等待我明确批准。
 未批准不得运行绘图。
 
-第五阶段：R 真实 smoke test
+第六阶段：R 真实 smoke test
 运行 run-plot，检查 visualization_manifest.json。
 确认 R 过程没有启动 Java，计算 CSV 校验值未改变。
 
@@ -875,10 +1065,12 @@ java -jar target/NGSViz-1.0.jar validate-compute \
 README 增加：
 1. Java 原生计算 CLI
 2. R 原生可视化 CLI
-3. Codex 三种使用路径
-4. 两次独立确认
-5. manifest 解读
-6. 旧 CLI 兼容说明
+3. Codex 四种使用路径
+4. analysis_plan 多样本顺序执行
+5. R 的立即调用与后期独立调用
+6. 两次独立确认
+7. compute manifest、analysis index、visualization manifest 的区别
+8. 旧 CLI 兼容说明
 
 .gitignore 增加：
 agent_output/
@@ -895,10 +1087,15 @@ test(agent): validate independent Java and R workflows
 - [ ] 旧 R 单目录入口可用
 - [ ] Java validate 不创建结果
 - [ ] R validate 不生成图片
+- [ ] Java 单次只处理一个 sample
+- [ ] 多个 sample 由 Codex 严格串行启动
+- [ ] 每个 sample 有独立 request、output 和 compute manifest
+- [ ] analysis index 不替代 compute manifest
 - [ ] Java 不调用或检查 R
 - [ ] R 不调用或检查 Java
 - [ ] Codex 可只计算
 - [ ] Codex 可只可视化
+- [ ] Codex 可在计算结束后的新任务中单独调用 R
 - [ ] Codex 可在两次确认后完成完整流程
 - [ ] compute manifest 与 visualization manifest 独立
 - [ ] 原始数据和示例结果未覆盖
