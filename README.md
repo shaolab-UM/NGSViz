@@ -352,7 +352,7 @@ compute_request.json ─┘
 |      -MQ       |    min_mapq     |       20       |     Minimum mapping quality threshold      |
 |      -FL       |    frag_len     |      150       |              Fragment length               |
 |       -P       |    core_num     |       1        |         Number of CPU cores to use         |
-|       -S       |   scale_ratio   |       1        |     Scaling ratio for signal intensity     |
+|       -S       |   scale_ratio   |               null|     Scaling ratio for signal intensity     |
 |      -NF       |   new_forder    |     false      |           Create Results Folder            |
 |      -BM       |   bin_method    |      mean      |                 Bin method                 |
 |      -CM       |   Centermode    |     false      |          Whether plot with center          |
@@ -383,7 +383,7 @@ compute_request.json ─┘
 -  **`-P`**: Defines the number of CPU cores to use for parallel processing. 
 -  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
 -  **`-NF`**: Whether a new folder will be created to store the results.
-- **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `median`). This determines how values within each bin are summarized.
+- **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `mean`). This determines how values within each bin are summarized.
 
   **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
 
