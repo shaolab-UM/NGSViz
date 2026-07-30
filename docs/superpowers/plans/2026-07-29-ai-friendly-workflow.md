@@ -1,6 +1,6 @@
 # ngsViz AI-Friendly Workflow Implementation Plan
 
-> **已废弃（2026-07-30）：** 本计划采用 Python Agent Adapter，与最新架构决定冲突，请勿执行。当前唯一活动计划为 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
+> **已废弃（2026-07-30）：** 本计划采用 Python Agent Adapter 和 YAML，与最新架构决定冲突，请勿执行。当前唯一活动计划为 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。AI 参数只通过单样本 `compute_request.json` 传入 Java；旧 CLI flags 与 JSON 请求在 Java 内部归一化为同一个 `ComputeRequest`。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

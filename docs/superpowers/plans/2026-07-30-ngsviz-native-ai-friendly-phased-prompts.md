@@ -4,7 +4,7 @@
 
 **Goal:** 不增加 Python Agent Adapter，通过增强 Java 计算 CLI、R 可视化 CLI 和 Codex Skill，让用户能够以自然语言安全、渐进地使用 ngsViz。
 
-**Architecture:** Java 计算模块与 R 可视化模块保持两个独立程序，各自提供 `describe`、`validate`、`run` 和机器可读 manifest。Java 每个进程只处理一个 sample；Codex Skill 可读取包含 `samples[]` 的上层 analysis plan，将其展开为多个单样本请求并顺序调用 Java。R 可在计算完成后的任意时间独立调用，不由 Java 或批处理流程自动启动。
+**Architecture:** Java 计算模块与 R 可视化模块保持两个独立程序，各自提供 `describe`、`validate`、`run` 和机器可读 manifest。AI 参数只通过单样本 `compute_request.json` 传入 Java；旧 CLI flags 与 JSON 请求是互斥入口，二者在 Java 内部归一化为同一个 `ComputeRequest`，经过同一验证边界后调用同一个 `MainCalculator`。Java 每个进程只处理一个 sample；Codex Skill 可读取包含 `samples[]` 的上层 analysis plan，将其展开为多个单样本请求并顺序调用 Java。R 可在计算完成后的任意时间独立调用，不由 Java 或批处理流程自动启动。
 
 **Tech Stack:** Java 9+、Maven、htsjdk、org.json、SQLite JDBC、R 4.x、jsonlite、现有 ngsViz R 绘图库、JUnit 5、R 自包含测试脚本。
 
@@ -14,11 +14,15 @@
 - 不实现 MCP、HTTP API、聊天网页或云端服务。
 - Java 只负责计算环境、数据库、BAM/BED、coverage 计算和计算结果 manifest。
 - R 只负责可视化环境、绘图输入、图形生成和可视化 manifest。
-- Java 不得调用 `Rscript`；R 不得调用 `java -jar`。
+- Java 不得调用 `Rscript`；R 不得调用 `java -jar`，Rshiny GUI 除外。
 - Java `run-compute` 每次严格处理一个 signal sample，可选一个对应 control BAM。
 - 多个 sample 只能由 Codex Skill 顺序启动多个独立 Java 进程，不得在 Java 计算核心内增加批量循环。
 - Java 计算完成后不得自动启动 R；R 可在同一任务或后续独立任务中调用。
 - 保留现有 `java -jar NGSViz-1.2.jar -G ...` 和 `Rscript lib/ngsVizPlotMain.R <JSON_path>` 用法。
+- AI 不得拼装包含全部计算参数的旧 flags 命令；AI 只能生成单样本 `compute_request.json`，并通过 `validate-compute --request <path>` 或 `run-compute --request <path>` 传入 Java。
+- `--request` 模式不得混用 `-G`、`-R`、`-I`、`-O` 等旧计算 flags，也不得用 CLI 参数覆盖 JSON 字段。
+- 不使用 `-J <yaml>`、YAML 配置或 YAML loader；现有 `-J` 占位参数不属于新 AI-friendly 接口。
+- 旧计算 flags 和 JSON 请求必须复用同一个 `ComputeRequest`、validator 与 `MainCalculator`，不得形成两套验证或计算逻辑。
 - 不修改 coverage、坐标、TSS/TES、strand、binning、normalization 等科学行为。
 - 用户未明确提供的 genome、region、strand、fragment length、control、normalization 不得由 AI 猜测。
 - 每个 Phase 只完成当前模块，先写失败测试，验证通过后独立提交。
@@ -72,9 +76,24 @@ ngsViz Codex Skill / Agent Guide
        Codex 分别读取各 compute manifest 与 visualization manifest
 ```
 
+### Java 输入归一化
+
+```text
+旧 CLI flags ───────────┐
+                       ├─> ComputeRequest ─> validate ─> MainCalculator
+compute_request.json ──┘
+```
+
+- 旧 CLI flags 是面向既有用户和脚本的兼容入口。
+- `compute_request.json` 是 AI 向 Java 传递计算参数的唯一入口。
+- 两种输入模式互斥；检测到混用时返回参数错误，不定义覆盖优先级。
+- 两种入口只负责构造同一个 `ComputeRequest`；后续验证、默认值解析和计算调用必须共享。
+- `-J` 当前只保存路径且不加载配置，不属于上述 JSON 入口，也不得扩展为 YAML 配置入口。
+- Codex 启动 Java 时传递参数数组，不拼接 shell 字符串。AI-friendly 调用数组只包含 Java、JAR、子命令、`--request` 和 JSON 绝对路径。
+
 ### Java 计算模块的唯一职责
 
-- 解析计算请求。
+- 将旧 CLI flags 或 `compute_request.json` 归一化为同一个 `ComputeRequest`。
 - 检查 Java、JAR、系统配置、SQLite、BAM/BAI、BED 和计算参数。
 - 调用现有 Java coverage 计算逻辑。
 - 生成 coverage CSV、read-count CSV、plot-setting JSON。
@@ -96,7 +115,8 @@ ngsViz Codex Skill / Agent Guide
 - 把每个 sample 展开为独立 Java 请求，并严格顺序执行。
 - 对缺失科学参数提问。
 - 生成 Java 计算请求 JSON。
-- 展示原生命令和验证结果。
+- 以参数数组调用 Java；不把 JSON 字段重新展开成旧 flags。
+- 展示只包含 `--request` 路径的原生命令和验证结果。
 - 得到明确授权后分别调用 Java 或 R。
 - 基于 manifest 做有限解读。
 - 记录 `analysis_index.json`，只索引各 sample 的请求和 manifest，不替代单样本 manifest。
@@ -195,11 +215,27 @@ java -jar NGSViz-1.2.jar validate-compute --request compute_request.json
 java -jar NGSViz-1.2.jar run-compute --request compute_request.json
 ```
 
+AI-friendly 模式只允许上述 `--request` 路径参数。以下混用无效：
+
+```bash
+java -jar NGSViz-1.2.jar run-compute \
+  --request compute_request.json \
+  -G hg38
+```
+
 兼容旧入口：
 
 ```bash
 java -jar NGSViz-1.2.jar -G hg19 -R tss -T demo -I sample.bam -O output
 ```
+
+旧入口和 JSON 入口最终必须执行相同关系：
+
+```text
+input -> ComputeRequest -> validate -> MainCalculator
+```
+
+`-J <yaml>` 不是 AI-friendly 配置入口，不得在新接口、示例或 Codex Skill 中使用。
 
 ### R 可视化 CLI
 
@@ -245,6 +281,7 @@ Rscript lib/ngsVizPlotMain.R output_dir
 - Java 不调用 R，R 不调用 Java。
 - 不改变科学计算和绘图行为。
 - 保持现有 CLI 向后兼容。
+- 脚本中的注释和命令必须使用英文
 
 执行规则：
 - 只实现当前 Phase，不提前实现后续 Phase。
@@ -284,6 +321,10 @@ Rscript lib/ngsVizPlotMain.R output_dir
 8. Java 每次只计算一个 sample。
 9. AI 多样本模式由 Codex 顺序启动多个 Java 进程。
 10. R 可在计算后的任意时间独立调用。
+11. AI 参数只通过单样本 compute_request.json 传入 Java。
+12. 旧 CLI flags 与 JSON 请求都归一化为同一个 ComputeRequest。
+13. 两种入口互斥，共用 validator 和 MainCalculator。
+14. 不使用 -J、YAML 或完整旧 flags 命令传递 AI 参数。
 
 只读记录基线：
 - git commit
@@ -334,8 +375,8 @@ docs(agent): freeze native AI-friendly architecture
 
 文档定义：
 1. describe、validate-compute、run-compute 三个子命令。
-2. 旧短参数入口的兼容规则。
-3. compute_request.json 的字段、类型、必填性、默认值来源和旧 flag 映射。
+2. 旧短参数入口的兼容规则，以及旧 flags 到 `ComputeRequest` 的逐字段映射。
+3. compute_request.json 的字段、类型、必填性和默认值来源。
 4. 每份 compute request 必须且只能描述一个 sample。
 5. 参数至少包括 sample_id、sample_name、group_name、title、genome、region、
    signal_bam、control_bam、output_dir、
@@ -344,12 +385,15 @@ docs(agent): freeze native AI-friendly architecture
    batch_size、bin_method、strand_specific、center_mode、custom_bed。
 6. sample_id、sample_name、group_name 是输出元数据，不改变 coverage 算法。
 7. request 中不得出现 samples 数组；出现时 validation 必须失败。
-8. null 不生成旧 flag。
+8. JSON 字段不转换成旧 flags；null 由 `ComputeRequest` 默认值规则处理。
 9. num_datapoints 最低为 100。
 10. validate-compute 只读且不创建输出目录。
 11. run-compute 只运行一个 sample 的 Java 计算，不启动 R。
 12. compute_manifest.json schema。
 13. 退出码和 JSON response envelope。
+14. 旧 flags 模式与 `--request` 模式互斥，混用返回 exit code 2。
+15. AI 只使用 `--request <json>`，不使用 `-J`、YAML 或完整 flags 命令。
+16. 两种入口共享同一个 validator 和 MainCalculator，不复制科学计算逻辑。
 
 遇到 README、Java 默认值和实际行为冲突时列出证据与行号，停止并等待用户裁决。
 
@@ -439,6 +483,8 @@ docs(agent): define native Codex orchestration contract
 ### Phase 1 人工确认
 
 - [ ] compute_request.json 字段与 Java flag 一致
+- [ ] 旧 flags 与 JSON 请求均归一化为同一个 ComputeRequest
+- [ ] 两种输入模式互斥且不存在参数覆盖优先级
 - [ ] analysis_plan.json 与单样本 compute request 边界明确
 - [ ] R 输入契约与现有 plot-setting JSON 一致
 - [ ] 四条 Codex 用户路径符合预期
@@ -477,6 +523,8 @@ docs(agent): define native Codex orchestration contract
 行为：
 - args[0] 为 describe、validate-compute、run-compute 时进入新 dispatcher。
 - args[0] 以 "-" 开头时完整保留旧 ProcessInputParameters 流程。
+- 新子命令只接受 `--request <json>`；不得接受 `-J` 或旧计算 flags。
+- `--request` 与任何旧计算 flag 混用时返回 exit code 2。
 - describe --format json 返回 version、commands、legacy_flags、exit_codes。
 - validate-compute 和 run-compute 暂时返回 unsupported 状态与 exit code 2，
   不提前实现 Phase 3/4。
@@ -490,6 +538,7 @@ docs(agent): define native Codex orchestration contract
 - 未知子命令
 - 缺少 --format 值
 - legacy 参数识别
+- `--request` 与旧 flags 混用失败
 - response 必需字段
 
 验证：
@@ -553,6 +602,11 @@ docs/ai-friendly/01_Java计算CLI契约.md，不允许未知字段。
 每个 request 必须且只能包含一个 signal_bam；允许零或一个 control_bam；
 出现 samples 数组必须返回 exit code 2。
 
+JSON 输入规则：
+- `ComputeRequestReader` 直接从 JSON 构造 `ComputeRequest`，不得先转换为旧 flags。
+- 新子命令只接受 `--request <json>`，不得读取 `-J` 或 YAML。
+- JSON 字段与旧 flags 混用时，在进入 reader 前返回 exit code 2。
+
 检查：
 1. system config 和 JAR 信息。
 2. SQLite 以只读连接打开，PRAGMA integrity_check。
@@ -570,10 +624,11 @@ validate-compute 必须：
 - 不创建 output_dir。
 - 不调用 MainCalculator。
 - 不调用 R。
-- 输出解析后的参数、支持值、errors、warnings 和 legacy_command_preview。
+- 输出请求文件、解析后的参数、支持值、errors 和 warnings；不生成供执行使用的完整旧 flags 命令。
 
 先写失败测试，覆盖：
 - 合法示例
+- `--request` 与旧 flags 混用失败
 - sample_id、sample_name、group_name 元数据
 - request 出现 samples 数组
 - 缺失 genome
@@ -612,16 +667,19 @@ feat(cli): add native computation validation
 ### Files
 
 - Create: `src/main/java/com/NGSViz/cli/RunComputeCommand.java`
+- Create: `src/main/java/com/NGSViz/cli/LegacyComputeRequestAdapter.java`
 - Create: `src/main/java/com/NGSViz/cli/ComputeManifest.java`
 - Create: `src/main/java/com/NGSViz/cli/ComputeManifestWriter.java`
 - Modify: `src/main/java/com/NGSViz/configSet/ProcessInputParameters.java`
 - Modify: `src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java`
 - Test: `src/test/java/com/NGSViz/cli/RunComputeCommandTest.java`
+- Test: `src/test/java/com/NGSViz/cli/LegacyComputeRequestAdapterTest.java`
 - Test: `src/test/java/com/NGSViz/cli/ComputeManifestTest.java`
 
 ### Interfaces
 
 - `RunComputeCommand.execute(Path requestPath): CliResponse`
+- `LegacyComputeRequestAdapter.fromArgs(String[] args): ComputeRequest`
 - `ComputeManifest.fromRun(...): ComputeManifest`
 - `ComputeManifestWriter.write(ComputeManifest manifest, Path path): void`
 
@@ -633,7 +691,7 @@ feat(cli): add native computation validation
 要求：
 1. 运行前重新调用 Phase 3 validator。
 2. 验证失败不得创建结果或调用 MainCalculator。
-3. 将 ComputeRequest 显式映射到现有 InputParameterAttributes。
+3. JSON 请求和旧 flags 都必须先构造 `ComputeRequest`；将经过验证的 `ComputeRequest` 显式映射到现有 InputParameterAttributes。
 4. 将 sample_name 和 group_name 写入本次 plot-setting JSON 元数据。
 5. 调用现有 MainCalculator，不复制 coverage 逻辑。
 6. 不修改 DataScaler、PhysicalCoverageCalculator、GeneCoverageProcessor 等科学逻辑。
@@ -642,6 +700,9 @@ feat(cli): add native computation validation
 9. Java 不检查图片、不加载 R 包、不运行 Rscript。
 10. 计算过程 stdout/stderr 写入 output_dir/NGSViz_compute.log，
    finally 中恢复原始 stream；CLI stdout 最终只输出一个 JSON response。
+11. JSON 请求不得转换成完整旧 flags 命令。
+12. `LegacyComputeRequestAdapter` 必须保留旧 flags 的参数类型、默认值与解释方式。
+13. 旧 flags 与等价 JSON 必须调用同一个 validator 和 MainCalculator。
 
 compute manifest 必须包含：
 - schema_version
@@ -669,6 +730,8 @@ compute manifest 必须包含：
 - manifest 中不出现 visualization_status
 - 单次调用只生成一个 sample 的 manifest
 - 计算日志不污染最终 JSON response
+- 旧 flags 与等价 JSON 生成相同 resolved parameters
+- 旧 flags 与 JSON 请求进入同一个 MainCalculator 调用点
 
 验证：
 mvn -Dtest=RunComputeCommandTest,ComputeManifestTest test
@@ -1071,6 +1134,8 @@ README 增加：
 6. 两次独立确认
 7. compute manifest、analysis index、visualization manifest 的区别
 8. 旧 CLI 兼容说明
+9. AI 参数只通过单样本 compute_request.json 传入 Java
+10. 旧 flags 与 JSON 请求归一化为同一个 ComputeRequest 且禁止混用
 
 .gitignore 增加：
 agent_output/
@@ -1084,6 +1149,9 @@ test(agent): validate independent Java and R workflows
 - [ ] Java 测试通过
 - [ ] R 测试通过
 - [ ] 旧 Java CLI 可用
+- [ ] AI 调用只包含 --request 和 JSON 路径，不展开完整旧 flags
+- [ ] 旧 flags 与 JSON 请求共享 ComputeRequest、validator 和 MainCalculator
+- [ ] --request 与旧 flags 混用会失败
 - [ ] 旧 R 单目录入口可用
 - [ ] Java validate 不创建结果
 - [ ] R validate 不生成图片

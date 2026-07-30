@@ -311,13 +311,30 @@ NGSViz provides built-in **intergenic region annotations** for both **human and 
 java -jar NGSViz-1.3.jar [parameter]
 ```
 
+#### Native AI-Friendly Request Interface (Planned)
+
+AI workflows pass computation parameters through one single-sample JSON request file. They do not expand the JSON fields into legacy CLI flags.
+
+```bash
+java -jar NGSViz-1.3.jar validate-compute --request compute_request.json
+java -jar NGSViz-1.3.jar run-compute --request compute_request.json
+```
+
+Legacy CLI flags and `--request` are mutually exclusive inputs. Both are normalized internally to the same `ComputeRequest`, validated through the same boundary, and passed to the same `MainCalculator`.
+
+```text
+legacy CLI flags ──────┐
+                      ├─> ComputeRequest ─> validate ─> MainCalculator
+compute_request.json ─┘
+```
+
 #### Parameters
 
 | Parameter Name |  Variable Name  | Default Value  |                Describtion                 |
 | :------------: | :-------------: | :------------: | :----------------------------------------: |
 |       -H       |        -        |       -        |        Print all command usage help        |
 |       -V       |        -        |       -        |       Print the current ngsViz version      |
-|       -J       | ai_config_path  |       -        |      Path to AI-supplied YAML config        |
+|       -J       | ai_config_path  |       -        | Deprecated placeholder; does not load AI configuration |
 |       -G       |     genome      |       -        |         Reference genome database          |
 |       -R       |   region_type   |       -        |          Region type for analysis          |
 |       -T       |      title      |       -        |               Analysis title               |
@@ -344,7 +361,7 @@ java -jar NGSViz-1.3.jar [parameter]
 
 - **`-H`**: Prints the complete Java command-line usage help and exits without starting an analysis.
 - **`-V`**: Prints the current version (`ngsViz 1.3`) and exits without starting an analysis.
-- **`-J`**: Specifies the path to a YAML configuration file supplied by the AI workflow.
+- **`-J`**: Deprecated placeholder retained in the current parser. It does not load an AI configuration and must not be used by the AI-friendly workflow.
 - **`-G`**: (**Required parameters**) Indicates the version of the reference genome to be used for analysis. The specified genome version **must exist in the database**.
 
   > ⚠️ **Important:** The selected reference genome version must match the genome version used during read alignment. Mismatches may lead to inaccurate signal interpretation and erroneous results.

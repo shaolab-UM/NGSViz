@@ -1,6 +1,6 @@
 # ngsViz AI 友好使用功能评估
 
-> **架构更新（2026-07-30）：** 用户决定不采用 Python Agent Adapter。本文关于 Python 适配层的建议仅保留为历史评估，不再执行。当前方案见 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
+> **架构更新（2026-07-30）：** 用户决定不采用 Python Agent Adapter 和 YAML。本文相关建议仅保留为历史评估，不再执行。AI 参数只通过单样本 `compute_request.json` 传入 Java；旧 CLI flags 与 JSON 请求在 Java 内部归一化为同一个 `ComputeRequest`。当前方案见 `docs/superpowers/plans/2026-07-30-ngsviz-native-ai-friendly-phased-prompts.md`。
 
 ## 结论
 
