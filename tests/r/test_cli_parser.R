@@ -20,6 +20,7 @@ test_cli_parser <- function(project_root) {
   legacy <- parse_cli_args("/tmp/legacy-input")
   stopifnot(
     identical(legacy$mode, "legacy"),
+    identical(legacy$command, "run-plot"),
     identical(legacy$input_dir, "/tmp/legacy-input")
   )
 

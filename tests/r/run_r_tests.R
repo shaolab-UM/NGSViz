@@ -9,7 +9,11 @@ get_project_root <- function() {
 project_root <- get_project_root()
 source(file.path(project_root, "tests", "r", "test_cli_parser.R"))
 source(file.path(project_root, "tests", "r", "test_validate_plot_input.R"))
+source(file.path(project_root, "tests", "r", "test_run_plot.R"))
+source(file.path(project_root, "tests", "r", "test_visualization_manifest.R"))
 
 test_cli_parser(project_root)
 test_validate_plot_input(project_root)
+test_run_plot(project_root)
+test_visualization_manifest(project_root)
 cat("All R CLI tests passed.\n")

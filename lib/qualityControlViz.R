@@ -179,8 +179,10 @@ packages <- c(
   "corrplot", "ggrepel", "FactoMineR"
 )
 
-# # Load all packages
-checkRequiredPackages(packages)
+# Load packages only for direct legacy sourcing. Native CLI validates first.
+if (!isTRUE(getOption("ngsviz.skip_dependency_loading"))) {
+  checkRequiredPackages(packages)
+}
 
 # json_path <- "/Users/benche/myProj/ngsPlot/Result/feature/mergeH3K4me3"
 # heatmapMat_rowMerge <- propressData(json_path)

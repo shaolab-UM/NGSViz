@@ -522,8 +522,9 @@ packages <- c(
   "RColorBrewer", "purrr", "data.table", "RcppRoll", "zoo"
 )
 
-# # Load all packages
-checkRequiredPackages(packages)
-
+# Load packages only for direct legacy sourcing. Native CLI validates first.
+if (!isTRUE(getOption("ngsviz.skip_dependency_loading"))) {
+  checkRequiredPackages(packages)
+}
 
 

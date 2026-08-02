@@ -33,7 +33,7 @@ parse_native_options <- function(args, command) {
 parse_cli_args <- function(args) {
   commands <- c("describe", "validate-plot", "run-plot")
   if (length(args) == 1L && !(args[1] %in% commands)) {
-    return(list(mode = "legacy", command = NULL, input_dir = args[1]))
+    return(list(mode = "legacy", command = "run-plot", input_dir = args[1]))
   }
   if (length(args) == 0L) cli_argument_error("", "A command is required.")
   command <- args[1]
