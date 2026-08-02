@@ -68,6 +68,48 @@ Main <- function(args){
 # usage -------------------------------------------------------------------
 # json_path <- "/Users/benche/myProj/ngsPlot/Output/Test/H3K4"
 args <- commandArgs(trailingOnly = TRUE)
-Main(args)
 
+dispatchNativeCli <- function(args) {
+  script_dir <- dirname(getScriptPath())
+  cli_dir <- file.path(script_dir, "cli")
+  source(file.path(cli_dir, "cli_response.R"))
+  source(file.path(cli_dir, "cli_parser.R"))
+  source(file.path(cli_dir, "describe_visualization.R"))
+  source(file.path(cli_dir, "check_visualization_environment.R"))
+  source(file.path(cli_dir, "validate_plot_input.R"))
+
+  parsed <- tryCatch(parse_cli_args(args), cli_argument_error = identity)
+  if (inherits(parsed, "cli_argument_error")) {
+    response <- build_cli_response(
+      parsed$command, "error", 2L, parsed$message, errors = list(new_cli_issue(
+        "CLI_ARGUMENT_ERROR", field = NULL, message = parsed$message
+      ))
+    )
+  } else if (parsed$command == "describe") {
+    response <- describe_visualization()
+  } else if (parsed$command == "run-plot") {
+    response <- build_cli_response(
+      "run-plot", "unsupported", 2L, "run-plot is not implemented in Phase 5.",
+      data = list(input_dir = normalizePath(parsed$input_dir, mustWork = FALSE)),
+      errors = list(new_cli_issue(
+        "COMMAND_UNSUPPORTED", message = "run-plot is not implemented in Phase 5."
+      ))
+    )
+  } else {
+    environment <- check_visualization_environment()
+    validation <- if (environment$valid) validate_plot_input(parsed$input_dir) else NULL
+    response <- build_validation_response(
+      parsed$command, parsed$input_dir, environment, validation
+    )
+  }
+  emit_cli_response(response)
+  quit(status = response$exit_code)
+}
+
+known_commands <- c("describe", "validate-plot", "run-plot")
+if (length(args) == 1L && !(args[1] %in% known_commands)) {
+  Main(args)
+} else {
+  dispatchNativeCli(args)
+}
 
