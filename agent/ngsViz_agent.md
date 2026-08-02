@@ -35,6 +35,16 @@ Java 每次只处理一个 signal sample，且不调用 R。R 只读取现有绘
 - `analysis_index.json` 只索引单样本 request 与 compute manifest，不汇总或改写科学结果。
 - 不把 Codex 的判断、解释或推断写入原始结果文件。
 
+## Java 计算前置检查
+
+只可视化流程跳过本节。生成 compute request 或执行 `validate-compute` 前必须：
+
+1. 使用 `.agents/skills/ngsviz-setup/` 检查或修复 `NGSViz_setting.json`、Java 17+、JAR、`tool_path` 和 `db_path`。
+2. 用户已明确 genome 时，先查配置 DB；缺失版本若在 README 预构建目录中，则使用 `.agents/skills/ngsviz-install-db/` 下载、校验并导入；目录中没有则要求用户提供 UCSC GTF，并使用 `.agents/skills/ngsviz-build-db/` 构建和导入。
+3. 用户未明确 genome 时，先确认物种。查询 DB 中该物种的 genome：一个时询问是否使用，多个时让用户选择；DB 无该物种或用户拒绝唯一版本时，再查询 README 预构建目录。
+4. 不得从 BAM 文件名、细胞系、染色体前缀或常见实验习惯推断物种或 assembly。数据库存在性也不能证明 BAM 的 assembly。
+5. 环境、物种、genome 和 DB 就绪后，才收集其余科学参数并进入 validate。
+
 ## 路径一：单样本只计算
 
 ```text

@@ -1,6 +1,6 @@
 ---
 name: ngsviz-agent
-description: Safely orchestrate ngsViz native Java computation and R visualization CLIs for single-sample compute, sequential multi-sample compute, visualization-only, and full workflows. Use when Codex must collect scientific parameters, prepare compute_request.json or analysis_plan.json, validate before confirmation, run ngsViz, or inspect separate compute and visualization manifests.
+description: Safely orchestrate ngsViz environment preflight, species and genome database resolution, native Java computation, and R visualization for single-sample, sequential multi-sample, visualization-only, and full workflows. Use when Codex must prepare or run an ngsViz analysis, validate scientific parameters, resolve reference databases, or inspect compute and visualization manifests.
 ---
 
 # ngsViz Agent
@@ -22,9 +22,28 @@ description: Safely orchestrate ngsViz native Java computation and R visualizati
 - `analysis_index.json` 只索引单样本 request 和 manifest，不汇总或改写科学结果。
 - 不把 Codex 的判断写入原始结果文件，不覆盖、移动或改写原始计算结果。
 
+## Java 计算前置流程
+
+只可视化路径跳过本节。任何 Java compute request 或 `validate-compute` 之前必须依次完成：
+
+1. 读取并执行 [ngsviz-setup](../ngsviz-setup/SKILL.md)，检查或修复 `NGSViz_setting.json`、Java 17+、JAR、`tool_path` 和 `db_path`。环境未就绪时暂停计算流程。
+2. 若用户已明确 genome，查询配置 DB 的 `defaultTbl`：
+   - 已安装该 genome：继续收集其他科学参数。
+   - 未安装但 README 预构建目录存在：读取并执行 [ngsviz-install-db](../ngsviz-install-db/SKILL.md)，安装用户已明确的版本，然后重新执行环境检查。
+   - README 不存在该版本：要求用户提供对应物种和 assembly 的 UCSC GTF，再读取并执行 [ngsviz-build-db](../ngsviz-build-db/SKILL.md)。
+3. 若用户未明确 genome：
+   - 未提供物种：先询问物种，不得把 BAM 文件名、细胞系名称、染色体前缀或长度当作物种/assembly 结论。
+   - 已提供物种：查询配置 DB 中该物种的可用 genome。只有一个时询问是否使用；多个时列出并询问选择。
+   - 用户拒绝唯一已安装版本，或 DB 没有该物种：查询 README 同物种预构建版本并让用户选择；选择后执行 `ngsviz-install-db`。
+   - README 也没有该物种：要求用户提供 UCSC GTF，执行 `ngsviz-build-db`。
+4. 确认 genome 与 BAM 比对使用的 assembly 完全一致。数据库存在性只表示可用，不证明 assembly 选择正确。
+5. 环境、物种、genome 和数据库全部解决后，才收集其余未知科学参数、创建 request 并运行 validate。
+
+每次调用辅助 skill、修改配置、安装 Java、下载/导入 DB 或因缺少 GTF 暂停时，都要在 commentary 中明确告知用户。
+
 ## 路径一：单样本只计算
 
-1. 提取需求并询问未知科学参数。
+1. 完成 Java 计算前置流程，提取需求并询问其余未知科学参数。
 2. 写入单样本 `compute_request.json`，不得包含 `samples[]`。
 3. 运行 Java `validate-compute`。
 4. 展示验证结果与 Java `run-compute` 原生命令，询问确认。
@@ -33,7 +52,7 @@ description: Safely orchestrate ngsViz native Java computation and R visualizati
 
 ## 路径二：多样本顺序计算
 
-1. 提取共享参数和 `samples[]`，写入符合 schema 的 `analysis_plan.json`。
+1. 完成 Java 计算前置流程，提取共享参数和 `samples[]`，写入符合 schema 的 `analysis_plan.json`。
 2. 将共享参数与每个 sample 展开为独立的 `compute_request.<sample_id>.json`。使用 `${sample_name}_${analysis.title}` 生成唯一 title；不得让 sample 覆盖 genome、region、strand 或 fragment length，不一致时拆分 analysis plan。
 3. 按数组顺序对每个 request 运行 Java `validate-compute`；全部验证成功前不得运行计算。
 4. 展示固定有序队列、每项命令、唯一输出目录与失败策略，询问一次批次确认。

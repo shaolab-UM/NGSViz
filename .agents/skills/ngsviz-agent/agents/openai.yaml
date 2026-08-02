@@ -1,4 +1,4 @@
 interface:
   display_name: "ngsViz Agent"
-  short_description: "安全编排 ngsViz 原生 Java 计算与 R 可视化"
-  default_prompt: "Use $ngsviz-agent to validate and orchestrate an ngsViz compute or visualization request."
+  short_description: "检查环境与参考数据库并安全编排 ngsViz 计算和绘图"
+  default_prompt: "Use $ngsviz-agent to preflight, validate, and orchestrate an ngsViz compute or visualization request."

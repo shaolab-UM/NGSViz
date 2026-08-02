@@ -20,6 +20,16 @@
 8. 用户只要求绘图时，不得生成 `compute_request.json`、调用 Java、重新计算 coverage 或修改现有计算结果。
 9. Codex 不得用旧 Java flags 代替 `compute_request.json`，也不得绕过 `validate-compute` 或 `validate-plot` 直接请求确认。
 
+## Java 计算前置环境与参考数据库
+
+1. 只可视化流程不检查 Java 环境。任何计算 request 或 `validate-compute` 前，先执行项目 skill `ngsviz-setup`，确保 `NGSViz_setting.json`、Java 17+、JAR、`tool_path` 和 `db_path` 有效。
+2. 用户明确提供 genome 时，先查询配置 DB。目标版本缺失但存在于 README 预构建目录时，执行 `ngsviz-install-db`；README 无该版本时，请用户提供对应 UCSC GTF，并执行 `ngsviz-build-db`。
+3. 用户未提供 genome 时，不得先给出特定物种的 genome 选项。未提供物种则先询问物种；已提供物种则查询配置 DB 中的可用 genome，一个时询问是否使用，多个时让用户选择。
+4. 配置 DB 没有该物种、或用户拒绝唯一已安装版本时，查询 README 同物种预构建版本；README 无该物种时转入 UCSC GTF 构建流程。
+5. 不得根据 BAM 文件名、细胞系、染色体命名或长度推断物种或 genome。必须由用户确认 BAM 比对使用的 assembly。
+6. 下载的 DB 必须先验证 SQLite 完整性、`defaultTbl`、目标 genome 和非空坐标表；Java `-DB` 导入后必须复查目标主 DB，不能只依赖进程退出码。
+7. 环境或参考数据库未就绪时，不得创建 compute request，也不得执行 `validate-compute`。
+
 ## 路径 A：单样本只计算
 
 ```text

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ngsViz GTF 数据库构建"
+  short_description: "从 UCSC GTF 构建、校验并导入 ngsViz 参考数据库"
+  default_prompt: "Use $ngsviz-build-db to build and import an ngsViz reference database from a UCSC GTF file."

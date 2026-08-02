@@ -1,0 +1,4 @@
+interface:
+  display_name: "ngsViz 参考数据库安装"
+  short_description: "查询、下载、校验并导入 ngsViz 预构建参考数据库"
+  default_prompt: "Use $ngsviz-install-db to install the required pre-built genome annotation database."

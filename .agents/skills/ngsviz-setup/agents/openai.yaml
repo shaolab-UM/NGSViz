@@ -1,0 +1,4 @@
+interface:
+  display_name: "ngsViz 环境配置"
+  short_description: "检查并修复 ngsViz Java、JAR、配置与数据库路径"
+  default_prompt: "Use $ngsviz-setup to inspect and repair the ngsViz runtime configuration before validation."
