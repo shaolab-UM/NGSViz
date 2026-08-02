@@ -1,5 +1,7 @@
 package com.NGSViz;
 
+import com.NGSViz.cli.CliDispatcher;
+import com.NGSViz.cli.CliExitCode;
 import com.NGSViz.configSet.InputParameterAttributes;
 import com.NGSViz.configSet.ProcessInputParameters;
 import com.NGSViz.coverageCalculator.MainCalculator;
@@ -16,6 +18,16 @@ import static com.NGSViz.configSet.InputParameterAttributes.*;
  */
 public class NGSViz {
     public static void main(String[] args) throws IOException, URISyntaxException {
+        if (CliDispatcher.shouldDispatch(args)) {
+            int exitCode = new CliDispatcher(System.out).dispatch(args);
+            if (exitCode != CliExitCode.SUCCESS.code()) {
+                System.exit(exitCode);
+            }
+            return;
+        }
+        if (CliOptions.handleInformationalOption(args)) {
+            return;
+        }
 
         long startTimeMillis = System.currentTimeMillis();
         // process the parameters
