@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "analysis": {
+    "title": "K562_histone_TSS",
+    "genome": "hg19",
+    "region": "tss",
+    "output_root": "agent_output/K562_histone_TSS",
+    "system_config": "NGSViz_setting.json",
+    "database": "RefSeq",
+    "analysis_type": "transcript",
+    "biotype": "protein_coding",
+    "flank_region": null,
+    "flank_factor": 0.0,
+    "num_datapoints": 100,
+    "mapping_quality": 20,
+    "fragment_length": 150,
+    "cores": 1,
+    "batch_size": 500,
+    "bin_method": "mean",
+    "strand_specific": "both",
+    "center_mode": false,
+    "custom_bed": null,
+    "gene_subset": "all",
+    "create_result_folder": false
+  },
+  "samples": [
+    {
+      "sample_id": "K562_H3K4me3",
+      "sample_name": "K562_H3K4me3_signal",
+      "group_name": "K562_H3K4me3_group",
+      "signal_bam": "Samples/K562_H3K4me3-ENCFF752MYF_5p.bam",
+      "control_bam": null,
+      "scale_ratio": null,
+      "output_dir": "agent_output/K562_histone_TSS/K562_H3K4me3"
+    },
+    {
+      "sample_id": "K562_H3K36me3",
+      "sample_name": "K562_H3K36me3_signal",
+      "group_name": "K562_H3K36me3_group",
+      "signal_bam": "Samples/K562_H3K36me3-ENCFF975JFV_5P.bam",
+      "control_bam": null,
+      "scale_ratio": null,
+      "output_dir": "agent_output/K562_histone_TSS/K562_H3K36me3"
+    }
+  ],
+  "execution": {
+    "mode": "sequential",
+    "failure_policy": "stop_on_error",
+    "visualization": "deferred"
+  }
+}

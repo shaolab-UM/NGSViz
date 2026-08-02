@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ngsviz.example/schemas/analysis_plan.schema.json",
+  "title": "ngsViz Codex sequential analysis plan",
+  "description": "Codex-only orchestration plan. Java and R must not read this file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "analysis", "samples", "execution"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "analysis": {"$ref": "#/$defs/analysis"},
+    "samples": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Non-empty ordered sample queue. sample_id, sample_name, group_name, signal_bam, and output_dir must each be unique across the array.",
+      "x-uniqueBy": ["sample_id", "sample_name", "group_name", "signal_bam", "output_dir"],
+      "items": {"$ref": "#/$defs/sample"}
+    },
+    "execution": {"$ref": "#/$defs/execution"}
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "nullableNonEmptyString": {
+      "oneOf": [
+        {"$ref": "#/$defs/nonEmptyString"},
+        {"type": "null"}
+      ]
+    },
+    "analysis": {
+      "description": "Shared computation parameters inherited by every expanded single-sample Java request.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "genome", "region", "output_root", "strand_specific", "fragment_length"],
+      "properties": {
+        "title": {"$ref": "#/$defs/nonEmptyString"},
+        "genome": {"$ref": "#/$defs/nonEmptyString"},
+        "region": {"$ref": "#/$defs/nonEmptyString"},
+        "output_root": {"$ref": "#/$defs/nonEmptyString"},
+        "system_config": {"$ref": "#/$defs/nullableNonEmptyString"},
+        "database": {"$ref": "#/$defs/nonEmptyString"},
+        "analysis_type": {"$ref": "#/$defs/nonEmptyString"},
+        "biotype": {"$ref": "#/$defs/nonEmptyString"},
+        "flank_region": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "flank_factor": {"type": "number"},
+        "num_datapoints": {"type": "integer", "minimum": 1},
+        "mapping_quality": {"type": "integer", "minimum": 0},
+        "fragment_length": {"type": "integer", "minimum": 0},
+        "cores": {"type": "integer", "minimum": 1},
+        "batch_size": {"type": "integer", "minimum": 1},
+        "bin_method": {"$ref": "#/$defs/nonEmptyString"},
+        "strand_specific": {"enum": ["both", "same", "opposite"]},
+        "center_mode": {"type": "boolean"},
+        "custom_bed": {"$ref": "#/$defs/nullableNonEmptyString"},
+        "gene_subset": {"$ref": "#/$defs/nonEmptyString"},
+        "create_result_folder": {"type": "boolean"}
+      }
+    },
+    "sample": {
+      "description": "Per-sample identity and input only. genome, region, strand_specific, and fragment_length are forbidden here because additionalProperties is false.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sample_id", "sample_name", "group_name", "signal_bam", "control_bam", "scale_ratio", "output_dir"],
+      "properties": {
+        "sample_id": {"$ref": "#/$defs/nonEmptyString"},
+        "sample_name": {"$ref": "#/$defs/nonEmptyString"},
+        "group_name": {"$ref": "#/$defs/nonEmptyString"},
+        "signal_bam": {"$ref": "#/$defs/nonEmptyString"},
+        "control_bam": {"$ref": "#/$defs/nullableNonEmptyString"},
+        "scale_ratio": {"oneOf": [{"type": "number"}, {"type": "null"}]},
+        "output_dir": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "failure_policy", "visualization"],
+      "properties": {
+        "mode": {"const": "sequential"},
+        "failure_policy": {
+          "enum": ["stop_on_error", "continue_on_error"],
+          "default": "stop_on_error"
+        },
+        "visualization": {"enum": ["deferred", "after_compute"]}
+      }
+    }
+  }
+}
