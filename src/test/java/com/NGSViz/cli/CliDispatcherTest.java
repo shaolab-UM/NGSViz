@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,16 +105,28 @@ class CliDispatcherTest {
     }
 
     @Test
-    void computeCommandsRemainUnsupportedInPhaseTwo() {
+    void validateComputeRejectsSamplesBeforeValidation() throws Exception {
+        Path request = Files.createTempFile("ngsviz-samples", ".json");
+        Files.writeString(request, "{\"samples\":[]}");
         DispatchResult validate = dispatch(
-                "validate-compute", "--request", "request.json"
+                "validate-compute", "--request", request.toString()
         );
+
+        assertEquals(2, validate.exitCode);
+        JSONObject response = new JSONObject(validate.output);
+        assertEquals("REQUEST_UNKNOWN_FIELD",
+                response.getJSONArray("errors").getJSONObject(0).getString("code"));
+        assertEquals("samples",
+                response.getJSONArray("errors").getJSONObject(0).getString("field"));
+        Files.deleteIfExists(request);
+    }
+
+    @Test
+    void runComputeRemainsUnsupportedInPhaseThree() {
         DispatchResult run = dispatch(
                 "run-compute", "--request", "request.json"
         );
 
-        assertEquals(2, validate.exitCode);
-        assertEquals("unsupported", new JSONObject(validate.output).getString("status"));
         assertEquals(2, run.exitCode);
         assertEquals("unsupported", new JSONObject(run.output).getString("status"));
     }

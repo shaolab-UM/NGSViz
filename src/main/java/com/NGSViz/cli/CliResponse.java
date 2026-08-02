@@ -1,7 +1,11 @@
 package com.NGSViz.cli;
 
+import com.NGSViz.compute.ComputeValidationResult;
+import com.NGSViz.compute.ValidationIssue;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /** Machine-readable response envelope for native CLI commands. */
 public final class CliResponse {
@@ -40,9 +44,34 @@ public final class CliResponse {
     public static CliResponse unsupported(String command) {
         return issueResponse(
                 command, "unsupported",
-                "Command is not implemented in Phase 2.",
+                "Command is not implemented in Phase 3.",
                 "COMMAND_UNSUPPORTED"
         );
+    }
+
+    public static CliResponse requestError(String command, String message,
+                                           JSONObject data, List<ValidationIssue> issues) {
+        return new CliResponse(
+                command, "error", CliExitCode.USAGE_ERROR.code(), message, data,
+                new JSONArray(), issuesJson(issues)
+        );
+    }
+
+    public static CliResponse validation(String command, JSONObject data,
+                                         ComputeValidationResult result) {
+        String status = result.isValid() ? "success" : "error";
+        String message = result.isValid() ? "Compute request is valid."
+                : "Compute request validation failed.";
+        return new CliResponse(
+                command, status, result.exitCode(), message, data,
+                result.warningsJson(), result.errorsJson()
+        );
+    }
+
+    private static JSONArray issuesJson(List<ValidationIssue> issues) {
+        JSONArray json = new JSONArray();
+        for (ValidationIssue issue : issues) json.put(issue.toJson());
+        return json;
     }
 
     private static CliResponse issueResponse(String command, String status,
