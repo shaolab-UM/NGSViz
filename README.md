@@ -214,20 +214,20 @@ Pre-built database of genomic functional elements
 
 | Organism  |     Scientific Name     | Genome Version | Annotation Source        |
 | :-------: | :---------------------: | :------------: | ------------------------ |
-|   Human   |      Homo_sapiens       |      hg38      | UCSC (RefSeq annotation) |
-|   Human   |      Homo_sapiens       |      hg19      | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       |      mm39      | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       |      mm10      | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       |      mm9       | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       |    danRer11    | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       |    danRer10    | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       |    danRer7     | UCSC (RefSeq annotation) |
-| Fruit fly | Drosophila_melanogaster |      Dm6       | UCSC (RefSeq annotation) |
-| Fruit fly | Drosophila_melanogaster |      dm3       | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       |    felCat9     | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       |    felCat8     | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       |    felCat5     | UCSC (RefSeq annotation) |
-|    Dog    |    Canis_familiaris     |    canFam6     | UCSC (RefSeq annotation) |
+|   Human   |      Homo_sapiens       | [hg38](https://drive.google.com/uc?export=download&id=1XprZE54eZ14FBGrvIajy91_O9ZOfwJSW) | UCSC (RefSeq annotation) |
+|   Human   |      Homo_sapiens       | [hg19](https://drive.google.com/uc?export=download&id=1XTp7i780krY87Uc1JDtVrz-Y5oimuitZ) | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       | [mm39](https://drive.google.com/uc?export=download&id=1lsbnW18O_MsQrGr2mRq-_cBrf2sHeGBw) | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       | [mm10](https://drive.google.com/uc?export=download&id=1fzTrVOWF2V-VPDODo6AS30kzAPNgHyt_) | UCSC (RefSeq annotation) |
+|   Mouse   |      Mus_musculus       | [mm9](https://drive.google.com/uc?export=download&id=1vjIk74g29LN7a7P8nwVyJMwtRhXR-b4r) | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       | [danRer11](https://drive.google.com/uc?export=download&id=1M3sxoVc2pAqAisTjVUsjnDaKBKYJHUUI) | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       | [danRer10](https://drive.google.com/uc?export=download&id=1gWaMnpPAMKYN4kzvaaw-oW3w1dnKy4_0) | UCSC (RefSeq annotation) |
+| Zebrafish |       Danio_rerio       | [danRer7](https://drive.google.com/uc?export=download&id=12MDJu47MGpoHqqM0o5w2VRouc75Y42_0) | UCSC (RefSeq annotation) |
+| Fruit fly | Drosophila_melanogaster | [Dm6](https://drive.google.com/uc?export=download&id=1k5tiDT6bwRj1DE6uUsLKB4K1UbtcGOH4) | UCSC (RefSeq annotation) |
+| Fruit fly | Drosophila_melanogaster | [dm3](https://drive.google.com/uc?export=download&id=1Y1V5lNyegP3DZYLUKP-GwijrbxHdOxOb) | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       | [felCat9](https://drive.google.com/uc?export=download&id=1mTiasy8GgfTcaRPZ6EP5SqiWoOCDKSpT) | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       | [felCat8](https://drive.google.com/uc?export=download&id=12gMeK7iAM6KP5S1LRjlzi7gMRMy6B56h) | UCSC (RefSeq annotation) |
+|    Cat    |       Felis_catus       | [felCat5](https://drive.google.com/uc?export=download&id=1TZrdhjFFvFfZVlnHiCDPrNrpPrOjGUMS) | UCSC (RefSeq annotation) |
+|    Dog    |    Canis_familiaris     | [canFam6](https://drive.google.com/uc?export=download&id=1JbB6udpnax4ZHjwUuaKZwRq0NNnWVRoG) | UCSC (RefSeq annotation) |
 
 #### Modify the build-in batabase path
 
