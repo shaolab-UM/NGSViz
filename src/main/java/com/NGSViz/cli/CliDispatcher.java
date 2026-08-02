@@ -64,7 +64,7 @@ public final class CliDispatcher {
         if (command == CliCommand.VALIDATE_COMPUTE) {
             return new ValidateComputeCommand().execute(args[2]);
         }
-        return CliResponse.unsupported(command.commandName());
+        return new RunComputeCommand().execute(args[2]);
     }
 
     private boolean containsRequest(String[] args) {

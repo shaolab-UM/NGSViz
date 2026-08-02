@@ -68,6 +68,15 @@ public final class CliResponse {
         );
     }
 
+    static CliResponse computation(String status, int exitCode, String message,
+                                   JSONObject data, List<ValidationIssue> warnings,
+                                   List<ValidationIssue> errors) {
+        return new CliResponse(
+                CliCommand.RUN_COMPUTE.commandName(), status, exitCode, message, data,
+                issuesJson(warnings), issuesJson(errors)
+        );
+    }
+
     private static JSONArray issuesJson(List<ValidationIssue> issues) {
         JSONArray json = new JSONArray();
         for (ValidationIssue issue : issues) json.put(issue.toJson());

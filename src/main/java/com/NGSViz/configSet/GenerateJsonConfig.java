@@ -117,6 +117,7 @@ public class GenerateJsonConfig extends InputParameterAttributes {
         JSONArray sample_array = new JSONArray();
         sample_array = buildJsonListConfig(sample_array, sample_list);
         plot_parameters.put("sample_list", sample_array);
+        plot_parameters.put("group_list", buildJsonListConfig(new JSONArray(), group_list));
         config.put("plot_parameters", plot_parameters);
 
         // create the output_paras JSONObject

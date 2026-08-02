@@ -30,8 +30,6 @@ public class MainCalculator extends InputParameterAttributes {
     private static String heatmap_file_name = "coverage_matrix_heatmap.csv";
     private static String read_count_file_name = "gene_read_count.csv";
     //private static boolean input_mode = false;
-    private static String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
-    private static JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
     private static SparseMatrix coverage_scaled_matrix;
     private static SparseMatrix coverage_scaled_matrix_bkg;
     private static Map<Integer, List<Transcript>> geneList_batches;
@@ -42,6 +40,8 @@ public class MainCalculator extends InputParameterAttributes {
 
 
     public static void mainCalculator() throws IOException {
+        String cleaned_path = DirectoryChecker.removeTrailingSlash(output_path);
+        JSONObject config_obj = GenerateJsonConfig.transformParas2JsonConfig();
         JSONArray jsonArray = new JSONArray();
         for (int i=0; i<bam_list.size(); i++) {
             boolean input_mode = false;

@@ -122,13 +122,16 @@ class CliDispatcherTest {
     }
 
     @Test
-    void runComputeRemainsUnsupportedInPhaseThree() {
+    void runComputeReadsTheNativeRequest() {
         DispatchResult run = dispatch(
                 "run-compute", "--request", "request.json"
         );
 
         assertEquals(2, run.exitCode);
-        assertEquals("unsupported", new JSONObject(run.output).getString("status"));
+        JSONObject response = new JSONObject(run.output);
+        assertEquals("error", response.getString("status"));
+        assertEquals("REQUEST_JSON_INVALID",
+                response.getJSONArray("errors").getJSONObject(0).getString("code"));
     }
 
     private DispatchResult dispatch(String... args) {

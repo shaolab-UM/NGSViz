@@ -27,7 +27,10 @@ public final class ComputeRequestReader {
     );
 
     public ComputeRequest read(Path requestFile) throws ComputeRequestFormatException {
-        JSONObject json = readJson(requestFile);
+        return read(readJson(requestFile));
+    }
+
+    public ComputeRequest read(JSONObject json) throws ComputeRequestFormatException {
         List<ValidationIssue> issues = validateShape(json);
         ComputeRequest request = new ComputeRequest();
         if (issues.isEmpty()) {
