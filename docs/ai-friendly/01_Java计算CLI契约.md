@@ -69,7 +69,7 @@ Java CLI 有且只有以下两种计算输入模式：
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.3",
   "sample_id": "H3K4me3",
   "sample_name": "K562_H3K4me3",
   "group_name": "K562",
@@ -108,7 +108,7 @@ Java CLI 有且只有以下两种计算输入模式：
 
 | 字段 | JSON 类型 | 必填 | 默认值或解析来源 | 约束与含义 |
 |---|---|---:|---|---|
-| `schema_version` | string | 否 | `"1.0"` | 当前只接受 `"1.0"` |
+| `schema_version` | string | 否 | `"1.3"` | 当前只接受 `"1.3"` |
 | `sample_id` | string | 是 | 无 | 单次运行的稳定标识；非空；仅作输出元数据 |
 | `sample_name` | string | 是 | 无 | 样本显示名称；非空；仅作输出元数据 |
 | `group_name` | string | 是 | 无 | 分组显示名称；非空；仅作输出元数据 |
