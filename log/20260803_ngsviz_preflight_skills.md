@@ -12,7 +12,7 @@
 
 ## 自查
 
-- 环境检查器识别当前 Java 22、可运行 JAR、配置路径及 DB 中 `hg19`、`hg38`、`mm39`。
+- 环境检查器识别当前 Java 22、可运行 JAR、AI-friendly CLI 命令、配置路径及 DB 中 `hg19`、`hg38`、`mm39`。
 - README 目录解析器正确返回 Human 的 `hg19`、`hg38` 及直接下载链接。
 - DB 检查器通过 SQLite `quick_check`，确认三个坐标表存在且非空。
 - GTF 检查器对缺失文件按预期返回非零状态。

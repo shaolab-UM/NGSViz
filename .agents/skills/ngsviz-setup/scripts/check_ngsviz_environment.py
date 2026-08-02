@@ -157,19 +157,42 @@ def choose_database(rows: list[dict[str, Any]], genome: str | None) -> tuple[dic
 
 
 def inspect_jar(java_path: Path, jar_path: Path) -> dict[str, Any]:
-    result: dict[str, Any] = {"path": str(jar_path), "runnable": False, "version_output": ""}
+    result: dict[str, Any] = {
+        "path": str(jar_path),
+        "runnable": False,
+        "cli_compatible": False,
+        "version_output": "",
+    }
     try:
-        process = subprocess.run(
+        version_process = subprocess.run(
             [str(java_path), "-jar", str(jar_path), "-V"],
             capture_output=True,
             text=True,
             timeout=20,
         )
-        output = "\n".join(part.strip() for part in (process.stdout, process.stderr) if part.strip())
-        result["exit_code"] = process.returncode
+        output = "\n".join(
+            part.strip() for part in (version_process.stdout, version_process.stderr) if part.strip()
+        )
+        result["version_exit_code"] = version_process.returncode
         result["version_output"] = output
-        result["runnable"] = process.returncode == 0 and bool(output)
-    except (OSError, subprocess.SubprocessError) as error:
+        result["runnable"] = version_process.returncode == 0 and bool(output)
+        describe_process = subprocess.run(
+            [str(java_path), "-jar", str(jar_path), "describe", "--format", "json"],
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+        result["describe_exit_code"] = describe_process.returncode
+        contract = json.loads(describe_process.stdout)
+        commands = set(contract.get("data", {}).get("commands", []))
+        required = {"describe", "validate-compute", "run-compute"}
+        result["commands"] = sorted(commands)
+        result["cli_compatible"] = (
+            describe_process.returncode == 0
+            and contract.get("status") == "success"
+            and required.issubset(commands)
+        )
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as error:
         result["error"] = str(error)
     return result
 
@@ -256,6 +279,8 @@ def main() -> int:
         jar_inspection = inspect_jar(Path(java_selected["path"]), jar_selected)
         if not jar_inspection["runnable"]:
             errors.append("NGSVIZ_JAR_NOT_RUNNABLE")
+        elif not jar_inspection["cli_compatible"]:
+            errors.append("NGSVIZ_AI_CLI_UNSUPPORTED")
 
     db_rows = database_candidates(tool_path, tools.get("db_path"))
     db_selected, db_ambiguous = choose_database(db_rows, args.genome)

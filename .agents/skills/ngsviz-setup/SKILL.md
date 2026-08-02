@@ -35,7 +35,7 @@ description: Inspect, create, and repair NGSViz_setting.json and the local ngsVi
 ## 就绪条件
 
 - Java 可执行且主版本至少为 17。
-- `tool_path/tool_name` 是存在的普通 JAR 文件。
+- `tool_path/tool_name` 是存在且可运行的 JAR，并且 `describe --format json` 声明支持 `validate-compute` 和 `run-compute`。
 - `db_path` 是可读 SQLite 文件，包含 `defaultTbl`，且坐标表元数据有效。
 - 配置中的四个路径均为当前机器的真实路径。
 
