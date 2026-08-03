@@ -70,8 +70,8 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 
 #### 2. Install dependency environment
 
-- `environment.yml` 是 Linux x86_64、Intel macOS 和 Apple Silicon macOS 共用的直接依赖规范；精确的软件包构建记录在 `conda-lock/`。
-- 根据当前平台使用对应锁文件创建完整环境：
+- `environment.yml` defines the shared direct dependencies for Linux x86_64, Intel macOS, and Apple Silicon macOS. Exact package builds are recorded in `conda-lock/`.
+- Create the complete environment from the lock file matching the current platform:
 
   ```bash
   conda create -n ngsViz --file conda-lock/linux-64.lock
@@ -79,15 +79,15 @@ git clone git@github.com:shaolab-UM/NGSViz.git
   conda create -n ngsViz --file conda-lock/osx-arm64.lock
   ```
 
-  三条命令只执行与当前平台匹配的一条。随后安装 Conda 渠道尚未提供 macOS arm64 构建的固定版本 R 包：
+  Run only the command matching the current platform. Then install the pinned R package whose macOS arm64 build is unavailable from the configured Conda channels:
 
   ```bash
-  conda run -n ngsViz Rscript scripts/02_install_r_post_dependencies.R
+  conda run -n ngsViz Rscript lib/install_r_post_dependencies.R
   ```
 
-- `environment-linux-64.yml` 是改造前的 Linux x86_64 历史导出文件，仅用于追溯，不用于新安装。
-- 只需自动配置 Java 时，使用跨平台 Java-only 环境：`conda env create -f environment-java.yml`。然后运行 `conda run -n ngsViz-java java -version`，确认 Java 主版本不低于 17。
-- 更新依赖后，使用隔离安装的 `conda-lock` 运行 `scripts/01_generate_conda_locks.sh`，并重新执行三个平台的求解检查与当前平台 smoke test。
+- `environment-linux-64.yml` is the historical Linux x86_64 export retained for traceability and is not intended for new installations.
+- When only Java needs to be configured automatically, create the cross-platform Java-only environment with `conda env create -f environment-java.yml`. Then run `conda run -n ngsViz-java java -version` and confirm that the Java major version is at least 17.
+- After changing dependencies, run `lib/generate_conda_locks.sh` with an isolated `conda-lock` installation, then repeat dependency resolution checks for all three platforms and the smoke test for the current platform.
 
 
 #### 4. Other Dependencies

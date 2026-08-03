@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PORTABLE_ENVIRONMENT = ROOT / "environment.yml"
 LINUX_HISTORY = ROOT / "environment-linux-64.yml"
 LOCK_DIRECTORY = ROOT / "conda-lock"
-LOCK_SCRIPT = ROOT / "scripts/01_generate_conda_locks.sh"
-POST_INSTALL_SCRIPT = ROOT / "scripts/02_install_r_post_dependencies.R"
+LOCK_SCRIPT = ROOT / "lib/generate_conda_locks.sh"
+POST_INSTALL_SCRIPT = ROOT / "lib/install_r_post_dependencies.R"
 TARGET_PLATFORMS = ("linux-64", "osx-64", "osx-arm64")
 REQUIRED_DIRECT_DEPENDENCIES = {
     "cxx-compiler",
