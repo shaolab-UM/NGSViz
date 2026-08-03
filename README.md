@@ -105,8 +105,8 @@ conda activate ngsViz
 The repository includes a runnable release JAR. To rebuild it from source:
 
 ```bash
-mvn clean package
 mvn test
+mvn clean package
 ```
 
 The current release JAR is `ngsViz-1.3.jar`. Use the JAR selected in `NGSViz_setting.json` or verify a candidate with:
@@ -129,7 +129,7 @@ The current release JAR is `ngsViz-1.3.jar`. Use the JAR selected in `NGSViz_set
 ```json
 {
   "versionNum": {
-    "version": "1.0"
+    "version": "1.3"
   },
   "toolParas": {
     "tool_path": "/absolute/path/to/NGSViz",
@@ -300,7 +300,7 @@ Run `/absolute/path/to/java -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar -H` for
 | `-BS` | No | `500` | Gene batch size |
 | `-BM` | No | `mean` | Bin summary: `mean`, `median`, or `max` |
 | `-SS` | No | `both` | Strand mode: `both`, `same`, or `opposite` |
-| `-S` | No | CPM | Signal scale ratio; when absent, retain CPM normalization |
+| `-S` | No | None | Signal scale ratio; when absent, retain CPM normalization |
 | `-BD` | No | None | Custom BED interval file |
 | `-X` | No | `all` | Gene subset or gene-list path |
 | `-NF` | No | `false` | Create a title-named directory under `-O` |
@@ -308,9 +308,6 @@ Run `/absolute/path/to/java -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar -H` for
 | `-DB` | Administrative | None | Merge a reference database and exit |
 | `-H` | Informational | None | Print help and exit |
 | `-V` | Informational | None | Print version and exit |
-| `-J` | Deprecated | None | Retained parser placeholder; it does not load AI configuration |
-
-The default flank size is `2000` for `tss`, `tes`, `genebody`, `exon`, and `cgi`; `1500` for `enhancer`; and `1000` for `dhs` and `bed` when those regions are available.
 
 #### Extended compute example
 
@@ -380,8 +377,6 @@ Open `http://127.0.0.1:3838` in a browser. To expose the app on a trusted networ
 | Help | Display this README inside the application |
 | AboutUs | Project and team information |
 
-The repository currently includes the ngsViz logo but no maintained GUI screenshot. A screenshot is therefore not embedded here; the panel descriptions above follow the current UI source.
-
 The GUI is intended for interactive use. AI agents must use the native Java and R CLIs and must not automate the GUI.
 
 ## AI agent usage
@@ -398,7 +393,7 @@ Legacy flags are convenient for a person typing one command, but an agent needs 
 - Separate compute and visualization confirmations.
 - Deterministic, sequential orchestration for multiple samples.
 
-The AI mode does not add a new analysis engine, Python runner, MCP service, Web API, or combined Java/R process. It orchestrates the same native Java computation and R plotting logic used by other interfaces.
+The AI mode does not add a new analysis engine, MCP service, Web API, or combined Java/R process. It orchestrates the same native Java computation and R plotting logic used by other interfaces.
 
 ### Skills and rules
 
@@ -669,10 +664,6 @@ Supported native CLI figure types are `tiff`, `png`, and `pdf`.
 
 ## Troubleshooting
 
-### The JAR name and reported version differ
-
-The current Maven `finalName` is historical. Use `NGSViz_setting.json` and verify the selected file with `-V` or `describe --format json`. Do not rename files solely to make the basename match version 1.3.
-
 ### The system configuration cannot be found
 
 Without `-CP`, Java looks for `NGSViz_setting.json` beside the running JAR. Supply an explicit absolute configuration path or place a valid file beside the JAR.
@@ -724,8 +715,6 @@ The repository does not currently maintain a standalone `CHANGELOG.md`. Relevant
 - **1.3**: Native `describe`, `validate-compute`, and `run-compute` Java commands; native R validation and manifest workflow; machine-readable responses; installable framework-neutral Agent Skills; analysis-project working-directory support; sequential multi-sample orchestration rules; independent Java/R confirmations.
 - **1.2**: Binning and scaling documentation updates, container-era distribution work, and compatibility fixes.
 - **1.0**: Original Java computation, R visualization, and R Shiny workflow.
-
-This README removes obsolete syntax such as `Rscript lib/ngsVizPlotMain.R -O ...`, replaces the non-rendering `[TOC]` marker, and moves low-level schemas and exit behavior to the authoritative AI-friendly contracts.
 
 ## Contributing
 

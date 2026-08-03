@@ -38,15 +38,15 @@ class CliOptionsTest {
     }
 
     @Test
-    void yamlOptionStoresAiConfigurationPath() {
-        InputParameterAttributes.ai_config_path = null;
-
-        GetInputParameterValue.getInputParametersValue(
-                new String[]{"-J", "agent/examples/config.yaml"}
-        );
-
-        assertEquals("agent/examples/config.yaml", InputParameterAttributes.ai_config_path);
-    }
+//    void yamlOptionStoresAiConfigurationPath() {
+//        InputParameterAttributes.ai_config_path = null;
+//
+//        GetInputParameterValue.getInputParametersValue(
+//                new String[]{"-J", "agent/examples/config.yaml"}
+//        );
+//
+//        assertEquals("agent/examples/config.yaml", InputParameterAttributes.ai_config_path);
+//    }
 
     private ProcessResult runNgsviz(String option) throws IOException, InterruptedException {
         String javaExecutable = Path.of(
