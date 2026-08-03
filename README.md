@@ -326,22 +326,56 @@ NGSViz provides built-in **intergenic region annotations** for both **human and 
 java -jar NGSViz-1.3.jar [parameter]
 ```
 
-#### Native AI-Friendly Request Interface (Planned)
+#### Java 原生计算 CLI
 
-AI workflows pass computation parameters through one single-sample JSON request file. They do not expand the JSON fields into legacy CLI flags.
+构建后使用 `target/NGSViz-1.0.jar`。AI 计算参数只能通过一份单样本 `compute_request.json` 传入 Java；该文件必须只包含一个 signal sample，可选一个 control BAM，并且禁止出现 `samples` 数组。
 
 ```bash
-java -jar NGSViz-1.3.jar validate-compute --request compute_request.json
-java -jar NGSViz-1.3.jar run-compute --request compute_request.json
+java -jar target/NGSViz-1.0.jar describe --format json
+java -jar target/NGSViz-1.0.jar validate-compute --request compute_request.json
+java -jar target/NGSViz-1.0.jar run-compute --request compute_request.json
 ```
 
-Legacy CLI flags and `--request` are mutually exclusive inputs. Both are normalized internally to the same `ComputeRequest`, validated through the same boundary, and passed to the same `MainCalculator`.
+`validate-compute` 只读验证系统配置、数据库、BAM/BAI、参数和输出路径，不创建计算目录。只有验证结果展示并取得第一次明确确认后，才能调用 `run-compute`。Java 只负责计算，不启动 R，也不以是否生成图片作为成功条件。
+
+旧 CLI flags 继续兼容。旧 flags 与 JSON 请求都在内部归一化为同一个 `ComputeRequest`，共用同一个 validator 和 `MainCalculator`；两种输入模式禁止混用，JSON 模式不得追加旧 flags。
 
 ```text
 legacy CLI flags ──────┐
                       ├─> ComputeRequest ─> validate ─> MainCalculator
 compute_request.json ─┘
 ```
+
+#### R 原生可视化 CLI
+
+R CLI 只读取现有 plot-setting JSON 及其引用的 coverage CSV，不检查 BAM、数据库或 Java 环境，也不启动 Java：
+
+```bash
+Rscript lib/ngsVizPlotMain.R describe
+Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualization_workspace
+Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace
+```
+
+`validate-plot` 不生成图片和 manifest。验证结果展示并取得第二次、独立的明确确认后，才能调用 `run-plot`。旧的单目录入口 `Rscript lib/ngsVizPlotMain.R <directory>` 继续兼容，并归一化到同一套 R validator 和绘图入口。
+
+#### Codex 四种使用路径
+
+1. 单样本只计算：生成一份单样本 request，验证、确认、计算，读取该样本的 `compute_manifest.json` 后结束。
+2. 多样本顺序计算：Codex 读取 `analysis_plan.json`，按 `samples` 数组顺序展开多份单样本 request；全部验证通过并确认后严格串行计算。
+3. 只可视化：直接验证已有 visualization workspace，确认后只运行 R，不重新计算。
+4. 完整流程：先完成 Java 计算阶段，再独立决定立即绘图或以后单独调用 R。
+
+多样本执行时，Java 永远不接收 `analysis_plan.json` 或 `samples` 数组。每个 request 的 `sample_id`、`sample_name`、`group_name` 和 `output_dir` 必须唯一；前一个 Java 进程退出、对应 manifest 验证并更新 `analysis_index.json` 后，才可启动下一个。默认失败策略为 `stop_on_error`。
+
+R 可以在 Java 完成后立即调用，也可以在数小时或数天后独立调用。延迟调用时，新建 visualization workspace，只把需要绘制的 plot-setting JSON 复制到目录第一层，不复制、移动或覆盖 coverage CSV。Java 批次确认不授权 R 绘图，因此完整流程有两次独立确认：第一次授权 `run-compute`，第二次授权 `run-plot`。
+
+三类记录职责互不替代：
+
+| 文件 | 维护者 | 职责 |
+| --- | --- | --- |
+| `compute_manifest.json` | Java | 记录一个单样本计算的参数、状态、CSV、plot-setting 和计算日志 |
+| `analysis_index.json` | Codex | 按顺序索引各单样本 request 与 compute manifest，不证明科学计算本身成功 |
+| `visualization_manifest.json` | R | 记录一次独立绘图的输入、图片、状态和 R 日志，不包含 Java 计算状态 |
 
 #### Parameters
 

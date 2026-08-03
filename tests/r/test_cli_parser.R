@@ -2,15 +2,15 @@ test_cli_parser <- function(project_root) {
   source(file.path(project_root, "lib", "cli", "cli_response.R"))
   source(file.path(project_root, "lib", "cli", "cli_parser.R"))
 
-  described <- parse_cli_args(c("describe", "--format", "json"))
+  described <- parse_cli_args("describe")
   stopifnot(
     identical(described$mode, "native"),
     identical(described$command, "describe"),
-    identical(described$format, "json")
+    is.null(described$input_dir)
   )
 
   validated <- parse_cli_args(c(
-    "validate-plot", "--input", "/tmp/input", "--format", "json"
+    "validate-plot", "--input-dir", "/tmp/input"
   ))
   stopifnot(
     identical(validated$command, "validate-plot"),
@@ -25,12 +25,12 @@ test_cli_parser <- function(project_root) {
   )
 
   unsupported <- parse_cli_args(c(
-    "run-plot", "--input", "/tmp/input", "--format", "json"
+    "run-plot", "--input-dir", "/tmp/input"
   ))
   stopifnot(identical(unsupported$command, "run-plot"))
 
   invalid <- tryCatch(
-    parse_cli_args(c("validate-plot", "--format", "json")),
+    parse_cli_args(c("validate-plot", "--input", "/tmp/input")),
     cli_argument_error = identity
   )
   stopifnot(inherits(invalid, "cli_argument_error"))

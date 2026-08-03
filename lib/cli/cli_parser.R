@@ -8,25 +8,24 @@ cli_argument_error <- function(command, message) {
 
 parse_native_options <- function(args, command) {
   expected <- if (command == "describe") {
-    c(command, "--format", "json")
+    command
   } else {
-    c(command, "--input", NA_character_, "--format", "json")
+    c(command, "--input-dir", NA_character_)
   }
   valid <- length(args) == length(expected)
   fixed <- !is.na(expected)
   if (valid) valid <- identical(args[fixed], expected[fixed])
   if (!valid || (command != "describe" && !nzchar(args[3]))) {
     usage <- if (command == "describe") {
-      "describe requires --format json."
+      "describe does not accept arguments."
     } else {
-      paste0(command, " requires --input <directory> --format json.")
+      paste0(command, " requires --input-dir <directory>.")
     }
     cli_argument_error(command, usage)
   }
   list(
     mode = "native", command = command,
-    input_dir = if (command == "describe") NULL else args[3],
-    format = "json"
+    input_dir = if (command == "describe") NULL else args[3]
   )
 }
 

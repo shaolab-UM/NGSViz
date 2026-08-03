@@ -51,6 +51,9 @@ audit/
 # Analysis logs
 log/
 
+# Agent-generated workflow outputs
+agent_output/
+
 # Local test runner
 run_tests.sh
 

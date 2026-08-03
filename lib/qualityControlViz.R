@@ -145,6 +145,22 @@ getPCAVarianceText <- function(pca_eig, num){
   return(pc_text)
 }
 
+preparePcaPlotData <- function(coordinates, eigenvalues, dimensions = 2L) {
+  coordinate_matrix <- as.matrix(coordinates)
+  available <- min(dimensions, ncol(coordinate_matrix))
+  plot_data <- data.frame(coordinate_matrix[, seq_len(available), drop = FALSE])
+  if (available < dimensions) {
+    for (index in seq.int(available + 1L, dimensions)) {
+      plot_data[[index]] <- 0
+    }
+  }
+  colnames(plot_data) <- paste0("PC", seq_len(dimensions))
+  variance <- round(as.numeric(eigenvalues), 2)
+  length(variance) <- dimensions
+  variance[is.na(variance)] <- 0
+  list(data = plot_data, variance = variance)
+}
+
 runPCA <- function(heatmapMat_rowMerge, json_path){
   plot_para_list <- getJsonFiles(json_path)
   plot_paras_name <- plot_para_list[[1]]
@@ -152,11 +168,11 @@ runPCA <- function(heatmapMat_rowMerge, json_path){
   plot_paras <- getPlotJsonParas(plot_paras_path)
   
   gene <- t(heatmapMat_rowMerge)
-  pca_num <- 2
+  pca_num <- max(1L, min(2L, nrow(gene) - 1L, ncol(gene)))
   gene.pca <- FactoMineR::PCA(gene, scale.unit = TRUE, graph = FALSE, ncp=pca_num)
-  pca_data <- data.frame(gene.pca$ind$coord)
-  colnames(pca_data) <- paste("PC", 1:pca_num, sep = "")
-  pca_eig <- round(gene.pca$eig[ ,2],2)
+  prepared <- preparePcaPlotData(gene.pca$ind$coord, gene.pca$eig[, 2])
+  pca_data <- prepared$data
+  pca_eig <- prepared$variance
   # plot label
   pc1_text <- getPCAVarianceText(pca_eig, 1)
   pc2_text <- getPCAVarianceText(pca_eig, 2)
