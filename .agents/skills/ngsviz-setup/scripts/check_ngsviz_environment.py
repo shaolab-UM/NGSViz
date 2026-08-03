@@ -28,6 +28,17 @@ def read_config(path: Path) -> tuple[dict[str, Any], list[str]]:
         return {}, ["CONFIG_INVALID_JSON"]
 
 
+def inspect_tool_path(path: Path) -> dict[str, Any]:
+    readme = path / "README.md"
+    library = path / "lib"
+    missing: list[str] = []
+    if not readme.is_file() or not os.access(readme, os.R_OK):
+        missing.append("README.md")
+    if not library.is_dir() or not os.access(library, os.R_OK | os.X_OK):
+        missing.append("lib/")
+    return {"path": str(path), "valid": not missing, "missing": missing}
+
+
 def java_version(java_path: Path) -> tuple[int | None, str]:
     try:
         result = subprocess.run(
@@ -281,6 +292,9 @@ def main() -> int:
     warnings: list[str] = list(config_issues)
     if configured_tool and Path(configured_tool).expanduser().resolve() != tool_path:
         warnings.append("TOOL_PATH_MISMATCH")
+    tool_inspection = inspect_tool_path(tool_path)
+    if not tool_inspection["valid"]:
+        errors.append("TOOL_PATH_INCOMPLETE")
 
     java_rows = java_candidates(tools.get("java_path"))
     compatible_java = [row for row in java_rows if row["compatible"]]
@@ -330,6 +344,7 @@ def main() -> int:
         "errors": sorted(set(errors)),
         "warnings": sorted(set(warnings)),
         "selected": {
+            "tool_path": tool_inspection,
             "java": java_selected,
             "jar": jar_inspection,
             "database": db_selected,

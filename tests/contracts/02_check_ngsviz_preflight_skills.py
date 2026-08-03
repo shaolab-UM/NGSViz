@@ -91,6 +91,16 @@ class SetupEnvironmentTests(unittest.TestCase):
             self.assertEqual(result["error"], "COORDINATE_TABLE_EMPTY")
             self.assertEqual(result["empty_tables"], ["hg38_RefSeq"])
 
+    def test_tool_path_requires_readme_and_lib_directory(self) -> None:
+        setup = load_module("ngsviz_setup_tool_path", SETUP_TOOL)
+        with tempfile.TemporaryDirectory() as temporary:
+            tool_path = Path(temporary)
+
+            result = setup.inspect_tool_path(tool_path)
+
+            self.assertFalse(result["valid"])
+            self.assertEqual(result["missing"], ["README.md", "lib/"])
+
 
 class BuildDatabaseTests(unittest.TestCase):
     def test_mixed_ncbi_accession_chromosomes_are_rejected(self) -> None:
