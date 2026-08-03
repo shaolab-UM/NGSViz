@@ -10,7 +10,7 @@ ngsViz is a local analysis and visualization toolkit for BAM-based next-generati
 - **R visualization CLI**: reads existing `*_NGSViz_plotSetting.json` files and their referenced CSV files, creates figures, and writes `visualization_manifest.json`.
 - **R Shiny interface**: provides an interactive user interface for computation, visualization, and help. AI orchestration should use the native Java and R CLIs instead of automating the Shiny UI.
 - **SQLite reference database**: stores installed species, genome assemblies, genomic feature coordinates, region definitions, and default analysis parameters.
-- **Codex skills**: prepare the environment, resolve or build reference databases, validate scientific parameters, and orchestrate Java and R without becoming part of the ngsViz runtime.
+- **Agent skills**: framework-neutral Agent Skills prepare the environment, resolve or build reference databases, validate scientific parameters, and orchestrate Java and R without becoming part of the ngsViz runtime.
 
 ## AI Entry Points
 
@@ -20,13 +20,15 @@ Read these files before preparing or running an ngsViz workflow:
 2. `agent/ai-friendly/00_native_architecture_and_collaboration_boundaries.md` — component ownership and compatibility boundaries.
 3. `agent/ai-friendly/01_java_compute_cli_contract.md` — compute request, validation, execution, outputs, and exit behavior.
 4. `agent/ai-friendly/02_r_visualization_cli_contract.md` — visualization input, validation, execution, and manifest behavior.
-5. `agent/ai-friendly/03_codex_orchestration_and_confirmation_contract.md` — multi-sample sequencing, confirmations, workspaces, and indexing.
+5. `agent/ai-friendly/03_agent_orchestration_and_confirmation_contract.md` — multi-sample sequencing, confirmations, workspaces, and indexing.
 
-Use `.agents/skills/ngsviz-agent/SKILL.md` as the workflow router. For compute workflows, follow its required preflight skills in order:
+Use `agent/skills/ngsviz-agent/SKILL.md` as the workflow router. Before the first analysis, install the directories under `agent/skills/` into the AI framework's user-level skill directory. For compute workflows, follow the router's required preflight skills in order:
 
-- `.agents/skills/ngsviz-setup/SKILL.md`
-- `.agents/skills/ngsviz-install-db/SKILL.md` when a supported prebuilt database is missing
-- `.agents/skills/ngsviz-build-db/SKILL.md` when a matching database must be built from a UCSC GTF
+- `agent/skills/ngsviz-setup/SKILL.md`
+- `agent/skills/ngsviz-install-db/SKILL.md` when a supported prebuilt database is missing
+- `agent/skills/ngsviz-build-db/SKILL.md` when a matching database must be built from a UCSC GTF
+
+The analysis project, not the ngsViz repository, is the normal working directory. Resolve the ngsViz installation root from the installed skill's real source path or an explicitly supplied absolute installation path. Never infer it from the current working directory. After resolution, read `agent/ngsViz_agent.md` and `agent/ai-friendly/` from that installation root by absolute path.
 
 The README is the human-facing installation and usage reference. The AI-friendly contracts are authoritative for AI orchestration. Do not duplicate schemas, parameter tables, exit codes, or manifest definitions in this file.
 
@@ -56,13 +58,19 @@ Classify each request into exactly one workflow before acting:
 ## Native CLI Shape
 
 ```bash
-java -jar NGSViz-1.3.jar describe --format json
-java -jar NGSViz-1.3.jar validate-compute --request /absolute/path/compute_request.json
-java -jar NGSViz-1.3.jar run-compute --request /absolute/path/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-<version>.jar \
+  describe --format json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-<version>.jar \
+  validate-compute --request /absolute/path/to/analysis/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-<version>.jar \
+  run-compute --request /absolute/path/to/analysis/compute_request.json
 
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualization_workspace
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/visualization_workspace
 ```
 
 Resolve the actual JAR path from `NGSViz_setting.json` and the environment preflight. Do not assume that the release JAR name and Maven build artifact name are identical.

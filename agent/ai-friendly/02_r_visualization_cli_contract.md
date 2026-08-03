@@ -8,10 +8,12 @@
 - `run-plot` orchestrates existing logic in `lib/coverageHeatmap.R` and `lib/qualityControlViz.R`; it must not duplicate or change plot algorithms.
 
 ```text
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir <plot_json_directory>
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir <plot_json_directory>
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/visualization_workspace
 ```
+
+Resolve the R entry point from the validated ngsViz installation root. The analysis project remains the process working directory; the R script path must not be resolved relative to it.
 
 - `describe` needs no directory, reads no input, runs no plotting code, and returns exit code `0` with commands, arguments, schema versions, R packages, outputs, and exit codes.
 - `validate-plot` accepts exactly one `--input-dir`, validates dependencies and inputs only, creates no figure, calls no plot function, and writes no manifest.
@@ -21,7 +23,7 @@ Rscript lib/ngsVizPlotMain.R run-plot --input-dir <plot_json_directory>
 
 ## Legacy directory entry point
 
-`Rscript lib/ngsVizPlotMain.R <plot_json_directory>` remains valid and is interpreted as `run-plot --input-dir <plot_json_directory>` when the single positional argument is not a known subcommand.
+`Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R <plot_json_directory>` remains valid and is interpreted as `run-plot --input-dir <plot_json_directory>` when the single positional argument is not a known subcommand.
 
 - It shares the same validator, plot call site, manifest, and new exit codes.
 - Do not mix the positional directory with `--input-dir` or a subcommand.

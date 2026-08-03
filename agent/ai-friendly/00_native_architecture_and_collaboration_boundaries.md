@@ -9,13 +9,16 @@
 
 ## External orchestration boundaries
 
-- The Codex Skill defines orchestration outside the project. It is not part of the runtime, Java/R dependencies, release archive, or execution environment.
+- The installed Agent Skill defines orchestration outside the project. It is not part of the Java/R runtime or scientific computation.
+- Source skills are distributed under `<ngsviz_root>/agent/skills/` and must be installed into the current AI framework's user-level skill directory before the first analysis. The destination is framework-specific and is not limited to Codex.
+- The analysis project is the normal working directory. The skill resolves the ngsViz installation root independently, reads `agent/ngsViz_agent.md` and `agent/ai-friendly/` from that root by absolute path, and keeps analysis artifacts under the analysis project.
+- A symbolic-link installation may derive the ngsViz root from the installed skill's real source path. A copied installation requires an absolute ngsViz root supplied through `NGSVIZ_HOME` or explicitly by the user. The agent must never infer the installation from the analysis working directory.
 - The AI-friendly workflow must not introduce Python, MCP, or a Web API. Orchestration may call only the native Java CLI, R CLI, and local files.
-- Codex must write a single-sample `compute_request.json` before calling `run-compute --request <path>` or `validate-compute --request <path>`. It must not construct a legacy-flags command containing all compute parameters.
+- The agent must write a single-sample `compute_request.json` before calling `run-compute --request <path>` or `validate-compute --request <path>`. It must not construct a legacy-flags command containing all compute parameters.
 - The JSON request path is the only compute-parameter input for AI-friendly Java commands. Legacy flags such as `-G`, `-R`, `-I`, and `-O` must not be appended or used to override JSON fields.
 - `-J <yaml>`, YAML configuration, and YAML loaders are forbidden for AI parameters. The existing `-J` placeholder is not part of the new interface.
 - Each Java invocation computes exactly one signal sample and, optionally, one background/input BAM.
-- Codex implements multi-sample computation by launching Java processes sequentially, checking each exit status and output before starting the next process.
+- The agent implements multi-sample computation by launching Java processes sequentially, checking each exit status and output before starting the next process.
 - Multi-sample computation must not add an AI-only batch layer inside Java, and R must never trigger computation.
 
 ## File contract
@@ -37,7 +40,7 @@
 ## Standard execution relationship
 
 ```text
-Codex Skill (external orchestration)
+Installed Agent Skill (external orchestration)
   |-- write sample 1 compute_request.json -> launch Java CLI once --+
   |-- write sample 2 compute_request.json -> launch Java CLI once --+-- sequential
   `-- write sample N compute_request.json -> launch Java CLI once --+
@@ -49,5 +52,5 @@ legacy CLI flags ---------+
 compute_request.json -----+
 
 At any later time:
-User or Codex -> launch R CLI -> read plot-setting JSON -> read referenced CSV -> write figures
+User or agent -> launch R CLI -> read plot-setting JSON -> read referenced CSV -> write figures
 ```

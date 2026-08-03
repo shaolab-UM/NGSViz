@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ngsviz.example/schemas/analysis_plan.schema.json",
-  "title": "ngsViz Codex sequential analysis plan",
-  "description": "Codex-only orchestration plan. Java and R must not read this file.",
+  "title": "ngsViz agent sequential analysis plan",
+  "description": "Agent-only orchestration plan. Java and R must not read this file.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "analysis", "samples", "execution"],

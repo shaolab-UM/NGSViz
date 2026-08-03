@@ -1,16 +1,18 @@
-# ngsViz Codex Orchestration and Confirmation Contract
+# ngsViz Agent Orchestration and Confirmation Contract
 
 ## Scope
 
-- This contract defines how the Codex Skill orchestrates the Java compute CLI and R visualization CLI. It adds no project runtime.
-- Codex collects parameters, writes requests, invokes native CLIs, waits for processes, inspects responses and manifests, and requests user confirmation.
+- This contract defines how an installed Agent Skill orchestrates the Java compute CLI and R visualization CLI. It is framework-neutral and adds no project runtime.
+- The agent collects parameters, writes requests, invokes native CLIs, waits for processes, inspects responses and manifests, and requests user confirmation.
+- Before the first analysis, install `<ngsviz_root>/agent/skills/` into the current framework's user-level skill directory. The analysis project is the normal working directory.
+- Resolve `<ngsviz_root>` from the installed skill's real source path, `NGSVIZ_HOME`, or an explicitly supplied absolute installation path. Then read `agent/ngsViz_agent.md`, this contract, and the other `agent/ai-friendly/` contracts by absolute path. Never infer the installation root from the analysis working directory.
 - Java and R are always separate stages. Java completion does not imply R completion, and R may run hours or days later.
 - A unified Python runner, unified runtime manifest, combined Java/R process, and implicit background job are forbidden.
 - Each sample's Java result is defined by its `compute_manifest.json`; an R run is defined by its independent `visualization_manifest.json`. Report them separately and never substitute one for the other.
 
 ## General confirmation rules
 
-1. On the initial compute or plot request, Codex only collects parameters, prepares requests, and runs native validation. It must not execute `run-compute` or `run-plot`.
+1. On the initial compute or plot request, the agent only collects parameters, prepares requests, and runs native validation. It must not execute `run-compute` or `run-plot`.
 2. Ask the user about every unknown, missing, or ambiguous scientific parameter. Never infer one from a filename, prior task, common practice, or preference. This includes `genome`, `region`, `database`, `analysis_type`, `biotype`, `flank_region`, `num_datapoints`, `mapping_quality`, `fragment_length`, `bin_method`, `strand_specific`, `scale_ratio`, control/input BAM, and custom BED.
 3. Resolve non-scientific defaults defined by the native contracts, but display all important resolved values before confirmation.
 4. After validation passes, display the exact command, input request or directory, output location, and execution scope, then request explicit confirmation.
@@ -18,7 +20,7 @@
 6. Never request run confirmation after failed validation. Report native errors, correct the parameters, and validate again.
 7. Compute-only requests must not create a visualization workspace, call R, or generate figures.
 8. Visualization-only requests must not create a compute request, call Java, recompute coverage, or modify compute results.
-9. Codex must not replace `compute_request.json` with legacy Java flags or bypass `validate-compute` or `validate-plot`.
+9. The agent must not replace `compute_request.json` with legacy Java flags or bypass `validate-compute` or `validate-plot`.
 
 ## Compute environment and reference database
 
@@ -45,8 +47,8 @@ User request
 ```
 
 - A request contains exactly one signal sample and at most one matching control BAM.
-- Validate with `java -jar NGSViz-1.3.jar validate-compute --request /absolute/path/compute_request.json`.
-- Display, but do not run, `java -jar NGSViz-1.3.jar run-compute --request /absolute/path/compute_request.json` until confirmation.
+- Validate with `/absolute/path/to/java -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar validate-compute --request /absolute/path/to/analysis/compute_request.json`.
+- Display, but do not run, `/absolute/path/to/java -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar run-compute --request /absolute/path/to/analysis/compute_request.json` until confirmation.
 - Wait for the Java process. On success, report the manifest path and status. On failure, report the exit code, errors, and failed-manifest path if present.
 - Stop when Java ends; do not ask about or start plotting.
 
@@ -62,7 +64,7 @@ User request -> collect parameters -> write analysis_plan.json with samples[]
 
 ### `analysis_plan.json`
 
-The plan is Codex-only orchestration input. Java, R, `MainCalculator`, and plot functions must not read it. The canonical structure is defined by `schemas/analysis_plan.schema.json` and `examples/analysis_plan.multi_sample.json`.
+The plan is agent-only orchestration input. Java, R, `MainCalculator`, and plot functions must not read it. The canonical structure is defined by `schemas/analysis_plan.schema.json` and `examples/analysis_plan.multi_sample.json`.
 
 - `samples` is non-empty and its array order is the only execution order.
 - Expand each item into an independently valid Java single-sample request; never pass top-level `samples` to Java.
@@ -115,8 +117,8 @@ This file indexes samples, requests, and native manifests. It is not a compute m
 
 - Treat the supplied result directory as the R `input_dir`. Plot-setting JSON files must be at its top level and referenced coverage CSV files must be accessible. Do not search recursively or infer inputs from other manifests.
 - Do not create compute requests, call Java, or recompute a sample.
-- Run `Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualization_workspace`.
-- After successful validation, display `Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace`; run it only after separate confirmation.
+- Run `Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/visualization_workspace`.
+- After successful validation, display `Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/visualization_workspace`; run it only after separate confirmation.
 - Wait for R. Report only this run's `visualization_manifest.json`; a compute manifest may be identified as an input source but its state must not be merged with R state.
 
 ## Workflow D: full workflow
@@ -141,10 +143,10 @@ This file indexes samples, requests, and native manifests. It is not a compute m
 
 | File | Creator/maintainer | Purpose | Not a |
 |---|---|---|---|
-| `compute_request.json` | Codex | Single-sample Java request | Multi-sample plan |
-| `analysis_plan.json` | Codex | Codex multi-sample orchestration input | Java/R request |
+| `compute_request.json` | Agent | Single-sample Java request | Multi-sample plan |
+| `analysis_plan.json` | Agent | Agent multi-sample orchestration input | Java/R request |
 | `compute_manifest.json` | Java | Single-sample compute record | R plotting state |
-| `analysis_index.json` | Codex | Sample/request/manifest index | Compute manifest |
+| `analysis_index.json` | Agent | Sample/request/manifest index | Compute manifest |
 | `visualization_manifest.json` | R | One R run record | Java compute state |
 
-Codex may report these paths and statuses but must not replace them with a unified runtime manifest or introduce a Python runner for Java and R.
+The agent may report these paths and statuses but must not replace them with a unified runtime manifest or introduce a Python runner for Java and R.

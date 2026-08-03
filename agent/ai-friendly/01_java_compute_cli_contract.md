@@ -13,10 +13,18 @@ This is the source-of-truth contract for native Java dispatch, `ComputeRequest`,
 ## Commands
 
 ```bash
-java -jar NGSViz-1.3.jar describe --format json
-java -jar NGSViz-1.3.jar validate-compute --request /absolute/path/compute_request.json
-java -jar NGSViz-1.3.jar run-compute --request /absolute/path/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  describe --format json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  validate-compute --request /absolute/path/to/analysis/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  run-compute --request /absolute/path/to/analysis/compute_request.json
 ```
+
+Resolve both executable paths from the validated ngsViz installation and `NGSViz_setting.json`. These paths must not depend on the analysis process working directory.
 
 - `describe` accepts only `--format json`, accesses no compute request, BAM, database, or output directory, and returns exit code `0` with a JSON response envelope.
 - `validate-compute` constructs `ComputeRequest` directly from JSON and performs read-only validation of structure, parameter combinations, system configuration, SQLite, BAM/BAI, and optional BED. It creates no output directory or file, does not call `MainCalculator`, and does not start R.

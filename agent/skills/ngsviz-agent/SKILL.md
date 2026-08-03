@@ -1,11 +1,30 @@
 ---
 name: ngsviz-agent
-description: Safely orchestrate ngsViz environment preflight, species and genome database resolution, native Java computation, and R visualization for single-sample, sequential multi-sample, visualization-only, and full workflows. Use when Codex must prepare or run an ngsViz analysis, validate scientific parameters, resolve reference databases, or inspect compute and visualization manifests.
+description: Safely orchestrate ngsViz environment preflight, species and genome database resolution, native Java computation, and R visualization for single-sample, sequential multi-sample, visualization-only, and full workflows. Use when an AI agent must prepare or run an ngsViz analysis, validate scientific parameters, resolve reference databases, or inspect compute and visualization manifests.
 ---
 
 # ngsViz Agent
 
-Follow the [Agent Guide](../../../agent/ngsViz_agent.md), [Architecture Boundaries](../../../agent/ai-friendly/00_native_architecture_and_collaboration_boundaries.md), [Java CLI Contract](../../../agent/ai-friendly/01_java_compute_cli_contract.md), [R CLI Contract](../../../agent/ai-friendly/02_r_visualization_cli_contract.md), and [Orchestration Contract](../../../agent/ai-friendly/03_codex_orchestration_and_confirmation_contract.md). First classify the user's intent into one of four workflows: single-sample compute only, sequential multi-sample compute, visualization only, or the full workflow.
+## Installation Root Resolution
+
+This skill is distributed from `<ngsviz_root>/agent/skills/` and is installed into the user's skill directory before the first ngsViz analysis. The analysis project is the normal working directory; never require the ngsViz repository to be the current working directory.
+
+Before following any workflow:
+
+1. Resolve the real path of this installed `SKILL.md`. If the skill was installed as a symbolic link and its source is under `<ngsviz_root>/agent/skills/ngsviz-agent/`, derive `<ngsviz_root>` from that real path.
+2. If the skill was copied and its source path no longer identifies the installation, use the absolute root supplied through `NGSVIZ_HOME` or explicitly by the user. Never search from or infer it from the analysis working directory.
+3. Require the resolved root to contain `README.md`, `NGSViz_setting.json`, `lib/ngsVizPlotMain.R`, `agent/ngsViz_agent.md`, `agent/ai-friendly/`, and `agent/skills/`.
+4. Read the following authoritative files by absolute path from the resolved root before acting:
+   - `agent/ngsViz_agent.md`
+   - `agent/ai-friendly/00_native_architecture_and_collaboration_boundaries.md`
+   - `agent/ai-friendly/01_java_compute_cli_contract.md`
+   - `agent/ai-friendly/02_r_visualization_cli_contract.md`
+   - `agent/ai-friendly/03_agent_orchestration_and_confirmation_contract.md`
+5. Read `<ngsviz_root>/NGSViz_setting.json` and resolve the absolute Java executable, JAR, database, helper scripts, and R entry point from the installation root. Keep requests, workspaces, results, and manifests under the analysis project unless the user selects another absolute output path.
+
+If the installation root cannot be resolved or fails these checks, pause and ask for its absolute path. Do not fall back to repository-relative commands.
+
+Then classify the user's intent into one of four workflows: single-sample compute only, sequential multi-sample compute, visualization only, or the full workflow.
 
 ## Hard Boundaries
 
@@ -13,14 +32,14 @@ Follow the [Agent Guide](../../../agent/ngsViz_agent.md), [Architecture Boundari
 - Run validation only by default. Show the validation result, native command, inputs, outputs, and scope, then wait for explicit user confirmation before running the operation.
 - Use Java only for single-sample computation; Java must not invoke R. Use R only to visualize existing results; R must not invoke Java.
 - Allow `samples[]` in `analysis_plan.json`. Prohibit `samples[]` in Java `compute_request.json`, which may contain only one signal sample and zero or one control BAM.
-- Make Codex execute multiple samples sequentially. Run Java processes strictly in series and never process samples concurrently.
+- Make the agent execute multiple samples sequentially. Run Java processes strictly in series and never process samples concurrently.
 - Use `stop_on_error` by default. Continue the remaining queue only when the user explicitly selects `continue_on_error`, and still wait for the current Java process to exit.
 - Assign every sample a unique `sample_id`, `sample_name`, `group_name`, and `output_dir`.
 - Do not plot automatically when the user requests computation only. Do not recompute when the user requests visualization only.
 - Allow the user to invoke only R in a later task. Never invoke R after a Java failure.
 - Report `compute_manifest.json` and `visualization_manifest.json` separately. Do not create a unified manifest.
 - Use `analysis_index.json` only to index single-sample requests and manifests. Do not aggregate or rewrite scientific results.
-- Do not write Codex judgments into raw result files or overwrite, move, or rewrite raw computation results.
+- Do not write agent judgments into raw result files or overwrite, move, or rewrite raw computation results.
 
 ## Java Compute Preflight
 
@@ -80,10 +99,16 @@ Explicitly notify the user in commentary whenever invoking a helper skill, modif
 ## Native Command Templates
 
 ```bash
-java -jar NGSViz-1.3.jar describe --format json
-java -jar NGSViz-1.3.jar validate-compute --request /absolute/path/compute_request.sample_id.json
-java -jar NGSViz-1.3.jar run-compute --request /absolute/path/compute_request.sample_id.json
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualization_workspace
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  describe --format json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  validate-compute --request /absolute/path/to/analysis/compute_request.sample_id.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+  run-compute --request /absolute/path/to/analysis/compute_request.sample_id.json
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/visualization_workspace
 ```

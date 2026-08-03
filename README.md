@@ -6,7 +6,7 @@ The project provides three supported user interfaces:
 
 1. A legacy-compatible Java command-line interface for direct analysis.
 2. An R Shiny graphical interface for interactive computation and visualization.
-3. An AI-agent workflow built on structured JSON requests, machine-readable responses, manifests, repository-scoped skills, and explicit execution rules.
+3. An AI-agent workflow built on structured JSON requests, machine-readable responses, manifests, installable framework-neutral skills, and explicit execution rules.
 
 ## Table of contents
 
@@ -36,7 +36,7 @@ The project provides three supported user interfaces:
 - SQLite reference-coordinate databases with pre-built and custom-build workflows.
 - Backward-compatible Java short flags for users and structured native CLIs for automation.
 - Machine-readable validation, stable exit codes, and separate compute and visualization manifests.
-- Repository-scoped Codex skills for environment setup, reference database resolution, safe validation, sequential multi-sample execution, and deferred visualization.
+- Installable Agent Skills for environment setup, reference database resolution, safe validation, sequential multi-sample execution, and deferred visualization from an analysis-project working directory.
 
 ## Architecture
 
@@ -112,8 +112,12 @@ mvn test
 The current release JAR is `ngsViz-1.3.jar`. Use the JAR selected in `NGSViz_setting.json` or verify a candidate with:
 
 ```bash
-java -jar ngsViz-1.3.jar -V
-java -jar ngsViz-1.3.jar describe --format json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  -V
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  describe --format json
 ```
 
 ## Configuration and reference databases
@@ -131,7 +135,7 @@ java -jar ngsViz-1.3.jar describe --format json
     "tool_path": "/absolute/path/to/NGSViz",
     "db_path": "/absolute/path/to/NGSViz/database/genomeCoordinate.db",
     "tool_name": "ngsViz-1.3.jar",
-    "java_path": "/usr/bin/java"
+    "java_path": "/absolute/path/to/java"
   }
 }
 ```
@@ -172,8 +176,9 @@ The complete catalog is also available in the [shared Google Drive folder](https
 A downloaded database may be selected directly through `db_path` or merged into the configured writable database:
 
 ```bash
-java -jar ngsViz-1.3.jar \
-  -CP NGSViz_setting.json \
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  -CP /absolute/path/to/NGSViz/NGSViz_setting.json \
   -DB /absolute/path/to/NGSViz_hg38_RefSeq.db
 ```
 
@@ -220,39 +225,41 @@ The repository includes a BAM/BAI pair, an installed reference database, and exa
 ### 1. Check the native interfaces
 
 ```bash
-java -jar ngsViz-1.3.jar -V
-java -jar ngsViz-1.3.jar describe --format json
-Rscript lib/ngsVizPlotMain.R describe
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  -V
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  describe --format json
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
 ```
 
 ### 2. Run a small legacy-CLI computation
 
 ```bash
-mkdir -p analysis/readme_quick_start
+mkdir -p /absolute/path/to/analysis/readme_quick_start
 
-java -jar ngsViz-1.3.jar \
-  -CP NGSViz_setting.json \
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
   -G hg38 \
   -R tss \
-  -I Samples/K562_H3K4me3-ENCFF752MYF_5p.bam \
-  -O analysis/readme_quick_start \
-  -T K562_H3K4me3_TSS \
-  -B protein_coding \
-  -P 1
+  -I /absolute/path/to/NGSViz/Samples/K562_H3K4me3-ENCFF752MYF_5p.bam \
+  -O /absolute/path/to/analysis/readme_quick_start \
+  -T K562_H3K4me3_TSS
 ```
 
 ### 3. Validate and render a bundled result in a separate workspace
 
 ```bash
-mkdir -p analysis/readme_visualization
-cp Samples/Result/H3K4me3_point/H3K4me3_NGSViz_plotSetting.json \
-  analysis/readme_visualization/
+mkdir -p /absolute/path/to/analysis/readme_visualization
+cp /absolute/path/to/NGSViz/Samples/Result/H3K4me3_point/H3K4me3_NGSViz_plotSetting.json \
+  /absolute/path/to/analysis/readme_visualization/
 
-Rscript lib/ngsVizPlotMain.R validate-plot \
-  --input-dir analysis/readme_visualization
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot \
+  --input-dir /absolute/path/to/analysis/readme_visualization
 
-Rscript lib/ngsVizPlotMain.R run-plot \
-  --input-dir analysis/readme_visualization
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot \
+  --input-dir /absolute/path/to/analysis/readme_visualization
 ```
 
 The visualization command writes `merge_average_plot.tiff`, `coverage_heatmap.tiff`, and `visualization_manifest.json` in the input directory.
@@ -264,10 +271,12 @@ The visualization command writes `merge_average_plot.tiff`, `coverage_heatmap.ti
 The user-facing compute entry point is:
 
 ```bash
-java -jar ngsViz-1.3.jar -G <genome> -R <region> -I <input> -O <output> -T <title> [options]
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  -G <genome> -R <region> -I <input> -O <output> -T <title> [options]
 ```
 
-Run `java -jar ngsViz-1.3.jar -H` for the native help and `-V` for the application version.
+Run `/absolute/path/to/java -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar -H` for the native help and `-V` for the application version.
 
 #### Parameters
 
@@ -306,12 +315,13 @@ The default flank size is `2000` for `tss`, `tes`, `genebody`, `exon`, and `cgi`
 #### Extended compute example
 
 ```bash
-java -jar ngsViz-1.3.jar \
-  -CP NGSViz_setting.json \
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  -CP /absolute/path/to/NGSViz/NGSViz_setting.json \
   -G hg38 \
   -R genebody \
-  -I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
-  -O analysis/readme_extended_compute \
+  -I /absolute/path/to/NGSViz/Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
+  -O /absolute/path/to/analysis/readme_extended_compute \
   -T K562_H3K36me3_gene_body \
   -BM mean \
   -MQ 20 \
@@ -326,19 +336,19 @@ One direct computation writes a coverage matrix CSV, a read-count CSV, and a `*_
 The native R CLI accepts an existing directory, not an individual JSON or CSV file:
 
 ```bash
-mkdir -p analysis/readme_broad_visualization
-cp Samples/Result/K36me3_broad/H3K36me3_NGSViz_plotSetting.json \
-  analysis/readme_broad_visualization/
+mkdir -p /absolute/path/to/analysis/readme_broad_visualization
+cp /absolute/path/to/NGSViz/Samples/Result/K36me3_broad/H3K36me3_NGSViz_plotSetting.json \
+  /absolute/path/to/analysis/readme_broad_visualization/
 
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir analysis/readme_broad_visualization
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir analysis/readme_broad_visualization
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/readme_broad_visualization
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/readme_broad_visualization
 ```
 
 The legacy positional form remains supported:
 
 ```bash
-Rscript lib/ngsVizPlotMain.R analysis/readme_broad_visualization
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R /absolute/path/to/analysis/readme_broad_visualization
 ```
 
 Only top-level files matching `*_NGSViz_plotSetting.json` are discovered. One plot-setting file produces an average profile and heatmap. More than one compatible file also produces correlation and PCA plots. All plot-setting files in one run must agree on matrix shape, row order, interval settings, labels, and output type.
@@ -392,32 +402,51 @@ The AI mode does not add a new analysis engine, Python runner, MCP service, Web 
 
 ### Skills and rules
 
-The `skill` is a repository-scoped Codex skill: a Markdown instruction package with YAML front matter, stored under `.agents/skills/`. It is not a Claude plugin and is not part of the ngsViz runtime.
+The skills are framework-neutral Agent Skill packages: Markdown instructions with YAML front matter, distributed under `agent/skills/`. They are not part of the Java or R runtime. Codex, Claude, Kimi, or another compatible agent may install them into its own user-level skill directory.
 
 | Path | Responsibility |
 |---|---|
-| `.agents/skills/ngsviz-agent/SKILL.md` | Workflow router and execution boundaries |
-| `.agents/skills/ngsviz-setup/SKILL.md` | Java, JAR, configuration, and SQLite preflight |
-| `.agents/skills/ngsviz-install-db/SKILL.md` | Pre-built database discovery, verification, and installation |
-| `.agents/skills/ngsviz-build-db/SKILL.md` | UCSC RefSeq GTF validation and custom database build |
-| `AGENTS.md` | Repository-wide agent rules and authoritative document routing |
+| `agent/skills/ngsviz-agent/SKILL.md` | Workflow router, installation-root discovery, and execution boundaries |
+| `agent/skills/ngsviz-setup/SKILL.md` | Java, JAR, configuration, and SQLite preflight |
+| `agent/skills/ngsviz-install-db/SKILL.md` | Pre-built database discovery, verification, and installation |
+| `agent/skills/ngsviz-build-db/SKILL.md` | UCSC RefSeq GTF validation and custom database build |
+| `AGENTS.md` | Repository development and maintenance rules |
+| `agent/ngsViz_agent.md` | Framework-neutral workflow guide |
 | `agent/ai-friendly/*.md` | Native Java, native R, architecture, orchestration, and confirmation contracts |
 
 The accompanying rules are operational safety and validation contracts, not a prompt template or a naming convention alone. They define parameter ownership, required confirmations, input schemas, output acceptance, process ordering, failure behavior, and prohibited cross-stage actions.
 
 ### Environment preparation
 
-1. Start the agent with the repository as its working directory.
-2. Ensure the agent can read `AGENTS.md` and `.agents/skills/`.
-3. Ask it to use `ngsviz-agent`; compatible Codex environments discover repository-scoped skills from `.agents/skills`.
+Before the first ngsViz analysis, install all four directories under `agent/skills/` into the AI framework's user-level skill directory. Use the destination documented by that framework. Frameworks that support the shared Agent Skills location may use `~/.agents/skills/`.
+
+For a stable local ngsViz checkout, symbolic links are recommended because they preserve a direct connection to `agent/ngsViz_agent.md` and `agent/ai-friendly/`:
+
+```bash
+export NGSVIZ_HOME=/absolute/path/to/NGSViz
+mkdir -p ~/.agents/skills
+
+ln -s "$NGSVIZ_HOME/agent/skills/ngsviz-agent" ~/.agents/skills/ngsviz-agent
+ln -s "$NGSVIZ_HOME/agent/skills/ngsviz-setup" ~/.agents/skills/ngsviz-setup
+ln -s "$NGSVIZ_HOME/agent/skills/ngsviz-install-db" ~/.agents/skills/ngsviz-install-db
+ln -s "$NGSVIZ_HOME/agent/skills/ngsviz-build-db" ~/.agents/skills/ngsviz-build-db
+```
+
+If the framework requires copying rather than linking, copy the same four directories into its user-level skill directory and provide `NGSVIZ_HOME=/absolute/path/to/NGSViz` in the agent environment. Restart or open a new agent task after installation if the framework discovers skills only at startup.
+
+Normal operation then uses the analysis project as the working directory:
+
+1. Ask the agent to use `ngsviz-agent`.
+2. The installed skill resolves the ngsViz root from its real source path. A copied skill instead uses the explicitly supplied `NGSVIZ_HOME`; it must never infer the installation from the analysis directory.
+3. The agent verifies the installation root, then reads `agent/ngsViz_agent.md` and all required `agent/ai-friendly/` contracts by absolute path.
 4. For compute work, the router invokes `ngsviz-setup` before creating a request. Visualization-only work skips Java preflight.
-5. If another agent framework does not discover Codex skills automatically, explicitly instruct it to read `AGENTS.md`, `.agents/skills/ngsviz-agent/SKILL.md`, and the linked contracts before acting. The rules remain usable, but automatic skill discovery is framework-specific.
+5. Requests, workspaces, outputs, and manifests remain under the analysis project unless another absolute output directory is explicitly selected.
 
 A read-only environment audit can be run directly:
 
 ```bash
-python3 .agents/skills/ngsviz-setup/scripts/check_ngsviz_environment.py \
-  --tool-path "$PWD"
+python3 /absolute/path/to/user/skills/ngsviz-setup/scripts/check_ngsviz_environment.py \
+  --tool-path /absolute/path/to/NGSViz
 ```
 
 The audit must report `status=ready` before an agent creates or validates a compute request.
@@ -425,13 +454,19 @@ The audit must report `status=ready` before an agent creates or validates a comp
 ### Native AI-friendly commands
 
 ```bash
-java -jar ngsViz-1.3.jar describe --format json
-java -jar ngsViz-1.3.jar validate-compute --request /absolute/path/to/compute_request.json
-java -jar ngsViz-1.3.jar run-compute --request /absolute/path/to/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  describe --format json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  validate-compute --request /absolute/path/to/analysis/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  run-compute --request /absolute/path/to/analysis/compute_request.json
 
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/visualization_workspace
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R describe
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/analysis/visualization_workspace
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/analysis/visualization_workspace
 ```
 
 JSON mode and legacy flags are mutually exclusive. An agent must never append `-G`, `-R`, or other legacy compute flags to `validate-compute` or `run-compute`.
@@ -499,26 +534,30 @@ Do not merge compute and visualization state into one manifest.
 
 User request to the agent:
 
-> Use the ngsviz-agent skill. Validate `agent/ai-friendly/examples/compute_request.single.json`, show me the resolved parameters and exact run command, and wait for my confirmation before computing. Do not plot.
+> Use the ngsviz-agent skill. Prepare and validate `/absolute/path/to/analysis/ngsviz_requests/compute_request.json`, show me the resolved parameters and exact run command, and wait for my confirmation before computing. Do not plot.
 
-The agent performs the environment preflight and then runs:
+The agent may use `<ngsviz_root>/agent/ai-friendly/examples/compute_request.single.json` as a structural example, but it writes a new request under the analysis project with absolute BAM, configuration, and output paths. It then runs:
 
 ```bash
-java -jar ngsViz-1.3.jar validate-compute \
-  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  validate-compute \
+  --request /absolute/path/to/analysis/ngsviz_requests/compute_request.json
 ```
 
 A successful validation returns `status: success`, `exit_code: 0`, supported values, and `data.resolved_parameters`. The agent shows these values and this exact pending command:
 
 ```bash
-java -jar ngsViz-1.3.jar run-compute \
-  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  run-compute \
+  --request /absolute/path/to/analysis/ngsviz_requests/compute_request.json
 ```
 
 Only after explicit confirmation does the agent run it, wait for the Java process, and inspect:
 
 ```text
-agent/ai-friendly/examples/validate_compute_output/compute_manifest.json
+/absolute/path/to/analysis/ngsviz_results/K562_H3K4me3/compute_manifest.json
 ```
 
 It reports the manifest and stops. It does not invoke R because the request was compute-only.
@@ -527,7 +566,7 @@ It reports the manifest and stops. It does not invoke R because the request was 
 
 User request to the agent:
 
-> Use the ngsviz-agent skill to run `agent/ai-friendly/examples/compute_request.single.json`. Validate first and wait for compute confirmation. If computation succeeds, ask me separately whether to visualize the result in `agent_output/readme_full_workflow/visualization`.
+> Use the ngsviz-agent skill to analyze my BAM from this analysis project. Validate first and wait for compute confirmation. If computation succeeds, ask me separately whether to visualize the result in `ngsviz_visualization`.
 
 The agent performs these steps:
 
@@ -543,10 +582,14 @@ The agent performs these steps:
 The resulting native command sequence is:
 
 ```bash
-java -jar ngsViz-1.3.jar validate-compute \
-  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
-java -jar ngsViz-1.3.jar run-compute \
-  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  validate-compute \
+  --request /absolute/path/to/analysis/ngsviz_requests/compute_request.json
+/absolute/path/to/java \
+  -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar \
+  run-compute \
+  --request /absolute/path/to/analysis/ngsviz_requests/compute_request.json
 ```
 
 The second command is run only after the first command succeeds and the user confirms it. If Java fails or its manifest is missing or failed, the workflow stops without invoking R.
@@ -554,19 +597,19 @@ The second command is run only after the first command succeeds and the user con
 After successful computation, the agent asks whether to plot now or later. If the user chooses now, it creates the workspace without modifying the compute directory:
 
 ```bash
-mkdir -p "$PWD/agent_output/readme_full_workflow/visualization"
-cp "$PWD/agent/ai-friendly/examples/validate_compute_output/K562_H3K4me3_TSS_NGSViz_plotSetting.json" \
-  "$PWD/agent_output/readme_full_workflow/visualization/"
+mkdir -p /absolute/path/to/analysis/ngsviz_visualization
+cp /absolute/path/to/analysis/ngsviz_results/K562_H3K4me3/K562_H3K4me3_TSS_NGSViz_plotSetting.json \
+  /absolute/path/to/analysis/ngsviz_visualization/
 
-Rscript lib/ngsVizPlotMain.R validate-plot \
-  --input-dir "$PWD/agent_output/readme_full_workflow/visualization"
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R validate-plot \
+  --input-dir /absolute/path/to/analysis/ngsviz_visualization
 ```
 
 After a second, independent confirmation:
 
 ```bash
-Rscript lib/ngsVizPlotMain.R run-plot \
-  --input-dir "$PWD/agent_output/readme_full_workflow/visualization"
+Rscript /absolute/path/to/NGSViz/lib/ngsVizPlotMain.R run-plot \
+  --input-dir /absolute/path/to/analysis/ngsviz_visualization
 ```
 
 The agent reports `validate_compute_output/compute_manifest.json` separately from `visualization/visualization_manifest.json`.
@@ -586,7 +629,7 @@ The agent reports `validate_compute_output/compute_manifest.json` separately fro
 - Do not use YAML, `-J`, legacy compute flags, Python intermediates, MCP, or a Web API as the AI parameter interface.
 - Do not treat `analysis_index.json` as a replacement for a native manifest.
 
-The authoritative rules are in `agent/ai-friendly/` and `.agents/skills/ngsviz-agent/SKILL.md`.
+The authoritative rules are in `agent/ai-friendly/` and `agent/skills/ngsviz-agent/SKILL.md`.
 
 ## Output interpretation
 
@@ -678,7 +721,7 @@ Validation never installs packages automatically.
 
 The repository does not currently maintain a standalone `CHANGELOG.md`. Relevant milestones visible in the project history are:
 
-- **1.3**: Native `describe`, `validate-compute`, and `run-compute` Java commands; native R validation and manifest workflow; machine-readable responses; repository-scoped Codex skills; sequential multi-sample orchestration rules; independent Java/R confirmations.
+- **1.3**: Native `describe`, `validate-compute`, and `run-compute` Java commands; native R validation and manifest workflow; machine-readable responses; installable framework-neutral Agent Skills; analysis-project working-directory support; sequential multi-sample orchestration rules; independent Java/R confirmations.
 - **1.2**: Binning and scaling documentation updates, container-era distribution work, and compatibility fixes.
 - **1.0**: Original Java computation, R visualization, and R Shiny workflow.
 

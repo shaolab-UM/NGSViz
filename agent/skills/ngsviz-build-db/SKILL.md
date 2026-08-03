@@ -24,7 +24,7 @@ Do not guess the species or assembly. Require the filename format `<genome>.<ann
 Run:
 
 ```bash
-python3 scripts/check_gtf_for_ngsviz.py \
+python3 /absolute/path/to/installed/ngsviz-build-db/scripts/check_gtf_for_ngsviz.py \
   --gtf /absolute/path/to/<genome>.<annotation>.gtf \
   --genome <assembly>
 ```
@@ -38,7 +38,7 @@ Confirm that the GTF has at least nine columns, contains transcript or exon reco
 3. Run the project script from the build workspace so that it writes output to `DB/<species>/` inside that workspace:
 
    ```bash
-   Rscript /absolute/path/to/lib/buildRefDB.R \
+   Rscript /absolute/path/to/NGSViz/lib/buildRefDB.R \
      /absolute/path/to/<genome>.<annotation>.gtf \
      <DB_name> <species> <TRUE-or-FALSE>
    ```

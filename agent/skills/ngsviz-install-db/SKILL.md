@@ -12,13 +12,15 @@ Install only a species and genome assembly that the user explicitly specified or
 1. Inspect the current database:
 
    ```bash
-   python3 scripts/manage_ngsviz_db.py inspect --db /absolute/path/to/current.db
+   python3 /absolute/path/to/installed/ngsviz-install-db/scripts/manage_ngsviz_db.py \
+     inspect --db /absolute/path/to/current.db
    ```
 
 2. Parse the pre-built catalog from the project's current `README.md`. Do not copy or hard-code old links:
 
    ```bash
-   python3 scripts/manage_ngsviz_db.py catalog --readme /absolute/path/to/README.md
+   python3 /absolute/path/to/installed/ngsviz-install-db/scripts/manage_ngsviz_db.py \
+     catalog --readme /absolute/path/to/NGSViz/README.md
    ```
 
    Add `--species Homo_sapiens` or `--genome hg38` for exact filtering when needed.
@@ -39,9 +41,9 @@ When matching species, show both the README common name and scientific name. Int
 2. A README pre-built file may be a gzip archive. Use this command to inspect the file's magic bytes, decompress it when necessary, validate it, and atomically write the resulting SQLite file to the target path:
 
    ```bash
-   python3 scripts/manage_ngsviz_db.py prepare \
+   python3 /absolute/path/to/installed/ngsviz-install-db/scripts/manage_ngsviz_db.py prepare \
      --source /absolute/path/to/downloaded-file \
-     --output <tool_path>/database/prebuilt/NGSViz_<genome>_RefSeq.db \
+     --output /absolute/path/to/NGSViz/database/prebuilt/NGSViz_<genome>_RefSeq.db \
      --genome <assembly>
    ```
 
@@ -49,7 +51,7 @@ When matching species, show both the README common name and scientific name. Int
 3. `prepare` already validates SQLite and the target genome. Optionally verify them independently again before import:
 
    ```bash
-   python3 scripts/manage_ngsviz_db.py verify \
+   python3 /absolute/path/to/installed/ngsviz-install-db/scripts/manage_ngsviz_db.py verify \
      --db /absolute/path/to/downloaded.db --genome <assembly>
    ```
 
@@ -61,8 +63,9 @@ When matching species, show both the README common name and scientific name. Int
 - If a writable primary database exists, create a timestamped backup first, then use the absolute Java, JAR, and configuration paths to run the method documented in the README:
 
   ```bash
-  /absolute/path/to/java -jar /absolute/path/to/NGSViz.jar \
-    -CP /absolute/path/to/NGSViz_setting.json \
+  /absolute/path/to/java \
+    -jar /absolute/path/to/NGSViz/NGSViz-1.3.jar \
+    -CP /absolute/path/to/NGSViz/NGSViz_setting.json \
     -DB /absolute/path/to/NGSViz_<genome>_RefSeq.db
   ```
 
