@@ -4,33 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz-1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_setting.json" beforeDir="false" afterPath="$PROJECT_DIR$/NGSViz_setting.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NGSViz_setting_cp.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment-java.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment-linux-64.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/GetInputParameterValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/NGSViz/CliOptionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/NGSViz/CliOptionsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/contracts/01_check_agent_guide.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/contracts/02_check_module_independence.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/contracts/02_check_ngsviz_preflight_skills.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/contracts/03_check_cross_platform_environment.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/run_r_tests.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/test_cli_parser.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/test_quality_control.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/test_run_plot.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/test_validate_plot_input.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/r/test_visualization_manifest.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/smoke/01_java_smoke.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/smoke/02_r_cli_smoke.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/smoke/03_plot_smoke.R" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/smoke/04_build_db_smoke.R" beforeDir="false" />
-    </list>
+    <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,7 +39,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "codex/AI",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
