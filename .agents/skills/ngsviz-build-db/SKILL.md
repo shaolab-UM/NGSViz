@@ -29,7 +29,7 @@ python3 scripts/check_gtf_for_ngsviz.py \
   --genome <assembly>
 ```
 
-必须确认 GTF 至少 9 列、有 transcript/exon 记录、包含 `gene_name` 和 `transcript_id`。当前 `buildRefDB.R` 会保留 `NM`/`NR` transcript，因此输入必须是兼容的 UCSC RefSeq GTF；若只有 Ensembl transcript ID，停止并要求兼容 GTF，不得构建空库。NCBI accession 风格染色体名也必须先转换为 UCSC 风格。
+必须确认 GTF 至少 9 列、有 transcript/exon 记录、包含 `gene_name` 和 `transcript_id`。当前 `buildRefDB.R` 会保留 `NM`/`NR` transcript，因此输入必须是兼容的 UCSC RefSeq GTF；若只有 Ensembl transcript ID，停止并要求兼容 GTF，不得构建空库。任一染色体名为 `NC_`、`NW_`、`NT_`、`NZ_` 等 NCBI accession 风格时均停止，必须先统一转换为 UCSC 风格；不得因文件中混有其他命名而放行。
 
 ## 构建
 

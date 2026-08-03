@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DB_TOOL = ROOT / ".agents/skills/ngsviz-install-db/scripts/manage_ngsviz_db.py"
 SETUP_TOOL = ROOT / ".agents/skills/ngsviz-setup/scripts/check_ngsviz_environment.py"
+GTF_TOOL = ROOT / ".agents/skills/ngsviz-build-db/scripts/check_gtf_for_ngsviz.py"
 
 
 def load_module(name: str, path: Path):
@@ -89,6 +90,29 @@ class SetupEnvironmentTests(unittest.TestCase):
             self.assertFalse(result["valid"])
             self.assertEqual(result["error"], "COORDINATE_TABLE_EMPTY")
             self.assertEqual(result["empty_tables"], ["hg38_RefSeq"])
+
+
+class BuildDatabaseTests(unittest.TestCase):
+    def test_mixed_ncbi_accession_chromosomes_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            gtf = Path(temporary) / "hg38.RefSeq.gtf"
+            gtf.write_text(
+                "NC_000001.11\tRefSeq\ttranscript\t1\t10\t.\t+\t.\t"
+                'gene_name "GENE1"; transcript_id "NM_000001.1";\n'
+                "NW_001234.1\tRefSeq\texon\t1\t10\t.\t+\t.\t"
+                'gene_name "GENE1"; transcript_id "NM_000001.1";\n',
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                ["python3", str(GTF_TOOL), "--gtf", str(gtf), "--genome", "hg38"],
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 1, result.stdout)
+            payload = json.loads(result.stdout)
+            self.assertIn("NCBI_ACCESSION_CHROMOSOMES_UNSUPPORTED", payload["errors"])
 
 
 if __name__ == "__main__":

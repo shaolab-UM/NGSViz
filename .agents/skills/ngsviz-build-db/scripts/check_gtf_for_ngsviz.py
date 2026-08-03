@@ -81,7 +81,8 @@ def main() -> int:
         errors.append("REFSEQ_TRANSCRIPT_IDS_MISSING")
     if malformed:
         warnings.append(f"MALFORMED_RECORDS:{malformed}")
-    if seqnames and all(name.startswith("NC_") for name in seqnames):
+    ncbi_accession = re.compile(r"^[A-Z]{2}_\d+(?:\.\d+)?$")
+    if any(ncbi_accession.match(name) for name in seqnames):
         errors.append("NCBI_ACCESSION_CHROMOSOMES_UNSUPPORTED")
     elif seqnames and any(not name.startswith("chr") for name in seqnames):
         warnings.append("CHROMOSOME_PREFIX_WILL_BE_ADDED")
