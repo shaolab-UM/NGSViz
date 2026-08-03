@@ -1,10 +1,10 @@
 # ngsViz Codex Agent Guide
 
-本 guide 只编排 ngsViz 已有的 Java 计算 CLI 与 R 可视化 CLI，不提供 runner、统一执行器或新的运行时。
+This guide orchestrates ngsViz's existing Java compute CLI and R visualization CLI. It does not provide a runner, a unified executor, or a new runtime.
 
-## 原生接口
+## Native Interfaces
 
-Java 原生子命令：
+Native Java subcommands:
 
 ```bash
 java -jar NGSViz-1.3.jar describe --format json
@@ -12,7 +12,7 @@ java -jar NGSViz-1.3.jar validate-compute --request /absolute/path/compute_reque
 java -jar NGSViz-1.3.jar run-compute --request /absolute/path/compute_request.json
 ```
 
-R 原生子命令：
+Native R subcommands:
 
 ```bash
 Rscript lib/ngsVizPlotMain.R describe
@@ -20,82 +20,82 @@ Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualizat
 Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace
 ```
 
-Java 每次只处理一个 signal sample，且不调用 R。R 只读取现有绘图输入，且不调用 Java。Codex 负责多样本顺序编排，不生成统一 manifest。
+Java processes one signal sample at a time and never invokes R. R reads existing visualization inputs and never invokes Java. Codex orchestrates multi-sample jobs sequentially and does not generate a unified manifest.
 
-## 通用执行边界
+## General Execution Boundaries
 
-- 对未知、缺失或含义不明确的科学参数先向用户提问，不猜测 genome、region、strand、fragment length、control 或 normalization。
-- 默认只完成请求准备和 validate；运行前展示验证结果、原生命令、输入、输出和执行范围，并取得明确确认。
-- `analysis_plan.json` 可以包含 `samples[]`；交给 Java 的 `compute_request.json` 禁止包含 `samples[]`。
-- Java 进程严格串行。前一个 sample 的进程退出、manifest 验证和索引更新完成前，不启动下一个。
-- 默认 `stop_on_error`；只有用户明确选择时才使用 `continue_on_error`。
-- 每个 sample 使用唯一的 `sample_id`、`sample_name`、`group_name` 和 `output_dir`。
-- 计算请求不自动绘图；绘图请求不重新计算。Java 失败后不得调用 R。
-- 分开读取和报告 `compute_manifest.json` 与 `visualization_manifest.json`，不得合并为统一 manifest。
-- `analysis_index.json` 只索引单样本 request 与 compute manifest，不汇总或改写科学结果。
-- 不把 Codex 的判断、解释或推断写入原始结果文件。
+- Ask the user about unknown, missing, or ambiguous scientific parameters. Never infer the genome, region, strand, fragment length, control, or normalization.
+- By default, prepare the request and run validation only. Before execution, show the validation result, native command, inputs, outputs, and execution scope, then obtain explicit confirmation.
+- `analysis_plan.json` may contain `samples[]`; a Java `compute_request.json` must not contain `samples[]`.
+- Run Java processes strictly in series. Do not start the next sample until the previous process has exited, its manifest has been verified, and the index has been updated.
+- Use `stop_on_error` by default. Use `continue_on_error` only when the user explicitly selects it.
+- Assign every sample a unique `sample_id`, `sample_name`, `group_name`, and `output_dir`.
+- Do not plot automatically for a compute-only request, and do not recompute for a visualization-only request. Never invoke R after a Java failure.
+- Read and report `compute_manifest.json` and `visualization_manifest.json` separately. Do not combine them into a unified manifest.
+- Use `analysis_index.json` only to index single-sample requests and compute manifests. Do not aggregate or rewrite scientific results.
+- Do not write Codex judgments, explanations, or inferences into raw result files.
 
-## Java 计算前置检查
+## Java Compute Preflight
 
-只可视化流程跳过本节。生成 compute request 或执行 `validate-compute` 前必须：
+Skip this section for visualization-only workflows. Before creating a compute request or running `validate-compute`:
 
-1. 使用 `.agents/skills/ngsviz-setup/` 检查或修复 `NGSViz_setting.json`、Java 17+、JAR、`tool_path` 和 `db_path`。
-2. 用户已明确 genome 时，先查配置 DB；缺失版本若在 README 预构建目录中，则使用 `.agents/skills/ngsviz-install-db/` 下载、校验并导入；目录中没有则要求用户提供 UCSC GTF，并使用 `.agents/skills/ngsviz-build-db/` 构建和导入。
-3. 用户未明确 genome 时，先确认物种。查询 DB 中该物种的 genome：一个时询问是否使用，多个时让用户选择；DB 无该物种或用户拒绝唯一版本时，再查询 README 预构建目录。
-4. 不得从 BAM 文件名、细胞系、染色体前缀或常见实验习惯推断物种或 assembly。数据库存在性也不能证明 BAM 的 assembly。
-5. 环境、物种、genome 和 DB 就绪后，才收集其余科学参数并进入 validate。
+1. Use `.agents/skills/ngsviz-setup/` to inspect or repair `NGSViz_setting.json`, Java 17+, the JAR, `tool_path`, and `db_path`.
+2. If the user specified a genome, query the configured database first. If the genome is missing but available in the README's prebuilt catalog, use `.agents/skills/ngsviz-install-db/` to download, verify, and import it. If the catalog does not provide that genome, ask the user for a matching UCSC GTF and use `.agents/skills/ngsviz-build-db/` to build and import it.
+3. If the user did not specify a genome, confirm the species first. Query the configured database for genomes belonging to that species: ask whether to use the only available genome, or ask the user to select one when multiple genomes are available. If the database does not contain the species, or the user rejects the only installed genome, query the README's prebuilt catalog next.
+4. Never infer the species or assembly from a BAM filename, cell line, chromosome prefix, or common experimental practice. The presence of a database does not prove that its assembly matches the BAM alignment.
+5. Resolve the environment, species, genome, and database before collecting the remaining scientific parameters and proceeding to validation.
 
-## 路径一：单样本只计算
+## Workflow 1: Single-Sample Compute Only
 
 ```text
 Extract requirements
 -> write compute_request.json
 -> Java validate-compute
 -> show validation and native command
--> ask confirmation
+-> request confirmation
 -> Java run-compute
 -> read compute_manifest.json
 ```
 
-验证失败时修正请求并重新验证，不请求运行确认。用户确认后只启动一个 Java 进程并等待退出；读取该 sample 的 `compute_manifest.json` 后结束，不创建可视化 workspace，不调用 R。
+If validation fails, correct the request and validate it again without requesting execution confirmation. After the user confirms, start exactly one Java process and wait for it to exit. Read that sample's `compute_manifest.json`, then stop without creating a visualization workspace or invoking R.
 
-## 路径二：多样本顺序计算
+## Workflow 2: Sequential Multi-Sample Compute
 
 ```text
 Extract shared parameters and samples[]
 -> write analysis_plan.json
 -> expand compute_request.<sample_id>.json
 -> validate every request
--> show ordered queue
--> ask one batch confirmation
+-> show the ordered queue
+-> request one batch confirmation
 -> run one Java process and wait
 -> verify its compute manifest
 -> update analysis_index.json
 -> only then start the next sample
 ```
 
-共享的 genome、region、strand 和 fragment length 写入 `analysis`；sample 不得覆盖这些字段，不一致的 sample 必须拆分为不同 analysis plan。按 `samples[]` 数组顺序展开独立的单样本 Java request，并在运行任何 sample 前验证全部 request。全部通过后展示固定顺序、每项原生命令与失败策略，只询问一次批次确认。
+Store the shared genome, region, strand, and fragment length under `analysis`. A sample must not override these fields; split samples with different values into separate analysis plans. Expand the `samples[]` array in order into independent, single-sample Java requests, and validate every request before running any sample. After all requests pass validation, show the fixed execution order, each native command, and the failure policy, then request confirmation once for the entire batch.
 
-每个 Java 进程结束后读取该 sample 的 `compute_manifest.json`，再更新 `analysis_index.json`。`stop_on_error` 遇到失败立即停止；明确选择的 `continue_on_error` 也必须完成当前进程退出、manifest 检查和索引更新后才继续。计算结束后不自动绘图。
+After each Java process exits, read that sample's `compute_manifest.json` and update `analysis_index.json`. Under `stop_on_error`, stop immediately after a failure. Under an explicitly selected `continue_on_error` policy, wait for the current process to exit, inspect its manifest, and update the index before continuing. Do not invoke R automatically after computation finishes.
 
-## 路径三：只可视化
+## Workflow 3: Visualization Only
 
 ```text
 receive result directory
 -> R validate-plot
 -> show validation and native command
--> ask confirmation
+-> request confirmation
 -> R run-plot
 -> read visualization_manifest.json
 ```
 
-结果目录必须是 R 的 `input_dir`，plot-setting JSON 位于目录第一层。只调用 R，不创建 compute request、不检查 BAM、不调用 Java、不补算 coverage。用户可以在后续新任务中仅调用 R。验证成功并确认后运行 R，最后只读取和报告 `visualization_manifest.json`。
+Use the result directory as the R `input_dir`, with plot-setting JSON files at its top level. Invoke only R: do not create a compute request, inspect BAM files, invoke Java, or recompute coverage. A later task may invoke only R. After validation succeeds and the user confirms execution, run R and report only `visualization_manifest.json`.
 
-## 路径四：完整流程
+## Workflow 4: Full Workflow
 
-先完整完成路径一或路径二。全部已启动的 Java 进程结束且相应 compute manifest 已读取后，单独询问用户“现在绘图还是以后再绘图”。
+Complete Workflow 1 or Workflow 2 first. After every started Java process has exited and its compute manifest has been read, separately ask whether the user wants to plot now or later.
 
-- 选择以后再绘图：立即结束；后续新任务可直接走路径三。
-- 选择现在绘图：新建独立 visualization workspace，只复制各个已完成 sample 的 `*_NGSViz_plotSetting.json` 到 workspace 第一层，不移动或覆盖计算结果及 coverage CSV；然后完整执行路径三，包括独立的 R 运行确认。
+- If the user chooses later, stop immediately. A subsequent task may execute Workflow 3 directly.
+- If the user chooses now, create a separate visualization workspace. Copy only each completed sample's `*_NGSViz_plotSetting.json` file to the workspace's top level. Do not move or overwrite computation results or coverage CSV files. Then execute all of Workflow 3, including obtaining separate confirmation before running R.
 
-任何 Java 失败都不得进入 R。最终分别报告各 sample 的 `compute_manifest.json` 和 workspace 的 `visualization_manifest.json`。
+Never proceed to R after any Java failure. Report each sample's `compute_manifest.json` separately from the workspace's `visualization_manifest.json`.
