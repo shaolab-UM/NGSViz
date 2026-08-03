@@ -1,3 +1,4 @@
+# Full dependency lock generated for Linux x86_64 only.
 name: ngsViz
 channels:
   - conda-forge

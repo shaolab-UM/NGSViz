@@ -1,0 +1,5 @@
+name: ngsViz-java
+channels:
+  - conda-forge
+dependencies:
+  - openjdk>=17

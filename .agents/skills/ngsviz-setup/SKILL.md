@@ -25,7 +25,8 @@ description: Inspect, create, and repair NGSViz_setting.json and the local ngsVi
 
 - `NGSViz_setting.json` 不存在：发现唯一且合格的 Java、JAR 和 DB 后创建。
 - `java_path` 无效或 Java 主版本低于 17：先查找系统中其他 Java 17+；找到则修正路径。
-- 系统没有 Java 17+：按 README 使用 `conda env create -f environment.yml` 安装。该命令会下载并安装软件，执行前遵循平台审批；完成后用 `conda run -n ngsViz which java` 取得绝对路径，再写配置。
+- 系统没有 Java 17+：按 README 使用 `conda env create -f <tool_path>/environment-java.yml` 安装跨平台 Java-only 环境。不要在 macOS 或非 Linux x86_64 平台使用锁定了 `linux-64` 包的 `environment.yml`。该命令会下载并安装软件，执行前遵循平台审批。
+- 安装后先运行 `conda run -n ngsViz-java java -version` 确认 Java 17+。再从 `conda run -n ngsViz-java java -XshowSettings:properties -version` 的 `java.home` 取得环境根目录，选择其中实际存在的 `bin/java`（Windows 为 `bin/java.exe`），用审计脚本复核后写入绝对 `java_path`。
 - 配置指定的 `tool_name` 不存在：若工具根目录只有一个 `NGSViz-*.jar`，修正为该文件名；若没有 JAR，报错并停止；若有多个且无法唯一确定，列出候选并询问用户，不按文件名版本大小猜测。
 - `tool_path` 无效：根据 JAR、README 和 `lib/` 的共同位置修正为绝对路径。
 - `db_path` 无效：先检查配置相对路径解析错误，再检查 `<tool_path>/database/*.db`。只选择含 `defaultTbl` 且 SQLite 完整性检查通过的 DB。

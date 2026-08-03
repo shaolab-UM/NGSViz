@@ -70,9 +70,11 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 
 #### 2. Install dependency environment
 
-- All dependent runtime environments are recommended to be installed using conda by `conda env create -f environment.yml`
-  - Install the Java runtime environment; it is recommended Java 17 and above versions
-  - Install R and its dependencies, R version 4.0 and above
+- The committed `environment.yml` is a reproducible full-environment lock for **Linux x86_64**. Create it only on that platform with `conda env create -f environment.yml`.
+- For automatic Java setup on macOS arm64, macOS x86_64, or Linux, use the portable Java-only environment: `conda env create -f environment-java.yml`.
+  - Verify it with `conda run -n ngsViz-java java -version`; Java 17 or above is required.
+  - The portable file intentionally leaves platform builds to Conda and contains no `linux-64` packages, sysroot, or machine-specific prefix.
+- On platforms other than Linux x86_64, use the container installation below for the complete locked R and system dependency stack, or install R 4.0+ and its dependencies separately.
 
 
 #### 4. Other Dependencies

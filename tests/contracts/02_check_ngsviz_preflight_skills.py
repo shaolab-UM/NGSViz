@@ -17,6 +17,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DB_TOOL = ROOT / ".agents/skills/ngsviz-install-db/scripts/manage_ngsviz_db.py"
 SETUP_TOOL = ROOT / ".agents/skills/ngsviz-setup/scripts/check_ngsviz_environment.py"
 GTF_TOOL = ROOT / ".agents/skills/ngsviz-build-db/scripts/check_gtf_for_ngsviz.py"
+JAVA_ENVIRONMENT = ROOT / "environment-java.yml"
+SETUP_SKILL = ROOT / ".agents/skills/ngsviz-setup/SKILL.md"
 
 
 def load_module(name: str, path: Path):
@@ -123,6 +125,25 @@ class BuildDatabaseTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1, result.stdout)
             payload = json.loads(result.stdout)
             self.assertIn("NCBI_ACCESSION_CHROMOSOMES_UNSUPPORTED", payload["errors"])
+
+
+class JavaInstallationContractTests(unittest.TestCase):
+    def test_java_only_environment_is_cross_platform(self) -> None:
+        content = JAVA_ENVIRONMENT.read_text(encoding="utf-8")
+
+        self.assertIn("name: ngsViz-java", content)
+        self.assertRegex(content, r"(?m)^\s*- openjdk>=17\s*$")
+        self.assertNotIn("linux-64", content)
+        self.assertNotIn("sysroot", content)
+        self.assertNotIn("prefix:", content)
+
+    def test_setup_and_readme_use_portable_java_environment(self) -> None:
+        skill = SETUP_SKILL.read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("environment-java.yml", skill)
+        self.assertIn("environment-java.yml", readme)
+        self.assertIn("Linux x86_64", readme)
 
 
 if __name__ == "__main__":
