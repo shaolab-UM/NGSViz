@@ -3,13 +3,15 @@
 name: ngsViz
 channels:
   - conda-forge
+  - bioconda
   - nodefaults
 dependencies:
-  - openjdk >=17,<26
-  - r-base >=4.3,<4.6
+  - openjdk>=17,<26
+  - r-base>=4.4,<4.5
   - pandoc
   - r-aplot
   - r-bs4dash
+  - r-biocmanager
   - r-circlize
   - r-colorspace
   - r-corrplot
@@ -45,5 +47,4 @@ dependencies:
   - r-tidyverse
   - r-zoo
   - bioconductor-biomart
-  - bioconductor-enrichedheatmap
   - bioconductor-rtracklayer

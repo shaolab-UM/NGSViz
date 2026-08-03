@@ -11,6 +11,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PORTABLE_ENVIRONMENT = ROOT / "environment.yml"
 LINUX_HISTORY = ROOT / "environment-linux-64.yml"
+LOCK_DIRECTORY = ROOT / "conda-lock"
+LOCK_SCRIPT = ROOT / "scripts/01_generate_conda_locks.sh"
+POST_INSTALL_SCRIPT = ROOT / "scripts/02_install_r_post_dependencies.R"
+TARGET_PLATFORMS = ("linux-64", "osx-64", "osx-arm64")
 REQUIRED_DIRECT_DEPENDENCIES = {
     "openjdk",
     "r-base",
@@ -50,8 +54,8 @@ REQUIRED_DIRECT_DEPENDENCIES = {
     "r-tidyverse",
     "r-zoo",
     "bioconductor-biomart",
-    "bioconductor-enrichedheatmap",
     "bioconductor-rtracklayer",
+    "r-biocmanager",
 }
 
 
@@ -77,11 +81,36 @@ class EnvironmentSpecificationTests(unittest.TestCase):
         dependencies = dependency_names(content)
 
         self.assertTrue(REQUIRED_DIRECT_DEPENDENCIES <= dependencies)
+        self.assertIn("bioconda", content)
         self.assertIn("nodefaults", content)
         self.assertNotIn("linux-64", content)
         self.assertNotIn("sysroot", content)
         self.assertNotIn("prefix:", content)
         self.assertNotRegex(content, r"=[^\s=]+=[^\s=]+")
+
+    def test_lock_generation_targets_all_supported_platforms(self) -> None:
+        content = LOCK_SCRIPT.read_text(encoding="utf-8")
+
+        self.assertIn("conda-lock", content)
+        for platform in TARGET_PLATFORMS:
+            self.assertIn(f'--platform "{platform}"', content)
+
+    def test_arm64_post_install_is_versioned(self) -> None:
+        content = POST_INSTALL_SCRIPT.read_text(encoding="utf-8")
+
+        self.assertIn('bioconductor_version <- "3.20"', content)
+        self.assertIn('EnrichedHeatmap = "1.36.0"', content)
+        self.assertIn("BiocManager::install", content)
+        self.assertIn("packageVersion(package)", content)
+
+    def test_explicit_locks_exist_for_each_target_platform(self) -> None:
+        for platform in TARGET_PLATFORMS:
+            with self.subTest(platform=platform):
+                lock = LOCK_DIRECTORY / f"{platform}.lock"
+                content = lock.read_text(encoding="utf-8")
+                self.assertIn("@EXPLICIT", content)
+                self.assertIn(f"/{platform}/", content)
+                self.assertRegex(content, r"#[0-9a-f]{32}(?:\n|$)")
 
 if __name__ == "__main__":
     unittest.main()
