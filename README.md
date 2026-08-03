@@ -1,742 +1,707 @@
-# NGSVir User Guide
-
-# Table of Contents
-
-[TOC]
-
----
-
-## 📘 Introduction
-
-**NGSViz** is an analysis and visualization tool for high-throughput sequencing (NGS) data, supporting input files in BAM format, integrating an efficient Java computing engine, flexible R visualization scripts, and an interactive R Shiny interface, providing a variety of commonly used built-in genomic functional element databases, suitable for various scenarios such as genomic coverage and enrichment analysis.
-
-###  Typical Analysis Workflow
-
-1. **Prepare the Reference Database**
-
-   - Build the reference database using the script `lib/buildRefDB.R`, or download a pre-built version from the provided link. In addition, users can build their own reference databases by following the format and rules provided by this program.
-   - Ensure the database path is correctly specified in the system configuration file (`NGSViz_setting.json`) or via the `-DB` parameter.
-
-2. **Prepare BAM files to analyse.** 
-
-   > ⚠️ **Note:** BAM files require a corresponding bam index file (bai) to be provided. If a BAM index is not available, it must be generated using SAMtools.
-
-3. **Launch the RShiny Interface or Run via Command Line**
-
-   - Start the program either through the RShiny interface or by executing the command-line tool with appropriate parameters.
-
-   ```
-   # GUI mode
-   ## run Rshiny
-   R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
-   # CLI mode
-   ## 1. Run java calculation module
-   java -jar NGSViz-1.3.jar -G <genome_version> -R <region_type> -I <input_data> -O <output> -T <analysisTitle>
-   ## 1. Run visualization moddule
-   Rscript lib/ngsVizPlotMain.R -O <output>
-   ```
-
-4. **Set Required Parameters**
-
-   - Specify the reference genome version (`-G`), region type (`-R`), analysis title (`-T`), input file (`-I`), and output path (`-O`).
-   - Optionally, define number of CPU cores to use (`-P`), biotype (`-B`), and other advanced parameters.
-
-5. **Run the Calculation Module**
-
-   - Execute the analysis by clicking **Start Analysis** in the RShiny interface or running the command-line tool.
-   - The program will process the input BAM file and generate a coverage matrix and JSON configuration file used for downstream visualization tasks.
-
-6. **Visualize the Results**
-
-   For result visualization, there are two options: either use the three individual visualization modules within R shiny, or directly generate the visualizations results using the `ngsVizPlotMain.R` wrapper script. Users can fine-tune the output image's visualization effects by modifying the default parameters in the configuration file.
-   
-   **visualization modules within R shiny**:
-   
-   - **SingleCoveragePlot** for individual samples.
-   - **MultiSamplePlot** for average and integrated views.
-   - **QCPlot** for PCA and correlation analysis across samples.
-
----
-
-## ⚙️Installation
-
-### GitHub installation
-
-#### 1. Clone code repository
-
-```bash
-git clone git@github.com:shaolab-UM/NGSViz.git
-```
-
-#### 2. Install dependency environment
-
-- `environment.yml` defines the shared direct dependencies for Linux x86_64, Intel macOS, and Apple Silicon macOS. Exact package builds are recorded in `conda-lock/`.
-- Create the complete environment from the lock file matching the current platform:
-
-  ```bash
-  conda create -n ngsViz --file conda-lock/linux-64.lock
-  conda create -n ngsViz --file conda-lock/osx-64.lock
-  conda create -n ngsViz --file conda-lock/osx-arm64.lock
-  ```
-
-  Run only the command matching the current platform. Then install the pinned R package whose macOS arm64 build is unavailable from the configured Conda channels:
-
-  ```bash
-  conda run -n ngsViz Rscript lib/install_r_post_dependencies.R
-  ```
-
-- `environment-linux-64.yml` is the historical Linux x86_64 export retained for traceability and is not intended for new installations.
-- When only Java needs to be configured automatically, create the cross-platform Java-only environment with `conda env create -f environment-java.yml`. Then run `conda run -n ngsViz-java java -version` and confirm that the Java major version is at least 17.
-- After changing dependencies, run `lib/generate_conda_locks.sh` with an isolated `conda-lock` installation, then repeat dependency resolution checks for all three platforms and the smoke test for the current platform.
-
-
-#### 4. Other Dependencies
-
-- It is recommended to install commonly used bioinformatics tools such as samtools (if needed to process BAM files).
-
-#### 5. Set software global configuration
-
-- To modify the global configuration file `NGSViz_setting.json`, update the values of `tool_path`, `db_path`, and `java_path`, which correspond to the tool's installation path, the path to the required database, and the path to the Java environment, respectively.
-
-  If you do not have permission to edit the original configuration file, you can create a new JSON configuration file with the following content. When running the computation module of ngsViz, use the `-CP` parameter to specify the path to your newly created configuration file.
-
-  ```json
-  {
-      "versionNum": {
-          "version": "1.2"
-      },
-      "toolParas": {
-          "tool_path": "/path/to/NGSViz",
-          "db_path": "/path/to/NGSViz/database/genomeCoordinate.db",
-          "tool_name": "NGSViz-1.3.jar",
-          "java_path": "/usr/bin/java" 
-      }
-  }
-  ```
-
----
-
-### **Install and run using a container**
-
-#### Run with docker
-
-```shell
-# pull the docker image of ngsViz
-docker pull ngsviz/ngsviz:1.2
-# build the docker container
-docker run \
---name ngsViz \
--p 3838:3838 \
--v $localDataPath:/data \  
--dit ngsviz/ngsviz:1.2
-# Start container
-docker start ngsViz 
-# Enter the container
-docker attach ngsViz 
-```
-
-`-v`: Mount the local `localDataPath` to the container's `/data` to facilitate data communication between the local system and the container.
-
-`-p`: Connect the local machine's port 3838 to the container's port 3838 to enable access to the RShiny interface in the container via http://localhost:3838.
-
-#### Run with singularity
-
-You can also build a **Singularity image** based on our **Docker image** for use with Singularity. Here's how:
-
-```singularity exec your-image.sif java -version
-singularity build ngsviz.sif docker://ngsviz/ngsviz:1.2
-singularity exec ngsviz.sif java -jar ngsViz-10.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
-```
-
-#### Run with Apptainer
-
-If the system lacks a container runtime environment, it is recommended to use Conda to install `Apptainer`, a container platform designed for secure and portable high-performance computing. Apptainer is designed to enable unprivileged users (without root privileges) to run containers securely and efficiently. Below, we provide some simple examples. For more advanced usage, please refer to the official documentation. 
-
-```shell
-# install the Apptainer
-conda install conda-forge::apptainer
-# 1.1 Pull Docker container image
-apptainer pull docker://ngsviz/ngsviz:1.2
-# 1.2 Run Docker container
-apptainer run docker://ngsviz/ngsviz:1.2
-# 2. Run Singularity container
-apptainer run ngsviz.sif java -jar ngsViz-1.3.jar -G hg19 -R tss -I $input_data -O $output -T analysisTitle
-```
-
----
-
-## 🧩Main modules and script description
-
-### Database
-
-#### Chromosome Naming Compatibility When Processing BAM Files
-
-When processing BAM files, it's important to ensure consistency between the reference genome used for alignment and the corresponding GTF annotation file. Different genome sources may use different chromosome naming conventions, which can lead to mismatches during downstream analysis.
-
-For example:
-
-- **Ensembl** reference genomes and GTF files typically use chromosome names like `1`, `2`, `X` (without the `chr`prefix).
-- **UCSC** and **GENCODE** use names like `chr1`, `chr2`, `chrX` (with the `chr` prefix).
-- **NCBI RefSeq** uses accession-based identifiers such as `NC_000001.11`.
-
-Our tool is built using **UCSC GTF annotations**, which follow the `chr`-prefixed naming convention. Therefore, it expects chromosome names in the format `chr1`, `chr2`, etc. GTF files following UCSC-style naming are fully supported and handled natively. Our tool automatically detects and adapts to BAM files aligned using Ensembl-style reference genomes (without the chr prefix). No manual intervention or configuration is required from the user.
-
-> ⚠️ **Note:**  We do **not support automatic conversion** of NCBI-style accession identifiers (e.g., `NC_000001.11`). If you're using RefSeq-based annotations, please convert chromosome names to UCSC format before proceeding.
-
-#### Database structure and Functionality
-
-The database includes a table named `defaultTbl` and multiple installed database tables referred to as CoordinateTblName. These tables follow the naming format **{Genome}_{DB}**, such as: `hg19_RefSeq`.
-
-- **`defaultTbl`**
-  This table stores metadata about the installed databases and default parameters used by the program. It helps the application determine which genome annotations are available and provides default settings for analysis.
-
-| Column | Item              | Description                                                  |
-| ------ | ----------------- | ------------------------------------------------------------ |
-| 1      | Species           | Species name (e.g., *Homo sapiens*, *Mus musculus*)          |
-| 2      | CoordinateTblName | Table name containing genomic feature coordinates (e.g., hg19_RefSeq) |
-| 3      | DB                | Source of annotation database (e.g., RefSeq)                 |
-| 4      | Genome            | Reference genome version (e.g., hg38, mm10)                  |
-| 5      | Region            | Type of genomic region (e.g., gene body, tss, tes, exon)     |
-| 6      | AnalysisType      | Type of analysis performed (e.g., exon or transcript)        |
-| 7      | Biotype           | Gene classification (e.g., protein-coding, lncRNA, pseudogene) |
-| 8      | PointLab          | Labeled point of interest (e.g., TSS, TES)                   |
-| 9      | FlankSize         | Flanking region size added upstream and downstream of the query region |
-
-- **`CoordinateTblName`**
-  These tables contain genomic elements of interest along with their coordinate information. They are used by the program to retrieve relevant genomic features for analysis. `DefaultChooseSpecifies` the default representative transcript, chosen as the longest when multiple transcripts are present.`Biotype` indicates the gene type, such as protein-coding or non-coding RNA. `type` specifies whether the entry represents a transcript or an exon.
-
-| Column | Item          |              Description               |
-| ------ | ------------- | :------------------------------------: |
-| 1      | chrom         |               Chromosome               |
-| 2      | start         |             Start Position             |
-| 3      | end           |              End Position              |
-| 4      | width         |                 width                  |
-| 5      | strand        |     Strand Direction (`+` or `-`)      |
-| 6      | type          |           Transcript or exon           |
-| 7      | biotype       |          Gene classification           |
-| 8      | gname         |               Gene Name                |
-| 9      | tid           |             Transcript ID              |
-| 10     | DefaultChoose | Longest transcript selected by default |
-
-#### Reference database
-
-This program offers a reference database that supports multiple species and genome versions. Users can download the appropriate database from the provided online repository based on their research needs, and import it into the program’s dependent database.
-
-You can access and download the pre-built genomic functional element databases from the following link:
-[**Download Link – Pre-built Database of Genomic Functional Elements**](https://drive.google.com/drive/folders/1h3tORc5PiZ_TTbIH9cH03O1wyqjhNMDz?usp=sharing).
-
-Pre-built database of genomic functional elements
-
-| Organism  |     Scientific Name     | Genome Version | Annotation Source        |
-| :-------: | :---------------------: | :------------: | ------------------------ |
-|   Human   |      Homo_sapiens       | [hg38](https://drive.google.com/uc?export=download&id=1XprZE54eZ14FBGrvIajy91_O9ZOfwJSW) | UCSC (RefSeq annotation) |
-|   Human   |      Homo_sapiens       | [hg19](https://drive.google.com/uc?export=download&id=1XTp7i780krY87Uc1JDtVrz-Y5oimuitZ) | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       | [mm39](https://drive.google.com/uc?export=download&id=1lsbnW18O_MsQrGr2mRq-_cBrf2sHeGBw) | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       | [mm10](https://drive.google.com/uc?export=download&id=1fzTrVOWF2V-VPDODo6AS30kzAPNgHyt_) | UCSC (RefSeq annotation) |
-|   Mouse   |      Mus_musculus       | [mm9](https://drive.google.com/uc?export=download&id=1vjIk74g29LN7a7P8nwVyJMwtRhXR-b4r) | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       | [danRer11](https://drive.google.com/uc?export=download&id=1M3sxoVc2pAqAisTjVUsjnDaKBKYJHUUI) | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       | [danRer10](https://drive.google.com/uc?export=download&id=1gWaMnpPAMKYN4kzvaaw-oW3w1dnKy4_0) | UCSC (RefSeq annotation) |
-| Zebrafish |       Danio_rerio       | [danRer7](https://drive.google.com/uc?export=download&id=12MDJu47MGpoHqqM0o5w2VRouc75Y42_0) | UCSC (RefSeq annotation) |
-| Fruit fly | Drosophila_melanogaster | [Dm6](https://drive.google.com/uc?export=download&id=1k5tiDT6bwRj1DE6uUsLKB4K1UbtcGOH4) | UCSC (RefSeq annotation) |
-| Fruit fly | Drosophila_melanogaster | [dm3](https://drive.google.com/uc?export=download&id=1Y1V5lNyegP3DZYLUKP-GwijrbxHdOxOb) | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       | [felCat9](https://drive.google.com/uc?export=download&id=1mTiasy8GgfTcaRPZ6EP5SqiWoOCDKSpT) | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       | [felCat8](https://drive.google.com/uc?export=download&id=12gMeK7iAM6KP5S1LRjlzi7gMRMy6B56h) | UCSC (RefSeq annotation) |
-|    Cat    |       Felis_catus       | [felCat5](https://drive.google.com/uc?export=download&id=1TZrdhjFFvFfZVlnHiCDPrNrpPrOjGUMS) | UCSC (RefSeq annotation) |
-|    Dog    |    Canis_familiaris     | [canFam6](https://drive.google.com/uc?export=download&id=1JbB6udpnax4ZHjwUuaKZwRq0NNnWVRoG) | UCSC (RefSeq annotation) |
-
-#### Modify the build-in batabase path
-
-The default built-in database, `genomeCoordinate.db`, is located in the program’s `database`directory. Its location is defined in the system configuration file `NGSViz_setting.json`, which resides in the system settings path relative to the program directory.
-
-However, in environments such as containers, this database may be mounted in read-only mode, preventing users from adding new databases using the `merge` method. To address this, the program allows users to create a custom `NGSViz_setting.json` file at any location. When launching the program, users can specify the path to this custom configuration file using the `-CP` parameter or through the RShiny interface. Within this file, the `db_path` parameter can be modified to point to the desired reference database location.
-
-#### Merge database
-
-To merge a new database into the program’s existing reference database, use the `-DB` parameter to specify the path of the database to be imported. The database can either be downloaded from our cloud storage or built manually using the provided script `lib/buildRefDB.R`.
-
-> **⚠️Note:** All pre-built databases can be used independently. To activate a downloaded database, simply specify its path in the system configuration settings `NGSViz_setting.json`. Once configured, the program will recognize and utilize the selected database without requiring additional setup.
-
-```shell
-inport_db_path=$YOUR_PATH/NGSViz_hg19_RefSeq.db
-java -jar NGSViz-1.3.jar -DB $inport_db_path
-```
-
-#### Build a reference database (optional)
-
-If the pre-built databases do not include the species or genome version you require, you can build a custom reference database using the script `lib/buildRefDB.R`. This script constructs the database based on a genomic annotation file in GTF format. The parameter  `annotatedNCRNA` is used to specify whether to further annotate ncRNA using the `biomaRt` package, annotating it into more specific types such as lncRNA, etc. `F` indicates that no annotation will be performed.
-
-> ⚠️**Note:** It is important to note that the name of the GTF file in the specified path must be in the format of the genome version, such as genome_version.annotation_type.gtf. For example, `hg38.ncbiRefSeq.gtf`.
->
-> ------
->
-> ⚠️**Note:** If you're using an Ensembl GTF file, you'll need to **add the "chr" prefix** to the chromosome names.
-
-**Usage:**
-
-```bash
-Rscript lib/buildRefDB.R <gtf_file> <DB_name> <species> <annotatedNCRNA>
-```
-
-**Parameter Description**
-
-|   Parameter    |                    Description                     |       Example       |
-| :------------: | :------------------------------------------------: | :-----------------: |
-|    gtf_file    |         Specifies the path to the GTF file         | hg38.ncbiRefSeq.gtf |
-|    DB_name     |             The name of the database.              |       RefSeq        |
-|    species     |              The name of the species.              |    Homo_sapiens     |
-| annotatedNCRNA | Indicates whether to refine annotations for ncRNA. |          F          |
-
-#### **Custom Functional Element Database**
-
-In addition to the built-in databases, the program also supports user-defined functional element databases. Users can construct their own databases following the required format and specify the path using the `-BD` parameter when running the program.
-
-- The custom database must be **tab-delimited** and **must not contain a header row**.
-- Each row should represent a functional genomic element.
-- The database must not contain redundant entries, as the program will read and process all records sequentially.
-- Minimum required columns are **1–3** (`Chromosome`, `Start`, `End`). If optional columns are missing, NGSViz will assume **`+` strand** and auto-generate stable element IDs from coordinates.
-
-| Column |          Description          |
-| :----: | :---------------------------: |
-|   1    |          Chromosome           |
-|   2    |        Start Position         |
-|   3    |         End Position          |
-|   4    | Strand Direction (`+` or `-`) |
-|   5    |           Gene Name           |
-|   6    |         Transcript ID         |
-
----
-
-#### **Intergenic Region Annotation** 
-
-NGSViz provides built-in **intergenic region annotations** for both **human and mouse**, which are included in the database for convenient and direct use. Users can specify the desired intergenic annotation file using the **`-BD`** parameter when running the program. These annotations are fully formatted and require no additional preprocessing, enabling straightforward exploration and visualization of genomic features within intergenic regions.
-
----
-
-### Computational Module Based on Java
-
-#### Feature
-
-- No environment dependencies
-- Multithreading concurrency, supports large-scale data
-- Efficiently process BAM files, calculate genomic coverage.
-
-#### Usage
-
-```bash
-java -jar NGSViz-1.3.jar [parameter]
-```
-
-#### Java 原生计算 CLI
-
-构建后使用 `target/NGSViz-1.0.jar`。AI 计算参数只能通过一份单样本 `compute_request.json` 传入 Java；该文件必须只包含一个 signal sample，可选一个 control BAM，并且禁止出现 `samples` 数组。
-
-```bash
-java -jar target/NGSViz-1.0.jar describe --format json
-java -jar target/NGSViz-1.0.jar validate-compute --request compute_request.json
-java -jar target/NGSViz-1.0.jar run-compute --request compute_request.json
-```
-
-`validate-compute` 只读验证系统配置、数据库、BAM/BAI、参数和输出路径，不创建计算目录。只有验证结果展示并取得第一次明确确认后，才能调用 `run-compute`。Java 只负责计算，不启动 R，也不以是否生成图片作为成功条件。
-
-旧 CLI flags 继续兼容。旧 flags 与 JSON 请求都在内部归一化为同一个 `ComputeRequest`，共用同一个 validator 和 `MainCalculator`；两种输入模式禁止混用，JSON 模式不得追加旧 flags。
+# ngsViz
+
+ngsViz is a local analysis and visualization toolkit for BAM-based next-generation sequencing data. It calculates coverage and enrichment over genomic features, writes reusable result contracts, and renders static or interactive visualizations.
+
+The project provides three supported user interfaces:
+
+1. A legacy-compatible Java command-line interface for direct analysis.
+2. An R Shiny graphical interface for interactive computation and visualization.
+3. An AI-agent workflow built on structured JSON requests, machine-readable responses, manifests, repository-scoped skills, and explicit execution rules.
+
+## Table of contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Configuration and reference databases](#configuration-and-reference-databases)
+- [Quick start](#quick-start)
+- [Command-line interface](#command-line-interface)
+- [R Shiny graphical interface](#r-shiny-graphical-interface)
+- [AI agent usage](#ai-agent-usage)
+- [Output interpretation](#output-interpretation)
+- [Troubleshooting](#troubleshooting)
+- [Version history](#version-history)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- BAM/BAI input with reference compatibility checks.
+- Coverage and read-count calculation over TSS, TES, gene body, exon, and supported custom intervals.
+- Signal-only analysis or signal/control normalization.
+- Configurable mapping quality, fragment length, strand mode, binning, scaling, flanking regions, and data-point resolution.
+- Static average profiles and coverage heatmaps.
+- Multi-sample correlation and PCA plots.
+- Interactive R Shiny panels for calculation, single-sample plotting, multi-sample plotting, and quality control.
+- SQLite reference-coordinate databases with pre-built and custom-build workflows.
+- Backward-compatible Java short flags for users and structured native CLIs for automation.
+- Machine-readable validation, stable exit codes, and separate compute and visualization manifests.
+- Repository-scoped Codex skills for environment setup, reference database resolution, safe validation, sequential multi-sample execution, and deferred visualization.
+
+## Architecture
 
 ```text
-legacy CLI flags ──────┐
-                      ├─> ComputeRequest ─> validate ─> MainCalculator
-compute_request.json ─┘
+BAM + BAI + reference SQLite database
+                 |
+                 v
+        Java compute engine
+                 |
+                 +-- coverage matrix CSV
+                 +-- read-count CSV
+                 +-- *_NGSViz_plotSetting.json
+                 `-- compute_manifest.json       JSON mode only
+                              |
+                              v
+                    R visualization CLI
+                              |
+                              +-- average profile
+                              +-- coverage heatmap
+                              +-- correlation and PCA when sample count > 1
+                              `-- visualization_manifest.json
 ```
 
-#### R 原生可视化 CLI
+Java and R are independent native programs. Java never starts R, and R never computes coverage. The plot-setting JSON file is the supported contract between the two stages.
 
-R CLI 只读取现有 plot-setting JSON 及其引用的 coverage CSV，不检查 BAM、数据库或 Java 环境，也不启动 Java：
+## Installation
+
+### Requirements
+
+| Component | Requirement | Purpose |
+|---|---|---|
+| Java | 17 or later | Compute engine and validation CLI |
+| R | 4.x; the locked environment currently targets R 4.4 | Visualization CLI and R Shiny GUI |
+| Maven | Required only when building the JAR from source | Java build and tests |
+| Conda | Recommended | Reproducible Java and R environment |
+| SAMtools | Optional | Create a missing BAM index |
+
+### Clone the repository
 
 ```bash
-Rscript lib/ngsVizPlotMain.R describe
-Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/visualization_workspace
-Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/visualization_workspace
+git clone https://github.com/shaolab-UM/NGSViz.git
+cd NGSViz
 ```
 
-`validate-plot` 不生成图片和 manifest。验证结果展示并取得第二次、独立的明确确认后，才能调用 `run-plot`。旧的单目录入口 `Rscript lib/ngsVizPlotMain.R <directory>` 继续兼容，并归一化到同一套 R validator 和绘图入口。
+### Create the complete Conda environment
 
-#### Codex 四种使用路径
+Use the lock file matching the current platform:
 
-1. 单样本只计算：生成一份单样本 request，验证、确认、计算，读取该样本的 `compute_manifest.json` 后结束。
-2. 多样本顺序计算：Codex 读取 `analysis_plan.json`，按 `samples` 数组顺序展开多份单样本 request；全部验证通过并确认后严格串行计算。
-3. 只可视化：直接验证已有 visualization workspace，确认后只运行 R，不重新计算。
-4. 完整流程：先完成 Java 计算阶段，再独立决定立即绘图或以后单独调用 R。
+```bash
+conda create -n ngsViz --file conda-lock/linux-64.lock
+conda create -n ngsViz --file conda-lock/osx-64.lock
+conda create -n ngsViz --file conda-lock/osx-arm64.lock
+```
 
-多样本执行时，Java 永远不接收 `analysis_plan.json` 或 `samples` 数组。每个 request 的 `sample_id`、`sample_name`、`group_name` 和 `output_dir` 必须唯一；前一个 Java 进程退出、对应 manifest 验证并更新 `analysis_index.json` 后，才可启动下一个。默认失败策略为 `stop_on_error`。
+Run only one of these commands. Then install the pinned post-dependency required by the locked R environment:
 
-R 可以在 Java 完成后立即调用，也可以在数小时或数天后独立调用。延迟调用时，新建 visualization workspace，只把需要绘制的 plot-setting JSON 复制到目录第一层，不复制、移动或覆盖 coverage CSV。Java 批次确认不授权 R 绘图，因此完整流程有两次独立确认：第一次授权 `run-compute`，第二次授权 `run-plot`。
+```bash
+conda run -n ngsViz Rscript lib/install_r_post_dependencies.R
+conda activate ngsViz
+```
 
-三类记录职责互不替代：
+`environment.yml` records the shared direct dependencies. The files under `conda-lock/` record exact builds and are preferred for installation.
 
-| 文件 | 维护者 | 职责 |
-| --- | --- | --- |
-| `compute_manifest.json` | Java | 记录一个单样本计算的参数、状态、CSV、plot-setting 和计算日志 |
-| `analysis_index.json` | Codex | 按顺序索引各单样本 request 与 compute manifest，不证明科学计算本身成功 |
-| `visualization_manifest.json` | R | 记录一次独立绘图的输入、图片、状态和 R 日志，不包含 Java 计算状态 |
+### Build the Java application
+
+The repository includes a runnable release JAR. To rebuild it from source:
+
+```bash
+mvn clean package
+mvn test
+```
+
+The current Maven build writes `target/NGSViz-1.0.jar`; the native application version reported by `-V` and `describe` is `1.3`. Do not infer the application version from the historical JAR basename. Use the JAR selected in `NGSViz_setting.json` or verify a candidate with:
+
+```bash
+java -jar NGSViz-1.0.jar -V
+java -jar NGSViz-1.0.jar describe --format json
+```
+
+## Configuration and reference databases
+
+### System configuration
+
+`NGSViz_setting.json` tells the GUI and helper tools where to find Java, the JAR, the project, and the SQLite reference database.
+
+```json
+{
+  "versionNum": {
+    "version": "1.0"
+  },
+  "toolParas": {
+    "tool_path": "/absolute/path/to/NGSViz",
+    "db_path": "/absolute/path/to/NGSViz/database/genomeCoordinate.db",
+    "tool_name": "NGSViz-1.0.jar",
+    "java_path": "/usr/bin/java"
+  }
+}
+```
+
+Use absolute paths for portable agent and GUI workflows. A direct Java command may select another configuration with `-CP /absolute/path/to/NGSViz_setting.json`. JSON-mode requests use the `system_config` field.
+
+### BAM and chromosome naming
+
+- Every BAM must have a readable BAI. Create one with `samtools index sample.bam` when necessary.
+- The selected genome assembly must exactly match the assembly used for alignment.
+- UCSC-style chromosome names such as `chr1` are native.
+- BAM files using Ensembl-style names such as `1` are detected when they are otherwise compatible with the installed database.
+- NCBI accession names such as `NC_000001.11` are not converted automatically.
+
+An installed genome only proves that ngsViz can query it. It does not prove that the genome matches a BAM.
+
+### Pre-built reference databases
+
+The complete catalog is also available in the [shared Google Drive folder](https://drive.google.com/drive/folders/1h3tORc5PiZ_TTbIH9cH03O1wyqjhNMDz?usp=sharing).
+
+| Organism | Scientific name | Genome version | Annotation source |
+|---|---|---|---|
+| Human | Homo_sapiens | [hg38](https://drive.google.com/uc?export=download&id=1XprZE54eZ14FBGrvIajy91_O9ZOfwJSW) | UCSC RefSeq |
+| Human | Homo_sapiens | [hg19](https://drive.google.com/uc?export=download&id=1XTp7i780krY87Uc1JDtVrz-Y5oimuitZ) | UCSC RefSeq |
+| Mouse | Mus_musculus | [mm39](https://drive.google.com/uc?export=download&id=1lsbnW18O_MsQrGr2mRq-_cBrf2sHeGBw) | UCSC RefSeq |
+| Mouse | Mus_musculus | [mm10](https://drive.google.com/uc?export=download&id=1fzTrVOWF2V-VPDODo6AS30kzAPNgHyt_) | UCSC RefSeq |
+| Mouse | Mus_musculus | [mm9](https://drive.google.com/uc?export=download&id=1vjIk74g29LN7a7P8nwVyJMwtRhXR-b4r) | UCSC RefSeq |
+| Zebrafish | Danio_rerio | [danRer11](https://drive.google.com/uc?export=download&id=1M3sxoVc2pAqAisTjVUsjnDaKBKYJHUUI) | UCSC RefSeq |
+| Zebrafish | Danio_rerio | [danRer10](https://drive.google.com/uc?export=download&id=1gWaMnpPAMKYN4kzvaaw-oW3w1dnKy4_0) | UCSC RefSeq |
+| Zebrafish | Danio_rerio | [danRer7](https://drive.google.com/uc?export=download&id=12MDJu47MGpoHqqM0o5w2VRouc75Y42_0) | UCSC RefSeq |
+| Fruit fly | Drosophila_melanogaster | [Dm6](https://drive.google.com/uc?export=download&id=1k5tiDT6bwRj1DE6uUsLKB4K1UbtcGOH4) | UCSC RefSeq |
+| Fruit fly | Drosophila_melanogaster | [dm3](https://drive.google.com/uc?export=download&id=1Y1V5lNyegP3DZYLUKP-GwijrbxHdOxOb) | UCSC RefSeq |
+| Cat | Felis_catus | [felCat9](https://drive.google.com/uc?export=download&id=1mTiasy8GgfTcaRPZ6EP5SqiWoOCDKSpT) | UCSC RefSeq |
+| Cat | Felis_catus | [felCat8](https://drive.google.com/uc?export=download&id=12gMeK7iAM6KP5S1LRjlzi7gMRMy6B56h) | UCSC RefSeq |
+| Cat | Felis_catus | [felCat5](https://drive.google.com/uc?export=download&id=1TZrdhjFFvFfZVlnHiCDPrNrpPrOjGUMS) | UCSC RefSeq |
+| Dog | Canis_familiaris | [canFam6](https://drive.google.com/uc?export=download&id=1JbB6udpnax4ZHjwUuaKZwRq0NNnWVRoG) | UCSC RefSeq |
+
+A downloaded database may be selected directly through `db_path` or merged into the configured writable database:
+
+```bash
+java -jar NGSViz-1.0.jar \
+  -CP NGSViz_setting.json \
+  -DB /absolute/path/to/NGSViz_hg38_RefSeq.db
+```
+
+Back up the primary database and verify the target genome after merging. The AI installation skill performs both checks automatically.
+
+### Build a reference database from GTF
+
+Use a UCSC RefSeq GTF whose filename begins with the confirmed assembly, for example `hg38.ncbiRefSeq.gtf`:
+
+```bash
+Rscript lib/buildRefDB.R \
+  /absolute/path/to/hg38.ncbiRefSeq.gtf \
+  RefSeq Homo_sapiens FALSE
+```
+
+| Argument | Meaning |
+|---|---|
+| `gtf_file` | UCSC RefSeq GTF matching the BAM assembly |
+| `DB_name` | Annotation database name, such as `RefSeq` |
+| `species` | Scientific name, such as `Homo_sapiens` |
+| `annotatedNCRNA` | `TRUE` to refine ncRNA annotation with `biomaRt`; otherwise `FALSE` |
+
+The builder expects transcript/exon records with `gene_name` and `transcript_id` and currently retains RefSeq `NM` and `NR` transcripts. Convert incompatible chromosome names before building; do not use mixed or NCBI accession-style names.
+
+### Custom interval BED
+
+Use `-BD` in the legacy CLI or `custom_bed` in a JSON request. The file must be tab-delimited, have no header, and use 0-based half-open coordinates.
+
+| Column | Required | Meaning |
+|---:|---:|---|
+| 1 | Yes | Chromosome |
+| 2 | Yes | Start |
+| 3 | Yes | End |
+| 4 | No | Strand, `+` or `-` |
+| 5 | No | Gene or element name |
+| 6 | No | Transcript or stable element ID |
+
+When optional columns are absent, ngsViz assumes the `+` strand and generates stable IDs from coordinates.
+
+## Quick start
+
+The repository includes a BAM/BAI pair, an installed reference database, and example visualization results.
+
+### 1. Check the native interfaces
+
+```bash
+java -jar NGSViz-1.0.jar -V
+java -jar NGSViz-1.0.jar describe --format json
+Rscript lib/ngsVizPlotMain.R describe
+```
+
+### 2. Run a small legacy-CLI computation
+
+```bash
+mkdir -p analysis/readme_quick_start
+
+java -jar NGSViz-1.0.jar \
+  -CP NGSViz_setting.json \
+  -G hg38 \
+  -R tss \
+  -I Samples/K562_H3K4me3-ENCFF752MYF_5p.bam \
+  -O analysis/readme_quick_start \
+  -T K562_H3K4me3_TSS \
+  -B protein_coding \
+  -P 1
+```
+
+### 3. Validate and render a bundled result in a separate workspace
+
+```bash
+mkdir -p analysis/readme_visualization
+cp Samples/Result/H3K4me3_point/H3K4me3_NGSViz_plotSetting.json \
+  analysis/readme_visualization/
+
+Rscript lib/ngsVizPlotMain.R validate-plot \
+  --input-dir analysis/readme_visualization
+
+Rscript lib/ngsVizPlotMain.R run-plot \
+  --input-dir analysis/readme_visualization
+```
+
+The visualization command writes `merge_average_plot.tiff`, `coverage_heatmap.tiff`, and `visualization_manifest.json` in the input directory.
+
+## Command-line interface
+
+### Direct Java computation
+
+The user-facing compute entry point is:
+
+```bash
+java -jar NGSViz-1.0.jar -G <genome> -R <region> -I <input> -O <output> -T <title> [options]
+```
+
+Run `java -jar NGSViz-1.0.jar -H` for the native help and `-V` for the application version.
 
 #### Parameters
 
-| Parameter Name |  Variable Name  | Default Value  |                Describtion                 |
-| :------------: | :-------------: | :------------: | :----------------------------------------: |
-|       -H       |        -        |       -        |        Print all command usage help        |
-|       -V       |        -        |       -        |       Print the current ngsViz version      |
-|       -J       | ai_config_path  |       -        | Deprecated placeholder; does not load AI configuration |
-|       -G       |     genome      |       -        |         Reference genome database          |
-|       -R       |   region_type   |       -        |          Region type for analysis          |
-|       -T       |      title      |       -        |               Analysis title               |
-|       -I       |   input_file    |       -        |             Path to input file             |
-|       -O       |   output_path   |       -        |          Path to output directory          |
-|      -DB       |  input_db_path  |       -        |        Path to database for merging        |
-|      -CP       | sys_config_path |       -        |     Path to system configuration file      |
-|      -BD       |   bedDB_path    |       -        | Path to custom functional element database |
-|       -X       |      genes      |      all       |         List of genes for analysis         |
-|      -BS       |   batch_size    |      500       |        batch size for gene parallel        |
-|       -B       |     biotype     | protein_coding |                Gene biotype                |
-|       -F       |  flank_region   |      2000      |        Flanking region size (in bp)        |
-|       -N       |  flank_factor   |      0.0       |        Flanking size scaling factor        |
-|      -DP       | num_datapoints  |      100       |       Number of data points to plot        |
-|      -MQ       |    min_mapq     |       20       |     Minimum mapping quality threshold      |
-|      -FL       |    frag_len     |      150       |              Fragment length               |
-|       -P       |    core_num     |       1        |         Number of CPU cores to use         |
-|       -S       |   scale_ratio   |               null|     Scaling ratio for signal intensity     |
-|      -NF       |   new_forder    |     false      |           Create Results Folder            |
-|      -BM       |   bin_method    |      mean      |                 Bin method                 |
-|      -CM       |   Centermode    |     false      |          Whether plot with center          |
+| Flag | Required | Default | Description |
+|---|---:|---|---|
+| `-G` | Yes | None | Reference genome installed in the selected database |
+| `-R` | Yes | None | Region type, such as `tss`, `tes`, `genebody`, or `exon` |
+| `-I` | Yes | None | Signal BAM, `signal.bam:control.bam`, or legacy TXT/CSV sample sheet |
+| `-O` | Yes | None | Output directory |
+| `-T` | Yes | None | Analysis and plot title |
+| `-CP` | No | JAR-adjacent config | Alternate `NGSViz_setting.json` |
+| `-D` | No | `RefSeq` | Reference annotation database type |
+| `-A` | No | `transcript` | Analysis type: `transcript` or `exon` |
+| `-B` | No | `protein_coding` | Annotation biotype |
+| `-F` | No | Region-dependent | Flank size in base pairs |
+| `-N` | No | `0.0` | Gene-body flank scaling factor in `[0,1]` |
+| `-DP` | No | `100` | Number of data points; minimum `100` |
+| `-MQ` | No | `20` | Minimum mapping quality |
+| `-FL` | No | `150` | Single-end fragment length |
+| `-P` | No | `1` | CPU cores |
+| `-BS` | No | `500` | Gene batch size |
+| `-BM` | No | `mean` | Bin summary: `mean`, `median`, or `max` |
+| `-SS` | No | `both` | Strand mode: `both`, `same`, or `opposite` |
+| `-S` | No | CPM | Signal scale ratio; when absent, retain CPM normalization |
+| `-BD` | No | None | Custom BED interval file |
+| `-X` | No | `all` | Gene subset or gene-list path |
+| `-NF` | No | `false` | Create a title-named directory under `-O` |
+| `-CM` | No | `false` | Align selected intervals by their center |
+| `-DB` | Administrative | None | Merge a reference database and exit |
+| `-H` | Informational | None | Print help and exit |
+| `-V` | Informational | None | Print version and exit |
+| `-J` | Deprecated | None | Retained parser placeholder; it does not load AI configuration |
 
-#### Command-Line Parameters Description
+The default flank size is `2000` for `tss`, `tes`, `genebody`, `exon`, and `cgi`; `1500` for `enhancer`; and `1000` for `dhs` and `bed` when those regions are available.
 
-- **`-H`**: Prints the complete Java command-line usage help and exits without starting an analysis.
-- **`-V`**: Prints the current version (`ngsViz 1.3`) and exits without starting an analysis.
-- **`-J`**: Deprecated placeholder retained in the current parser. It does not load an AI configuration and must not be used by the AI-friendly workflow.
-- **`-G`**: (**Required parameters**) Indicates the version of the reference genome to be used for analysis. The specified genome version **must exist in the database**.
+#### Extended compute example
 
-  > ⚠️ **Important:** The selected reference genome version must match the genome version used during read alignment. Mismatches may lead to inaccurate signal interpretation and erroneous results.
-
-- **`-R`**: (**Required parameters**) Defines the region type for analysis. Supported values include `tes`, `tss`,  `genebody` and `exon`. 
-- **`-T`**:  (**Required parameters**) Sets the title of the analysis. 
--  **`-I`**: (**Required parameters**) Specifies the bam input file path. The calculation module supports only one BAM file per analysis. Alternatively, you can input two BAM files using the **Signal BAM** and **Input BAM** fields (Signal BAM:Input BAM). In this case, the second BAM file will be used as a background signal for normalization.
--  **`-O`**: (**Required parameters**) Defines the output directory path. 
-- **`-DB`**: Specifies the path to a new database that should be integrated into the tool's dependency database. 
--  **`-CP`**: Specifies the path to a user-defined configuration file. 
--  **`-X`**: Specifies the path to a gene list subset for analysis. The default is `all`, meaning all genes will be analyzed. 
--  **`-BS`**: Defines the batch size for gene parallel. 
--  **`-B`**: Specifies the biotype to be analyzed, such as `protein_coding` or non-coding RNAs (e.g., `lncRNA`, `ncRNA`). The default value is `protein_coding`, which is suitable for most standard gene expression and regulatory analyses.
--  **`-F`**: Sets the flanking region size. This parameter defines the number of base pairs to include upstream and downstream of the target genomic feature (e.g., TSS, TES, or gene body). Flanking regions are commonly used in functional element analysis to capture regulatory signals or transcriptional activity adjacent to the feature of interest. By default, the flanking region size is set to **2000 bp**, which typically provides sufficient context for most analyses. Users can adjust this value based on the resolution and scope of their study.
--  **`-N`**: Sets the flanking size factor. This parameter is used specifically in genebody mode to dynamically determine the size of the flanking regions. Instead of using a fixed number of base pairs, the flanking region size is calculated as a proportion of the gene body length: flanking size = gene body length × flanking size factor.
--  **`-DP`**: Controls the resolution of the output coverage matrix. Increasing this value provides more data points and higher plotting precision but significantly increases computation time. 
--  **`-MQ`**: Sets the minimum mapping quality threshold for filtering aligned reads. Reads below this threshold will be excluded. 
--  **`-FL`**: Specifies the fragment length, which should be set according to the library size. This is used for correcting single-end sequencing on the negative strand. 
--  **`-P`**: Defines the number of CPU cores to use for parallel processing. 
--  **`-S`**: Define a scaling factor, for example, for spike-in normalization.
--  **`-NF`**: Whether a new folder will be created to store the results.
-- **`-BM`**: Specify the bin scale method. Available options are `max`, `mean`, and `median` (default: `mean`). This determines how values within each bin are summarized.
-
-  **`-CM`**: Whether to perform center alignment for the selected regions during visualization (default: `false`). When enabled, regions will be aligned by their center before plotting.
-
-#### **Computation Module Result Interpretation**
-
-This program processes the input BAM file and generates an intermediate output in the form of a **coverage matrix**. In this matrix:
-
-- **Rows** represent genes.
-- **Columns** correspond to data points.
-- **Values** indicate the physical coverage over the query regions, which include each region of interest extended by a user-defined upstream and downstream flanking size.
-
-The coverage values within each resolution window are aggregated using the method specified by `-BM` (`mean`, `median`, or `max`; default: `mean`). Unless a spike-in scaling factor is provided, the aggregated coverage values are subsequently normalized to CPM (Counts Per Million) to account for differences in sequencing depth across samples.
-
-If Input BAM is provided, signals will be further corrected based on its values `log2(signal/input)`. 
-
-Alternatively, signals will also be corrected if scale_ratio is specified `signal*scale_ratio`.
-
-Additionally, the program generates a default **JSON configuration file** containing recommended parameters for downstream visualization tasks.
-
-### Read-Aware Shift in ChIP-seq and CUT&Tag Analysis
-
-In ChIP-seq and CUT&Tag analysis, read-aware shift is a critical step in processing sequencing reads to accurately estimate protein binding sites or epigenetic marker positions. Since sequencing reads originate from both strands of DNA fragments, the orientation (forward or reverse strand) causes the 5' end of reads to be offset from the actual binding site. Adjusting read positions enables more precise coverage calculation and peak calling.
-
-Processing Method
-
-1. Strand-Specific Adjustment
-
-- **Forward Strand**: The 5' end of reads is typically upstream of the binding site, so it needs to be shifted downstream (toward the 3' direction) by a certain offset (shift).
-- **Reverse Strand**: The 5' end of reads is downstream of the binding site, so it needs to be shifted upstream (toward the 5' direction) by the same offset.
-
-2. Determining the Shift Value
-
-- **Fragment Length**: The shift value is typically based on the estimated DNA fragment length, commonly 100-300 bp for ChIP-seq or 50-150 bp for CUT&Tag. The shift is usually half the fragment length. For example, a 200 bp fragment length implies a shift of approximately 100 bp.
-
----
-
-### **Visualization Mode based on R**
-
-#### Main Script and Functionality
-
-- `lib/ngsVizPlotMain.R` 
-
-  **`Input`**: Specifies the path to the folder containing input JSON configuration files.
-
-  **`Feature`**: Command-line interface for the visualization module, enabling unified execution of plotting tasks in CLI mode. 
-
-- `lib/processJSONParas.R`
-
-  **`Input`**: Specifies the path to the json configuration file.
-
-  **`Feature`**: Used to read and process the JSON configuration generated by the computation module, defining parameters for downstream visualization tasks.
-
-- `lib/coverageHeatmap.R`: 
-
-  **`Input`**: Specifies the path to the folder containing input JSON configuration files.
-
-  **`Feature`**: Used to generate average coverage plots and heatmaps for visualizing genomic data.
-
-- `lib/qualityControlViz.R`: 
-
-  **`Input`**: Specifies the path to the folder containing input JSON configuration files.
-
-  **`Feature`**: Used to visualize PCA and correlation between coverage profiles across multiple samples for quality control purposes.
-
-- `lib/transform2EnrichedHeatmap.R`
-
-  **`Input`**: Specifies the path to the json configuration file.
-
-  **`Feature`**: This script converts computation results into the input format required by EnrichedHeatmap, and utilizes its internal ComplexHeatmap-based engine for visualization, offering enhanced rendering quality for heatmaps.
-
-#### **Adjustable Plotting Options**
-
-- ##### Output Plot Parameters
-
-  | Parameter          | Description                                                  |
-  | ------------------ | ------------------------------------------------------------ |
-  | `highwidthdpi`     | Controls the resolution of the output image (higher DPI = better quality). |
-  | `file_type`        | Specifies the output image format, such as `tiff`, `pdf`, or `png`. |
-  | `top_bottom_ratio` | Adjusts the height ratio between the top average coverage plot and the bottom heatmap. |
-  | `SEM`              | Determines whether to display the Standard Error of the Mean (SEM) range. |
-  | `smooth`           | Applies smoothing to the plot for a cleaner visual appearance. |
-
-- ##### Gene Split Parameters
-
-  | Parameter     | Description                                                  |
-  | ------------- | ------------------------------------------------------------ |
-  | `hc_m`        | Specifies the hierarchical clustering method used to group genes based on coverage patterns. |
-  | `dist_m`      | Defines the distance metric used for clustering (e.g., Euclidean, Pearson, Spearman). |
-  | `cluster_num` | Sets the number of clusters to divide the genes into after hierarchical clustering. |
-
-- ##### Theme Parameters
-
-  | Parameter          | Description                                                  |
-  | ------------------ | ------------------------------------------------------------ |
-  | `title_size`       | Font size of the plot title.                                 |
-  | `legend_size`      | Size of the legend box.                                      |
-  | `title_color`      | Color of the plot title text.                                |
-  | `dash_color`       | Color of dashed lines used in the plot.                      |
-  | `axis_text_x_size` | Font size of x-axis tick labels.                             |
-  | `text_family`      | Font family used for all text elements.                      |
-  | `axis_text_y_size` | Font size of y-axis tick labels.                             |
-  | `dash_size`        | Line width of dashed lines.                                  |
-  | `sample_color`     | Color assigned to each sample in the plot.                   |
-  | `text_face`        | Font style (e.g., plain, bold, italic) for text elements.    |
-  | `split_color`      | Color used to distinguish different clusters or groups.      |
-  | `title_hjust`      | Horizontal justification of the plot title (e.g., 0 = left, 0.5 = center). |
-  | `border_size`      | Thickness of borders around plot panels or elements.         |
-  | `legend_text_size` | Font size of text inside the legend.                         |
-  | `line_size`        | Thickness of lines used in the plot.                         |
-  | `ystrip_text_size` | Font size of text in the y-axis strip (e.g., facet labels).  |
-
-#### Visualization Input
-
-For visualization input, you only need to specify the path to the generated JSON files, and the script will parse the configuration parameters to create the plots. If users need to fine-tune the output image conditions, they can modify the corresponding parameter values in the configuration file.
-
-Specifically, for multi-sample mode, users can create a new folder, copy the JSON configuration files from multiple analysis results into this path, and then specify this path. The system will automatically identify and analyze the multiple samples.
-
----
-
-### Command Line Interface (CLI)
-
-1. Run the calculation module
-
-- Specify five mandatory parameter values and optional parameter values as needed. The specific meanings of the parameters are detailed in the **Parameter Explanation Section** below. Examples are provided as follows:
-
-  ```shell
-  java -jar NGSViz-1.3.jar \
+```bash
+java -jar NGSViz-1.0.jar \
+  -CP NGSViz_setting.json \
   -G hg38 \
-  -R TSS \
-  -T analysis_title \
-  -I bam_path \
-  -O output_dir
-  ```
-
-2. Run the visualization module
-
-- At the end of the calculation module running, a csv file of the coverage matrix and a json format plot configuration file will be generated. You can fine-tune visualization results by modifying the default plotting parameters provided in the JSON configuration file. For detailed explanations of the plotting parameters, refer to the **Parameter Explanation Section**. Use the following command to specify the path to the folder containing the JSON configuration file for visualization. Optionally, you can place JSON configuration files for multiple sample analysis results in the same directory and specify this path in the script to enable integrated visualization across samples.
-
-  ```shell
-  Rscript lib/ngsVizPlotMain.R <JSON_path>
-  ```
-
-**Visualization Outputs:**
-
-- A single plot of the average coverage profile.
-
-- An integrated plot combining a coverage heatmap with the average coverage.
-- Additional plots for sample coverage quality control (QC), including:
-  - A PCA plot.
-  - A multi-sample coverage correlation plot.
-
-**Note:** QC visualization is only available when more than two samples are provided.
-
----
-
-### **Graphical User Interface (GUI)**
-
-1. **Launching ngsViz RShiny Interface**
-
-To begin, start the ngsViz RShiny application. This will open the interactive interface where you can access both the calculation, visualization modules and help document.
-
+  -R genebody \
+  -I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
+  -O analysis/readme_extended_compute \
+  -T K562_H3K36me3_gene_body \
+  -BM mean \
+  -MQ 20 \
+  -FL 150 \
+  -P 1
 ```
+
+One direct computation writes a coverage matrix CSV, a read-count CSV, and a `*_NGSViz_plotSetting.json`. The legacy flag entry point does not provide the same machine-oriented request/response guarantees as JSON mode.
+
+### R visualization CLI
+
+The native R CLI accepts an existing directory, not an individual JSON or CSV file:
+
+```bash
+mkdir -p analysis/readme_broad_visualization
+cp Samples/Result/K36me3_broad/H3K36me3_NGSViz_plotSetting.json \
+  analysis/readme_broad_visualization/
+
+Rscript lib/ngsVizPlotMain.R describe
+Rscript lib/ngsVizPlotMain.R validate-plot --input-dir analysis/readme_broad_visualization
+Rscript lib/ngsVizPlotMain.R run-plot --input-dir analysis/readme_broad_visualization
+```
+
+The legacy positional form remains supported:
+
+```bash
+Rscript lib/ngsVizPlotMain.R analysis/readme_broad_visualization
+```
+
+Only top-level files matching `*_NGSViz_plotSetting.json` are discovered. One plot-setting file produces an average profile and heatmap. More than one compatible file also produces correlation and PCA plots. All plot-setting files in one run must agree on matrix shape, row order, interval settings, labels, and output type.
+
+## R Shiny graphical interface
+
+### Start the application
+
+Run the application from the repository root so `here()` resolves project files correctly:
+
+```bash
 conda activate ngsViz
-# Run rshiny
-R -e "shiny::runApp('ngsViz-Shiny.R', host='0.0.0.0', port=3838)"
+R -e "shiny::runApp('ngsViz-Shiny.R', host='127.0.0.1', port=3838)"
 ```
 
-After a successful run, the terminal will display:
- Listening on http://0.0.0.0:3838
+Open `http://127.0.0.1:3838` in a browser. To expose the app on a trusted network, change the host to `0.0.0.0` and apply appropriate network access controls.
 
-- If you are using a local Linux desktop environment, open your browser and visit: http://localhost:3838.
+`ngsViz-Shiny.R` returns a `shinyApp` object; it is not a separate command-line launcher.
 
-- If you are running on a remote server and want to access it with your local browser, set up port forwarding. Then, open your browser and visit: http://localhost:3838.
+### Interface panels
 
-  ```
-  ssh -L 3838:localhost:3838 youruser@yourserver
-  ```
+| Panel | Purpose |
+|---|---|
+| Home | Project overview |
+| CalculationMode | Select genome and region, provide BAM/output paths, adjust compute parameters, and run the Java engine |
+| SingleCoveragePlot | Parse one plot-setting JSON, adjust plot/theme options, and render a single-sample profile and heatmap |
+| MultiSamplePlot | Parse a directory of plot-setting JSON files and render combined average and integrated coverage views |
+| QCPlot | Render coverage correlation and PCA views |
+| Help | Display this README inside the application |
+| AboutUs | Project and team information |
 
+The repository currently includes the ngsViz logo but no maintained GUI screenshot. A screenshot is therefore not embedded here; the panel descriptions above follow the current UI source.
 
-2. **Running the Calculation Module**
+The GUI is intended for interactive use. AI agents must use the native Java and R CLIs and must not automate the GUI.
 
-Click on the **CalculationMode** button on the left panel to enter the calculation module.
+## AI agent usage
 
-**Required Parameters**
+### Why AI agents use a different interface
 
-Fill in the following fields:
+Legacy flags are convenient for a person typing one command, but an agent needs stronger contracts:
 
-- **Genome Version**: Select the appropriate genome build.
-- **Region Type**: Choose the region type for analysis.
-- **Analysis Title**: Provide a title for your analysis.
-- **BAM File Path**: Enter the full path to a BAM file.
-- **Output Directory**: Specify the directory where results will be saved.
+- Typed JSON fields instead of shell-assembled scientific parameters.
+- Read-only validation before state-changing execution.
+- Stable JSON response envelopes and exit codes.
+- Explicit artifact acceptance and manifests.
+- A single-sample Java boundary that prevents ambiguous batch behavior.
+- Separate compute and visualization confirmations.
+- Deterministic, sequential orchestration for multiple samples.
 
-**Optional Parameters**
+The AI mode does not add a new analysis engine, Python runner, MCP service, Web API, or combined Java/R process. It orchestrates the same native Java computation and R plotting logic used by other interfaces.
 
-You may adjust the values of optional parameters to customize the analysis according to your needs.
+### Skills and rules
 
-Once all parameters are set, click **Start Analysis** to initiate the computation.
+The `skill` is a repository-scoped Codex skill: a Markdown instruction package with YAML front matter, stored under `.agents/skills/`. It is not a Claude plugin and is not part of the ngsViz runtime.
 
-> ⚠️ **Note:** The calculation module supports only one BAM file per analysis. Alternatively, you can input two BAM files using the **Signal BAM** and **Input BAM** fields (Signal BAM:Input BAM). In this case, the second BAM file will be used as a background signal for normalization.
+| Path | Responsibility |
+|---|---|
+| `.agents/skills/ngsviz-agent/SKILL.md` | Workflow router and execution boundaries |
+| `.agents/skills/ngsviz-setup/SKILL.md` | Java, JAR, configuration, and SQLite preflight |
+| `.agents/skills/ngsviz-install-db/SKILL.md` | Pre-built database discovery, verification, and installation |
+| `.agents/skills/ngsviz-build-db/SKILL.md` | UCSC RefSeq GTF validation and custom database build |
+| `AGENTS.md` | Repository-wide agent rules and authoritative document routing |
+| `agent/ai-friendly/*.md` | Native Java, native R, architecture, orchestration, and confirmation contracts |
 
-**3. Running the Visualization Module**
+The accompanying rules are operational safety and validation contracts, not a prompt template or a naming convention alone. They define parameter ownership, required confirmations, input schemas, output acceptance, process ordering, failure behavior, and prohibited cross-stage actions.
 
-After the calculation is complete, proceed to the visualization module.
+### Environment preparation
 
-Click on **VisualizationMode** and choose one of the following visualization options:
+1. Start the agent with the repository as its working directory.
+2. Ensure the agent can read `AGENTS.md` and `.agents/skills/`.
+3. Ask it to use `ngsviz-agent`; compatible Codex environments discover repository-scoped skills from `.agents/skills`.
+4. For compute work, the router invokes `ngsviz-setup` before creating a request. Visualization-only work skips Java preflight.
+5. If another agent framework does not discover Codex skills automatically, explicitly instruct it to read `AGENTS.md`, `.agents/skills/ngsviz-agent/SKILL.md`, and the linked contracts before acting. The rules remain usable, but automatic skill discovery is framework-specific.
 
-**SingleCoveragePlot**
+A read-only environment audit can be run directly:
 
-This option visualizes the result of a single sample.
-
-Steps:
-
-1. Enter the absolute path to the `.json` file generated in the result folder.
-2. Click **Parsing Parameters**.
-3. Adjust the plotting parameters as needed for fine-tuning.
-4. Click **Run Plot** to generate and display the coverage plot.
-5. If needed, modify parameters and click **Run Plot** again to regenerate the plot.
-
-**MultiSamplePlot**
-
-This option allows visualization of multiple samples.
-
-Steps:
-
-1. Specify one folder containing one or more`.json` configuration files.
-2. Click **Parsing Json Config Files**.
-3. Generate average coverage plots and integrated visualizations (heatmaps and average coverage plots).
-
-**QCPlot**
-
-This option is designed for quality control across multiple samples.
-
-Steps:
-
-1. Place multiple `.json` configuration files in a single folder.
-2. Enter the folder path.
-3. Click **Start Parsing to Plot** to generate PCA and correlation plots for sample coverage.
-
----
-
-## 🧪 Example
-
-### Point Mode
-
-```shell
-java -jar NGSViz-1.3.jar \
--G hg38 \
--R tss \
--T H3K4me3 \
--I Samples/K562_H3K4me3-ENCFF752MYF_5p.bam \
--O Samples/Result/H3K4me3_point \
--P 8
-Rscript lib/ngsVizPlotMain.R Samples/Result/H3K4me3_point
+```bash
+python3 .agents/skills/ngsviz-setup/scripts/check_ngsviz_environment.py \
+  --tool-path "$PWD"
 ```
 
-### Broad Mode
+The audit must report `status=ready` before an agent creates or validates a compute request.
 
-```
-java -jar NGSViz-1.3.jar \
--G hg38 \
--R genebody \
--T H3K36me3 \
--I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
--O Samples/Result/K36me3_broad \
--P 8
-Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_broad
-```
+### Native AI-friendly commands
 
-### Center Mode
+```bash
+java -jar NGSViz-1.0.jar describe --format json
+java -jar NGSViz-1.0.jar validate-compute --request /absolute/path/to/compute_request.json
+java -jar NGSViz-1.0.jar run-compute --request /absolute/path/to/compute_request.json
 
-```
-java -jar NGSViz-1.3.jar \
--G hg38 \
--R genebody \
--T H3K36me3 \
--I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
--O Samples/Result/K36me3_center \
--CM true \
--P 8
-Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_center
+Rscript lib/ngsVizPlotMain.R describe
+Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/visualization_workspace
+Rscript lib/ngsVizPlotMain.R run-plot --input-dir /absolute/path/to/visualization_workspace
 ```
 
-### Intergenic Mode
+JSON mode and legacy flags are mutually exclusive. An agent must never append `-G`, `-R`, or other legacy compute flags to `validate-compute` or `run-compute`.
 
+### Input contract
+
+A Java `compute_request.json` describes exactly one signal sample and zero or one control BAM. It must never contain `samples`.
+
+The repository includes a complete executable example at `agent/ai-friendly/examples/compute_request.single.json`. Its important groups are:
+
+| Group | Fields |
+|---|---|
+| Identity | `sample_id`, `sample_name`, `group_name`, `title` |
+| Scientific scope | `genome`, `region`, `database`, `analysis_type`, `biotype` |
+| Inputs and output | `signal_bam`, `control_bam`, `output_dir`, `system_config`, `custom_bed` |
+| Computation | `flank_region`, `num_datapoints`, `mapping_quality`, `fragment_length`, `cores`, `bin_method`, `strand_specific`, and related options |
+
+See `agent/ai-friendly/01_java_compute_cli_contract.md` for the authoritative field table and defaults. Unknown fields, wrong JSON types, missing required fields, and a top-level `samples` field fail validation.
+
+For multiple samples, the agent may read `analysis_plan.json`, whose `samples[]` order defines the queue. The plan is an orchestration input only: Java and R never read it. The schema and complete example are:
+
+- `agent/ai-friendly/schemas/analysis_plan.schema.json`
+- `agent/ai-friendly/examples/analysis_plan.multi_sample.json`
+
+The agent expands the plan into one independently valid Java request per sample.
+
+For a multi-sample plan, it validates every expanded request before starting computation, displays one fixed queue, requests one batch confirmation, and runs Java strictly in `samples[]` order. After each process exits, it verifies that sample's `compute_manifest.json` and updates `analysis_index.json`. The default policy is `stop_on_error`; an explicitly selected `continue_on_error` policy still runs one process at a time.
+
+### Output contract and parsing
+
+Every native AI-friendly command ends stdout with one JSON response envelope:
+
+```json
+{
+  "schema_version": "1.0",
+  "command": "validate-compute",
+  "status": "success",
+  "exit_code": 0,
+  "message": "Compute request is valid.",
+  "data": {},
+  "warnings": [],
+  "errors": []
+}
 ```
-java -jar NGSViz-1.3.jar \
--G hg38 \
--R genebody \
--T H3K36me3 \
--I Samples/K562_H3K36me3-ENCFF975JFV_5P.bam \
--O Samples/Result/K36me3_intergenic \
--BD database/hg38_intergenic_regions_greater_1kb.bed \
--P 8
-Rscript lib/ngsVizPlotMain.R Samples/Result/K36me3_intergenic
+
+An agent must:
+
+1. Check the process exit code and require it to match `exit_code`.
+2. Require `status` to be `success` before continuing.
+3. Read resolved values from `data`, not from incidental stderr diagnostics.
+4. Report every warning and error without silently changing scientific parameters.
+5. After execution, open the manifest path returned in `data` and verify its top-level status and accepted artifacts.
+
+| Artifact | Owner | Meaning |
+|---|---|---|
+| `compute_request.json` | Agent | One single-sample Java request |
+| `analysis_plan.json` | Agent | Ordered multi-sample orchestration input |
+| `compute_manifest.json` | Java | One sample's compute status, resolved parameters, CSV files, plot-setting file, and log |
+| `analysis_index.json` | Agent | Ordered index of requests and compute manifests; not proof of scientific success |
+| `visualization_manifest.json` | R | One visualization run's inputs, figures, validation state, and errors |
+
+Do not merge compute and visualization state into one manifest.
+
+### Example 1: validate and run one sample
+
+User request to the agent:
+
+> Use the ngsviz-agent skill. Validate `agent/ai-friendly/examples/compute_request.single.json`, show me the resolved parameters and exact run command, and wait for my confirmation before computing. Do not plot.
+
+The agent performs the environment preflight and then runs:
+
+```bash
+java -jar NGSViz-1.0.jar validate-compute \
+  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
 ```
 
----
+A successful validation returns `status: success`, `exit_code: 0`, supported values, and `data.resolved_parameters`. The agent shows these values and this exact pending command:
 
-## ❓ Frequently Asked Questions (FAQ)
+```bash
+java -jar NGSViz-1.0.jar run-compute \
+  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+```
 
-**Q1:** I get an error saying “Database not found” when running the program.
-**A:** Please make sure you have built the reference database using the `buildRefDB.R` script. Then, specify the correct path to the database using the appropriate parameter when running the program.
+Only after explicit confirmation does the agent run it, wait for the Java process, and inspect:
 
----
+```text
+agent/ai-friendly/examples/validate_compute_output/compute_manifest.json
+```
 
-For questions or suggestions, feel free to submit an issue or contact the author, **[Benchen Ye](yc47650@um.edu.mo)**.
+It reports the manifest and stops. It does not invoke R because the request was compute-only.
+
+### Example 2: compute followed by separately confirmed visualization
+
+User request to the agent:
+
+> Use the ngsviz-agent skill to run `agent/ai-friendly/examples/compute_request.single.json`. Validate first and wait for compute confirmation. If computation succeeds, ask me separately whether to visualize the result in `agent_output/readme_full_workflow/visualization`.
+
+The agent performs these steps:
+
+1. Preflight Java, the configured database, and the confirmed `hg38` assembly.
+2. Validate the single-sample request.
+3. Show the resolved scientific parameters and exact compute command.
+4. Wait for explicit compute confirmation.
+5. Run Java, wait for it to exit, and require a completed compute manifest.
+6. Ask whether to visualize now or later.
+7. If the user chooses now, create a separate workspace and copy only the plot-setting JSON into it.
+8. Validate the R input, show the exact plot command, and wait for a second confirmation.
+
+The resulting native command sequence is:
+
+```bash
+java -jar NGSViz-1.0.jar validate-compute \
+  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+java -jar NGSViz-1.0.jar run-compute \
+  --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
+```
+
+The second command is run only after the first command succeeds and the user confirms it. If Java fails or its manifest is missing or failed, the workflow stops without invoking R.
+
+After successful computation, the agent asks whether to plot now or later. If the user chooses now, it creates the workspace without modifying the compute directory:
+
+```bash
+mkdir -p "$PWD/agent_output/readme_full_workflow/visualization"
+cp "$PWD/agent/ai-friendly/examples/validate_compute_output/K562_H3K4me3_TSS_NGSViz_plotSetting.json" \
+  "$PWD/agent_output/readme_full_workflow/visualization/"
+
+Rscript lib/ngsVizPlotMain.R validate-plot \
+  --input-dir "$PWD/agent_output/readme_full_workflow/visualization"
+```
+
+After a second, independent confirmation:
+
+```bash
+Rscript lib/ngsVizPlotMain.R run-plot \
+  --input-dir "$PWD/agent_output/readme_full_workflow/visualization"
+```
+
+The agent reports `validate_compute_output/compute_manifest.json` separately from `visualization/visualization_manifest.json`.
+
+### Boundaries and limitations
+
+- Never guess species, genome assembly, region, strand mode, fragment length, control, normalization, or another scientific parameter.
+- Confirm that the selected genome matches the BAM alignment assembly.
+- Run validation before every compute or plot execution.
+- Show the validation result, exact command, inputs, outputs, and scope before requesting confirmation.
+- A compute confirmation does not authorize plotting; full workflows require a second confirmation.
+- Java processes one signal sample and at most one control per JSON request.
+- Multi-sample Java computation is strictly sequential, even with `continue_on_error`.
+- Never plot automatically after compute-only work, recompute during visualization-only work, or invoke R after a Java failure.
+- Never overwrite, move, or rewrite raw BAMs, coverage CSV files, plot-setting JSON files, or completed computation results.
+- Never write agent judgments into raw result files.
+- Do not use YAML, `-J`, legacy compute flags, Python intermediates, MCP, or a Web API as the AI parameter interface.
+- Do not treat `analysis_index.json` as a replacement for a native manifest.
+
+The authoritative rules are in `agent/ai-friendly/` and `.agents/skills/ngsviz-agent/SKILL.md`.
+
+## Output interpretation
+
+### Coverage matrix
+
+- Rows represent genes or queried genomic elements.
+- The first column contains stable row identifiers.
+- Remaining columns are numeric coverage positions.
+- Values inside each bin are summarized with `mean`, `median`, or `max`.
+- Without a scale ratio, coverage retains CPM normalization.
+- With `scale_ratio`, the existing behavior applies `signal * scale_ratio`.
+- With a control BAM, the existing background-normalization logic is applied.
+
+For single-end data, `fragment_length` controls read-aware extension used to better represent the estimated DNA fragment. Select it from library characteristics; do not infer it from a filename.
+
+### Compute artifacts
+
+| Artifact | Description |
+|---|---|
+| `*_coverage_matrix_heatmap.csv` | Coverage matrix used by plotting |
+| `*_gene_read_count.csv` | Per-feature read counts |
+| `*_NGSViz_plotSetting.json` | Java-to-R plotting contract |
+| `NGSViz_compute.log` | Compute diagnostics in JSON mode |
+| `compute_manifest.json` | Accepted Java artifacts and resolved request in JSON mode |
+
+### Visualization artifacts
+
+| Sample count | Output |
+|---:|---|
+| Any | `merge_average_plot.<file_type>` |
+| Any | `coverage_heatmap.<file_type>` |
+| More than one | `correlation_plot.tiff` |
+| More than one | `PCA_plot.<file_type>` |
+| Any native run | `visualization_manifest.json` |
+
+Supported native CLI figure types are `tiff`, `png`, and `pdf`.
+
+## Troubleshooting
+
+### The JAR name and reported version differ
+
+The current Maven `finalName` is historical. Use `NGSViz_setting.json` and verify the selected file with `-V` or `describe --format json`. Do not rename files solely to make the basename match version 1.3.
+
+### The system configuration cannot be found
+
+Without `-CP`, Java looks for `NGSViz_setting.json` beside the running JAR. Supply an explicit absolute configuration path or place a valid file beside the JAR.
+
+### BAM validation fails
+
+- Confirm the BAM exists and is readable.
+- Confirm `sample.bam.bai` or another usable BAI is present.
+- Run `samtools quickcheck sample.bam` and `samtools index sample.bam` when appropriate.
+- Confirm the genome assembly and chromosome naming match the selected database.
+
+### The genome or region is unavailable
+
+Inspect `defaultTbl` in the configured SQLite database. Install a matching pre-built database or build one from a compatible UCSC RefSeq GTF. Do not substitute a similar assembly.
+
+### `validate-plot` reports no candidates
+
+Place at least one regular `*_NGSViz_plotSetting.json` file directly in `input_dir`. The R CLI does not search recursively and does not infer inputs from `compute_manifest.json`.
+
+### Multi-sample plotting fails
+
+All plot-setting files must describe compatible matrices and plotting parameters. Row identifiers, row order, coverage-column count, interval type, labels, flank settings, and output file type must agree.
+
+### R reports missing packages
+
+Recreate the environment from the platform lock file and run:
+
+```bash
+conda run -n ngsViz Rscript lib/install_r_post_dependencies.R
+```
+
+Validation never installs packages automatically.
+
+### Exit codes for native AI-friendly commands
+
+| Code | Meaning |
+|---:|---|
+| `0` | Success |
+| `2` | CLI, request, or schema error |
+| `3` | Missing environment or dependency |
+| `4` | Invalid compute or visualization input |
+| `5` | Execution failure |
+| `6` | Output artifact acceptance failure |
+
+## Version history
+
+The repository does not currently maintain a standalone `CHANGELOG.md`. Relevant milestones visible in the project history are:
+
+- **1.3**: Native `describe`, `validate-compute`, and `run-compute` Java commands; native R validation and manifest workflow; machine-readable responses; repository-scoped Codex skills; sequential multi-sample orchestration rules; independent Java/R confirmations.
+- **1.2**: Binning and scaling documentation updates, container-era distribution work, and compatibility fixes.
+- **1.0**: Original Java computation, R visualization, and R Shiny workflow.
+
+This README removes obsolete syntax such as `Rscript lib/ngsVizPlotMain.R -O ...`, replaces the non-rendering `[TOC]` marker, and moves low-level schemas and exit behavior to the authoritative AI-friendly contracts.
+
+## Contributing
+
+1. Create a focused branch.
+2. Preserve legacy CLI compatibility unless the change explicitly updates the public contract.
+3. Do not change scientific behavior incidentally.
+4. Add or update focused Java, R, contract, smoke, or integration tests.
+5. Update the relevant contract and README when a public interface changes.
+6. Add a task log under `log/`.
+7. Open a pull request against the repository.
+
+Useful checks include:
+
+```bash
+mvn test
+Rscript tests/r/run_r_tests.R
+bash tests/contracts/02_check_module_independence.sh
+```
+
+## License
+
+ngsViz is distributed under the GNU General Public License, version 3. See [LICENSE](LICENSE).
