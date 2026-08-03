@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
+import os
 import re
+import shutil
 import sqlite3
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -89,6 +93,61 @@ def inspect_database(path: Path) -> dict[str, Any]:
     return result
 
 
+def prepare_database(source: Path, output: Path, genome: str) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "source": str(source.resolve()),
+        "output": str(output.resolve()),
+        "decompressed": False,
+        "valid": False,
+        "errors": [],
+    }
+    if not source.is_file():
+        result["errors"].append("SOURCE_NOT_FOUND")
+        return result
+    if output.exists():
+        result["errors"].append("OUTPUT_ALREADY_EXISTS")
+        return result
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{output.name}.", dir=output.parent
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        with source.open("rb") as handle:
+            compressed = handle.read(2) == b"\x1f\x8b"
+        opener = gzip.open if compressed else Path.open
+        with opener(source, "rb") as input_handle, temporary.open("wb") as output_handle:
+            shutil.copyfileobj(input_handle, output_handle)
+        inspection = inspect_database(temporary)
+        matching = [
+            entry for entry in inspection["entries"] if entry["genome"] == genome
+        ]
+        if not matching:
+            inspection["errors"].append("REQUESTED_GENOME_MISSING")
+            inspection["valid"] = False
+        result.update(inspection)
+        result.update(
+            {
+                "source": str(source.resolve()),
+                "output": str(output.resolve()),
+                "decompressed": compressed,
+                "requested_genome": genome,
+                "matching_entries": matching,
+            }
+        )
+        if result["valid"]:
+            os.replace(temporary, output)
+    except (OSError, gzip.BadGzipFile) as error:
+        result["errors"].append(f"PREPARE_ERROR:{error}")
+        result["valid"] = False
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -101,6 +160,10 @@ def main() -> int:
     verify = subparsers.add_parser("verify")
     verify.add_argument("--db", required=True, type=Path)
     verify.add_argument("--genome", required=True)
+    prepare = subparsers.add_parser("prepare")
+    prepare.add_argument("--source", required=True, type=Path)
+    prepare.add_argument("--output", required=True, type=Path)
+    prepare.add_argument("--genome", required=True)
     args = parser.parse_args()
 
     if args.command == "catalog":
@@ -117,6 +180,11 @@ def main() -> int:
         output = {"count": len(rows), "entries": rows}
         print(json.dumps(output, ensure_ascii=False, indent=2))
         return 0 if rows else 1
+
+    if args.command == "prepare":
+        result = prepare_database(args.source, args.output, args.genome)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["valid"] else 1
 
     result = inspect_database(args.db)
     if args.command == "verify":

@@ -36,8 +36,17 @@ description: Discover installed ngsViz species and genome assemblies, parse the 
 ## 下载和验证
 
 1. 使用目录解析出的精确 URL，以 `curl -L --fail` 下载到独立的临时文件。下载属于网络操作，遵循平台审批。
-2. 将通过验证的文件保存为 `<tool_path>/database/prebuilt/NGSViz_<genome>_RefSeq.db`；不得覆盖同名文件，冲突时比较内容或使用带时间戳的新路径。
-3. 导入前必须验证：
+2. README 的预构建文件可能是 gzip 归档。使用以下命令按文件 magic bytes 判断是否需要解压，并将解压、验证后的 SQLite 文件原子写入目标路径：
+
+   ```bash
+   python3 scripts/manage_ngsviz_db.py prepare \
+     --source /absolute/path/to/downloaded-file \
+     --output <tool_path>/database/prebuilt/NGSViz_<genome>_RefSeq.db \
+     --genome <assembly>
+   ```
+
+   保留下载归档；不得把 `.db.gz` 直接交给 SQLite，也不得覆盖同名目标文件。冲突时先比较内容或使用带时间戳的新路径。
+3. `prepare` 已执行 SQLite 与目标 genome 验证。导入前可再次独立验证：
 
    ```bash
    python3 scripts/manage_ngsviz_db.py verify \
