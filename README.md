@@ -70,11 +70,24 @@ git clone git@github.com:shaolab-UM/NGSViz.git
 
 #### 2. Install dependency environment
 
-- The committed `environment.yml` is a reproducible full-environment lock for **Linux x86_64**. Create it only on that platform with `conda env create -f environment.yml`.
-- For automatic Java setup on macOS arm64, macOS x86_64, or Linux, use the portable Java-only environment: `conda env create -f environment-java.yml`.
-  - Verify it with `conda run -n ngsViz-java java -version`; Java 17 or above is required.
-  - The portable file intentionally leaves platform builds to Conda and contains no `linux-64` packages, sysroot, or machine-specific prefix.
-- On platforms other than Linux x86_64, use the container installation below for the complete locked R and system dependency stack, or install R 4.0+ and its dependencies separately.
+- `environment.yml` 是 Linux x86_64、Intel macOS 和 Apple Silicon macOS 共用的直接依赖规范；精确的软件包构建记录在 `conda-lock/`。
+- 根据当前平台使用对应锁文件创建完整环境：
+
+  ```bash
+  conda create -n ngsViz --file conda-lock/linux-64.lock
+  conda create -n ngsViz --file conda-lock/osx-64.lock
+  conda create -n ngsViz --file conda-lock/osx-arm64.lock
+  ```
+
+  三条命令只执行与当前平台匹配的一条。随后安装 Conda 渠道尚未提供 macOS arm64 构建的固定版本 R 包：
+
+  ```bash
+  conda run -n ngsViz Rscript scripts/02_install_r_post_dependencies.R
+  ```
+
+- `environment-linux-64.yml` 是改造前的 Linux x86_64 历史导出文件，仅用于追溯，不用于新安装。
+- 只需自动配置 Java 时，使用跨平台 Java-only 环境：`conda env create -f environment-java.yml`。然后运行 `conda run -n ngsViz-java java -version`，确认 Java 主版本不低于 17。
+- 更新依赖后，使用隔离安装的 `conda-lock` 运行 `scripts/01_generate_conda_locks.sh`，并重新执行三个平台的求解检查与当前平台 smoke test。
 
 
 #### 4. Other Dependencies

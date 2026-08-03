@@ -16,6 +16,8 @@ LOCK_SCRIPT = ROOT / "scripts/01_generate_conda_locks.sh"
 POST_INSTALL_SCRIPT = ROOT / "scripts/02_install_r_post_dependencies.R"
 TARGET_PLATFORMS = ("linux-64", "osx-64", "osx-arm64")
 REQUIRED_DIRECT_DEPENDENCIES = {
+    "cxx-compiler",
+    "make",
     "openjdk",
     "r-base",
     "r-aplot",
@@ -54,8 +56,16 @@ REQUIRED_DIRECT_DEPENDENCIES = {
     "r-tidyverse",
     "r-zoo",
     "bioconductor-biomart",
+    "bioconductor-biocversion",
+    "bioconductor-complexheatmap",
+    "bioconductor-genomicranges",
+    "bioconductor-iranges",
     "bioconductor-rtracklayer",
     "r-biocmanager",
+    "r-getoptlong",
+    "r-locfit",
+    "r-matrixstats",
+    "r-rcpp",
 }
 
 
@@ -102,6 +112,7 @@ class EnvironmentSpecificationTests(unittest.TestCase):
         self.assertIn('EnrichedHeatmap = "1.36.0"', content)
         self.assertIn("BiocManager::install", content)
         self.assertIn("packageVersion(package)", content)
+        self.assertIn("Sys.setenv(PATH", content)
 
     def test_explicit_locks_exist_for_each_target_platform(self) -> None:
         for platform in TARGET_PLATFORMS:

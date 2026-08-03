@@ -3,6 +3,12 @@
 # Install the Bioconductor package that has no osx-arm64 Conda build.
 bioconductor_version <- "3.20"
 expected_versions <- c(EnrichedHeatmap = "1.36.0")
+environment_bin <- normalizePath(
+  file.path(R.home(), "..", "..", "bin"), mustWork = TRUE
+)
+Sys.setenv(PATH = paste(
+  environment_bin, Sys.getenv("PATH"), sep = .Platform$path.sep
+))
 
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   stop("BiocManager is required before installing post-Conda dependencies.")

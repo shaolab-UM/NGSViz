@@ -6,6 +6,8 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
+  - cxx-compiler
+  - make
   - openjdk>=17,<26
   - r-base>=4.4,<4.5
   - pandoc
@@ -28,14 +30,18 @@ dependencies:
   - r-ggsci
   - r-here
   - r-jsonlite
+  - r-getoptlong
   - r-leaflet
   - r-markdown
+  - r-locfit
+  - r-matrixstats
   - r-pak
   - r-plotly
   - r-processx
   - r-promises
   - r-purrr
   - r-rcolorbrewer
+  - r-rcpp
   - r-rcpproll
   - r-readr
   - r-reshape2
@@ -47,4 +53,8 @@ dependencies:
   - r-tidyverse
   - r-zoo
   - bioconductor-biomart
+  - bioconductor-biocversion
+  - bioconductor-complexheatmap
+  - bioconductor-genomicranges
+  - bioconductor-iranges
   - bioconductor-rtracklayer
