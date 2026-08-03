@@ -109,11 +109,11 @@ mvn clean package
 mvn test
 ```
 
-The current Maven build writes `target/NGSViz-1.0.jar`; the native application version reported by `-V` and `describe` is `1.3`. Do not infer the application version from the historical JAR basename. Use the JAR selected in `NGSViz_setting.json` or verify a candidate with:
+The current release JAR is `ngsViz-1.3.jar`. Use the JAR selected in `NGSViz_setting.json` or verify a candidate with:
 
 ```bash
-java -jar NGSViz-1.0.jar -V
-java -jar NGSViz-1.0.jar describe --format json
+java -jar ngsViz-1.3.jar -V
+java -jar ngsViz-1.3.jar describe --format json
 ```
 
 ## Configuration and reference databases
@@ -130,7 +130,7 @@ java -jar NGSViz-1.0.jar describe --format json
   "toolParas": {
     "tool_path": "/absolute/path/to/NGSViz",
     "db_path": "/absolute/path/to/NGSViz/database/genomeCoordinate.db",
-    "tool_name": "NGSViz-1.0.jar",
+    "tool_name": "ngsViz-1.3.jar",
     "java_path": "/usr/bin/java"
   }
 }
@@ -172,7 +172,7 @@ The complete catalog is also available in the [shared Google Drive folder](https
 A downloaded database may be selected directly through `db_path` or merged into the configured writable database:
 
 ```bash
-java -jar NGSViz-1.0.jar \
+java -jar ngsViz-1.3.jar \
   -CP NGSViz_setting.json \
   -DB /absolute/path/to/NGSViz_hg38_RefSeq.db
 ```
@@ -220,8 +220,8 @@ The repository includes a BAM/BAI pair, an installed reference database, and exa
 ### 1. Check the native interfaces
 
 ```bash
-java -jar NGSViz-1.0.jar -V
-java -jar NGSViz-1.0.jar describe --format json
+java -jar ngsViz-1.3.jar -V
+java -jar ngsViz-1.3.jar describe --format json
 Rscript lib/ngsVizPlotMain.R describe
 ```
 
@@ -230,7 +230,7 @@ Rscript lib/ngsVizPlotMain.R describe
 ```bash
 mkdir -p analysis/readme_quick_start
 
-java -jar NGSViz-1.0.jar \
+java -jar ngsViz-1.3.jar \
   -CP NGSViz_setting.json \
   -G hg38 \
   -R tss \
@@ -264,10 +264,10 @@ The visualization command writes `merge_average_plot.tiff`, `coverage_heatmap.ti
 The user-facing compute entry point is:
 
 ```bash
-java -jar NGSViz-1.0.jar -G <genome> -R <region> -I <input> -O <output> -T <title> [options]
+java -jar ngsViz-1.3.jar -G <genome> -R <region> -I <input> -O <output> -T <title> [options]
 ```
 
-Run `java -jar NGSViz-1.0.jar -H` for the native help and `-V` for the application version.
+Run `java -jar ngsViz-1.3.jar -H` for the native help and `-V` for the application version.
 
 #### Parameters
 
@@ -306,7 +306,7 @@ The default flank size is `2000` for `tss`, `tes`, `genebody`, `exon`, and `cgi`
 #### Extended compute example
 
 ```bash
-java -jar NGSViz-1.0.jar \
+java -jar ngsViz-1.3.jar \
   -CP NGSViz_setting.json \
   -G hg38 \
   -R genebody \
@@ -425,9 +425,9 @@ The audit must report `status=ready` before an agent creates or validates a comp
 ### Native AI-friendly commands
 
 ```bash
-java -jar NGSViz-1.0.jar describe --format json
-java -jar NGSViz-1.0.jar validate-compute --request /absolute/path/to/compute_request.json
-java -jar NGSViz-1.0.jar run-compute --request /absolute/path/to/compute_request.json
+java -jar ngsViz-1.3.jar describe --format json
+java -jar ngsViz-1.3.jar validate-compute --request /absolute/path/to/compute_request.json
+java -jar ngsViz-1.3.jar run-compute --request /absolute/path/to/compute_request.json
 
 Rscript lib/ngsVizPlotMain.R describe
 Rscript lib/ngsVizPlotMain.R validate-plot --input-dir /absolute/path/to/visualization_workspace
@@ -504,14 +504,14 @@ User request to the agent:
 The agent performs the environment preflight and then runs:
 
 ```bash
-java -jar NGSViz-1.0.jar validate-compute \
+java -jar ngsViz-1.3.jar validate-compute \
   --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
 ```
 
 A successful validation returns `status: success`, `exit_code: 0`, supported values, and `data.resolved_parameters`. The agent shows these values and this exact pending command:
 
 ```bash
-java -jar NGSViz-1.0.jar run-compute \
+java -jar ngsViz-1.3.jar run-compute \
   --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
 ```
 
@@ -543,9 +543,9 @@ The agent performs these steps:
 The resulting native command sequence is:
 
 ```bash
-java -jar NGSViz-1.0.jar validate-compute \
+java -jar ngsViz-1.3.jar validate-compute \
   --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
-java -jar NGSViz-1.0.jar run-compute \
+java -jar ngsViz-1.3.jar run-compute \
   --request "$PWD/agent/ai-friendly/examples/compute_request.single.json"
 ```
 
