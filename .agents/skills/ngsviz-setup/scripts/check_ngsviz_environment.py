@@ -83,6 +83,10 @@ def java_candidates(configured: str | None) -> list[dict[str, Any]]:
     return rows
 
 
+def quote_identifier(value: str) -> str:
+    return '"' + value.replace('"', '""') + '"'
+
+
 def inspect_database(path: Path) -> dict[str, Any]:
     row: dict[str, Any] = {"path": str(path), "valid": False, "genomes": [], "species": []}
     if not path.is_file() or not os.access(path, os.R_OK):
@@ -104,6 +108,9 @@ def inspect_database(path: Path) -> dict[str, Any]:
             metadata = connection.execute(
                 "SELECT DISTINCT Species, Genome, CoordinateTblName FROM defaultTbl"
             ).fetchall()
+            if not metadata:
+                row["error"] = "DEFAULT_TABLE_EMPTY"
+                return row
             tables = {
                 item[0]
                 for item in connection.execute(
@@ -115,6 +122,18 @@ def inspect_database(path: Path) -> dict[str, Any]:
             if missing:
                 row["error"] = "COORDINATE_TABLE_MISSING"
                 row["missing_tables"] = missing
+                return row
+            empty = sorted(
+                table
+                for table in coordinate_tables
+                if connection.execute(
+                    f"SELECT COUNT(*) FROM {quote_identifier(table)}"
+                ).fetchone()[0]
+                == 0
+            )
+            if empty:
+                row["error"] = "COORDINATE_TABLE_EMPTY"
+                row["empty_tables"] = empty
                 return row
             row["valid"] = True
             row["genomes"] = sorted({item[1] for item in metadata})

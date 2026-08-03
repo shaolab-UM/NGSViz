@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import gzip
+import importlib.util
 import json
 import sqlite3
 import subprocess
@@ -14,6 +15,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DB_TOOL = ROOT / ".agents/skills/ngsviz-install-db/scripts/manage_ngsviz_db.py"
+SETUP_TOOL = ROOT / ".agents/skills/ngsviz-setup/scripts/check_ngsviz_environment.py"
+
+
+def load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def create_database(path: Path, genome: str = "hg38", records: int = 1) -> None:
@@ -64,6 +75,20 @@ class InstallDatabaseTests(unittest.TestCase):
             self.assertTrue(archive.exists())
             self.assertTrue(output.exists())
             self.assertEqual(output.read_bytes()[:16], b"SQLite format 3\x00")
+
+
+class SetupEnvironmentTests(unittest.TestCase):
+    def test_empty_coordinate_table_is_invalid(self) -> None:
+        setup = load_module("ngsviz_setup", SETUP_TOOL)
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "empty.db"
+            create_database(database, records=0)
+
+            result = setup.inspect_database(database)
+
+            self.assertFalse(result["valid"])
+            self.assertEqual(result["error"], "COORDINATE_TABLE_EMPTY")
+            self.assertEqual(result["empty_tables"], ["hg38_RefSeq"])
 
 
 if __name__ == "__main__":
