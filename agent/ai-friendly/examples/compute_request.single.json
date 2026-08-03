@@ -8,7 +8,7 @@
   "region": "tss",
   "signal_bam": "Samples/K562_H3K4me3-ENCFF752MYF_5p.bam",
   "control_bam": null,
-  "output_dir": "docs/ai-friendly/examples/validate_compute_output",
+  "output_dir": "agent/ai-friendly/examples/validate_compute_output",
   "system_config": "NGSViz_setting.json",
   "database": "RefSeq",
   "analysis_type": "transcript",

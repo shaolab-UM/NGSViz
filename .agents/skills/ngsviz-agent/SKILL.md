@@ -5,7 +5,7 @@ description: Safely orchestrate ngsViz environment preflight, species and genome
 
 # ngsViz Agent
 
-Follow the [Agent Guide](../../../agent/ngsViz_agent.md), [Java CLI Contract](../../../docs/ai-friendly/01_Java%E8%AE%A1%E7%AE%97CLI%E5%A5%91%E7%BA%A6.md), [R CLI Contract](../../../docs/ai-friendly/02_R%E5%8F%AF%E8%A7%86%E5%8C%96CLI%E5%A5%91%E7%BA%A6.md), and [Orchestration Contract](../../../docs/ai-friendly/03_Codex%E7%BC%96%E6%8E%92%E4%B8%8E%E7%A1%AE%E8%AE%A4%E5%A5%91%E7%BA%A6.md). First classify the user's intent into one of four workflows: single-sample compute only, sequential multi-sample compute, visualization only, or the full workflow.
+Follow the [Agent Guide](../../../agent/ngsViz_agent.md), [Architecture Boundaries](../../../agent/ai-friendly/00_native_architecture_and_collaboration_boundaries.md), [Java CLI Contract](../../../agent/ai-friendly/01_java_compute_cli_contract.md), [R CLI Contract](../../../agent/ai-friendly/02_r_visualization_cli_contract.md), and [Orchestration Contract](../../../agent/ai-friendly/03_codex_orchestration_and_confirmation_contract.md). First classify the user's intent into one of four workflows: single-sample compute only, sequential multi-sample compute, visualization only, or the full workflow.
 
 ## Hard Boundaries
 

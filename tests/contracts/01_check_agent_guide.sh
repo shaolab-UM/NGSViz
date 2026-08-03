@@ -3,8 +3,8 @@ set -euo pipefail
 
 guide="agent/ngsViz_agent.md"
 skill=".agents/skills/ngsviz-agent/SKILL.md"
-schema="docs/ai-friendly/schemas/analysis_plan.schema.json"
-example="docs/ai-friendly/examples/analysis_plan.multi_sample.json"
+schema="agent/ai-friendly/schemas/analysis_plan.schema.json"
+example="agent/ai-friendly/examples/analysis_plan.multi_sample.json"
 
 for file in "$guide" "$skill" "$schema" "$example"; do
   test -f "$file"
@@ -21,25 +21,25 @@ for command in \
 done
 
 if find agent -type f \( -name '*.py' -o -name '*.R' -o -name '*.java' -o -name '*.sh' \) | grep -q .; then
-  echo "agent/ must contain Markdown guides only" >&2
+  echo "agent/ must contain documentation and data contracts only" >&2
   exit 1
 fi
-test -z "$(find agent -type f ! -name '*.md' -print -quit)"
+test -z "$(find agent -type f ! -name '*.md' ! -name '*.json' ! -name '.DS_Store' -print -quit)"
 
 for text in \
-  "Java 不调用 R" \
-  "R 不调用 Java" \
-  "路径一：单样本只计算" \
-  "路径二：多样本顺序计算" \
-  "路径三：只可视化" \
-  "路径四：完整流程" \
-  "Java 只执行单样本计算" \
-  "Codex 负责多样本顺序执行"; do
+  "Java must not invoke R" \
+  "R must not invoke Java" \
+  "Workflow 1: Single-Sample Compute Only" \
+  "Workflow 2: Sequential Multi-Sample Compute" \
+  "Workflow 3: Visualization Only" \
+  "Workflow 4: Full Workflow" \
+  "Use Java only for single-sample computation" \
+  "Make Codex execute multiple samples sequentially"; do
   rg -q --fixed-strings "$text" "$skill"
 done
 
 Rscript -e '
-  x <- jsonlite::fromJSON("docs/ai-friendly/examples/analysis_plan.multi_sample.json")
+  x <- jsonlite::fromJSON("agent/ai-friendly/examples/analysis_plan.multi_sample.json")
   stopifnot(
     length(x$samples$sample_id) >= 2,
     !anyDuplicated(x$samples$sample_id),
@@ -51,7 +51,7 @@ Rscript -e '
 '
 
 Rscript -e '
-  x <- jsonlite::fromJSON("docs/ai-friendly/schemas/analysis_plan.schema.json", simplifyVector = FALSE)
+  x <- jsonlite::fromJSON("agent/ai-friendly/schemas/analysis_plan.schema.json", simplifyVector = FALSE)
   stopifnot(
     identical(x$properties$samples$minItems, 1L),
     identical(x$properties$execution[["$ref"]], "#/$defs/execution"),
