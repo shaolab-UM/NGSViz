@@ -1,4 +1,4 @@
 interface:
-  display_name: "ngsViz 参考数据库安装"
-  short_description: "查询、下载、校验并导入 ngsViz 预构建参考数据库"
+  display_name: "ngsViz Reference Database Installer"
+  short_description: "Install a validated pre-built ngsViz reference database"
   default_prompt: "Use $ngsviz-install-db to install the required pre-built genome annotation database."

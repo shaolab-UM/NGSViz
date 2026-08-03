@@ -3,40 +3,40 @@ name: ngsviz-install-db
 description: Discover installed ngsViz species and genome assemblies, parse the README pre-built database catalog, download a requested pre-built SQLite database, validate it, and import it with the ngsViz Java -DB method. Use when a requested genome is absent from the configured database or when ngsViz has no usable reference database.
 ---
 
-# ngsViz 预构建参考数据库安装
+# Install an ngsViz Pre-Built Reference Database
 
-只安装用户已经明确指定或确认的物种与 genome assembly。不得从 BAM 文件名、染色体前缀或常见实验习惯推断 assembly。
+Install only a species and genome assembly that the user explicitly specified or confirmed. Do not infer an assembly from BAM filenames, chromosome prefixes, or common experimental practice.
 
-## 查询
+## Inspect Available Databases
 
-1. 查询当前 DB：
+1. Inspect the current database:
 
    ```bash
    python3 scripts/manage_ngsviz_db.py inspect --db /absolute/path/to/current.db
    ```
 
-2. 从项目当前 `README.md` 解析预构建目录，不复制硬编码的旧链接：
+2. Parse the pre-built catalog from the project's current `README.md`. Do not copy or hard-code old links:
 
    ```bash
    python3 scripts/manage_ngsviz_db.py catalog --readme /absolute/path/to/README.md
    ```
 
-   可增加 `--species Homo_sapiens` 或 `--genome hg38` 精确过滤。
+   Add `--species Homo_sapiens` or `--genome hg38` for exact filtering when needed.
 
-## 版本决策
+## Select a Version
 
-- 用户已明确 genome：若当前 DB 已安装该版本，立即返回主流程；否则在 README 目录中精确查找。
-- 用户只明确物种：先查询当前 DB。只有一个 genome 时询问是否使用；多个时列出并询问选择。
-- 用户拒绝唯一已安装版本：列出 README 中同物种的其他版本供选择。
-- 当前 DB 没有该物种：查询 README；有则列出版本并询问，随后安装确认版本。
-- README 没有该物种或 genome：停止下载流程，请用户从 UCSC 提供对应 assembly 的 GTF，并转交 `$ngsviz-build-db`。
+- If the user specified a genome, return immediately to the main workflow when it is already installed; otherwise, find an exact match in the README catalog.
+- If the user specified only a species, inspect the current database first. If exactly one genome is available, ask whether to use it; if several are available, list them and ask the user to choose.
+- If the user rejects the only installed version, list other versions for the same species from the README.
+- If the current database lacks the species, query the README. If the species is present, list its versions, ask the user to choose, and then install the confirmed version.
+- If the README lacks the species or genome, stop the download workflow, ask the user for a GTF from UCSC that matches the assembly, and hand off to `$ngsviz-build-db`.
 
-物种匹配同时展示 README 的通用名与 scientific name，内部以 `defaultTbl.Species`/README scientific name 为准。
+When matching species, show both the README common name and scientific name. Internally, use `defaultTbl.Species` and the README scientific name.
 
-## 下载和验证
+## Download and Validate
 
-1. 使用目录解析出的精确 URL，以 `curl -L --fail` 下载到独立的临时文件。下载属于网络操作，遵循平台审批。
-2. README 的预构建文件可能是 gzip 归档。使用以下命令按文件 magic bytes 判断是否需要解压，并将解压、验证后的 SQLite 文件原子写入目标路径：
+1. Download the exact URL parsed from the catalog to an isolated temporary file with `curl -L --fail`. Downloads are network operations, so follow platform approval requirements.
+2. A README pre-built file may be a gzip archive. Use this command to inspect the file's magic bytes, decompress it when necessary, validate it, and atomically write the resulting SQLite file to the target path:
 
    ```bash
    python3 scripts/manage_ngsviz_db.py prepare \
@@ -45,20 +45,20 @@ description: Discover installed ngsViz species and genome assemblies, parse the 
      --genome <assembly>
    ```
 
-   保留下载归档；不得把 `.db.gz` 直接交给 SQLite，也不得覆盖同名目标文件。冲突时先比较内容或使用带时间戳的新路径。
-3. `prepare` 已执行 SQLite 与目标 genome 验证。导入前可再次独立验证：
+   Preserve the downloaded archive. Do not pass `.db.gz` directly to SQLite or overwrite an existing target file. On conflict, compare contents first or choose a new timestamped path.
+3. `prepare` already validates SQLite and the target genome. Optionally verify them independently again before import:
 
    ```bash
    python3 scripts/manage_ngsviz_db.py verify \
      --db /absolute/path/to/downloaded.db --genome <assembly>
    ```
 
-   必须满足 SQLite `quick_check=ok`、存在 `defaultTbl`、包含目标 genome，且其 `CoordinateTblName` 表存在并非空。
+   Require SQLite `quick_check=ok`, a `defaultTbl`, the target genome, and a present, nonempty table named by its `CoordinateTblName`.
 
-## 安装
+## Install
 
-- 当前没有主 DB：不运行合并。将已验证的预构建 DB 作为主 DB，调用 `$ngsviz-setup --apply` 写入 `db_path`。
-- 当前已有可写主 DB：先复制时间戳备份，再用配置中的绝对 Java、JAR 和配置执行 README 指定的方法：
+- If no primary database exists, do not merge. Use the validated pre-built database as the primary database and invoke `$ngsviz-setup --apply` to write `db_path`.
+- If a writable primary database exists, create a timestamped backup first, then use the absolute Java, JAR, and configuration paths to run the method documented in the README:
 
   ```bash
   /absolute/path/to/java -jar /absolute/path/to/NGSViz.jar \
@@ -66,8 +66,8 @@ description: Discover installed ngsViz species and genome assemblies, parse the 
     -DB /absolute/path/to/NGSViz_<genome>_RefSeq.db
   ```
 
-- 主 DB 不可写：不要尝试原地合并；复制到用户可写的独立路径，更新配置后再合并。
-- Java legacy 合并可能在打印 SQL 异常后仍返回成功退出码，因此不能只看退出码。合并后必须再次运行 `verify --db <main_db> --genome <assembly>`。
-- 验证失败则保留备份和下载文件，报告错误，不进入 `validate-compute`。
+- If the primary database is not writable, do not merge in place. Copy it to a separate user-writable path, update the configuration, and then merge.
+- The legacy Java merge may print SQL exceptions but still return a successful exit code. Never rely only on the exit code; after merging, rerun `verify --db <main_db> --genome <assembly>`.
+- If verification fails, preserve the backup and downloaded file, report the error, and do not proceed to `validate-compute`.
 
-安装成功后重新执行 `$ngsviz-setup`，再把已安装的 species/genome 列表交回 `$ngsviz-agent`。
+After successful installation, rerun `$ngsviz-setup` and return the installed species and genome list to `$ngsviz-agent`.

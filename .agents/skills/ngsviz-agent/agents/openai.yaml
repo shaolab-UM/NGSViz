@@ -1,4 +1,4 @@
 interface:
   display_name: "ngsViz Agent"
-  short_description: "检查环境与参考数据库并安全编排 ngsViz 计算和绘图"
+  short_description: "Safely orchestrate ngsViz computation and plotting"
   default_prompt: "Use $ngsviz-agent to preflight, validate, and orchestrate an ngsViz compute or visualization request."
