@@ -3,22 +3,37 @@ package com.NGSViz.coverageCalculator;
 import com.NGSViz.utils.SparseMatrix;
 
 public class BackgrouNormalizer {
-    // Correct the input or IgG.
-    public static SparseMatrix backgroundNormalize(SparseMatrix signal_mat, SparseMatrix input_mat) {
-        int[] dims = signal_mat.getDimensions(); // [rows, cols]
-        int row_num = dims[0];
-        int col_num = dims[1];
-        // Prevent the small coefficient of 0
-        double epsilon = 1e-6;
+    public static SparseMatrix backgroundNormalize(
+            SparseMatrix signalMat,
+            SparseMatrix inputMat,
+            long signalLibrarySize,
+            long inputLibrarySize,
+            Double signalScaleRatio
+    ) {
+        if (signalLibrarySize <= 0 || inputLibrarySize <= 0) {
+            throw new IllegalArgumentException("Library size must be greater than zero.");
+        }
 
-        for (int i = 0; i < row_num; i++) {
-            for (int j = 0; j < col_num; j++) {
-                // log2(signal/input)
-                double norm_value = Math.log((signal_mat.get(i, j) + epsilon) / (input_mat.get(i, j) + epsilon))/ Math.log(2);
-                signal_mat.set(i, j, norm_value);
+        int[] signalDims = signalMat.getDimensions();
+        int[] inputDims = inputMat.getDimensions();
+        if (signalDims[0] != inputDims[0] || signalDims[1] != inputDims[1]) {
+            throw new IllegalArgumentException("Signal and input matrices must have identical dimensions.");
+        }
+
+        double signalPseudocount = signalScaleRatio == null
+                ? 1_000_000.0 / signalLibrarySize
+                : signalScaleRatio;
+        double inputPseudocount = 1_000_000.0 / inputLibrarySize;
+        double log2 = Math.log(2.0);
+
+        for (int row = 0; row < signalDims[0]; row++) {
+            for (int col = 0; col < signalDims[1]; col++) {
+                double ratio = (signalMat.get(row, col) + signalPseudocount)
+                        / (inputMat.get(row, col) + inputPseudocount);
+                signalMat.set(row, col, Math.log(ratio) / log2);
             }
         }
-        return signal_mat;
+
+        return signalMat;
     }
 }
-

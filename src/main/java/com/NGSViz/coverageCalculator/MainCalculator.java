@@ -104,8 +104,13 @@ public class MainCalculator extends InputParameterAttributes {
                 Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix(input_scale_ratio);
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
                 // adjust the coverage matrix based on the input / IgG
-                coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(coverage_scaled_matrix,
-                        coverage_scaled_matrix_bkg);
+                coverage_scaled_matrix = BackgrouNormalizer.backgroundNormalize(
+                        coverage_scaled_matrix,
+                        coverage_scaled_matrix_bkg,
+                        bamObj.getLibrarySize(),
+                        bamObj_bkg.getLibrarySize(),
+                        scale_ratio
+                );
             }
             System.out.println("Coverage Scaled Matrix finish!");
             System.out.println("----------------------------------------");
