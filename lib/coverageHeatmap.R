@@ -199,83 +199,70 @@ setHCluster <- function(data_mat, cluster_num, hc_m, dist_m){
 
 # heatmap -----------------------------------------------------------------
 
-# Lack of split plot based on gene clustering or differential genes
-coverageHeatmap <- function(sorted_df, plot_paras){
+coverageHeatmap <- function(sorted_df, plot_paras, color_limits = NULL){
   bg_col <- plot_paras$sample_color
-  # X-axis label and position
   axis_pos <- getXAxisCoor(plot_paras)
   axis_name <- names(axis_pos)
-  # positon of vertical reference line
   line_pos <- axis_pos[-c(1, length(axis_pos))]
-  print(sprintf("AveragePlot:tss:%s,tes:%s", line_pos[1], line_pos[2]))
-  #print(line_pos)
   split_num <- length(unique(sorted_df$Split))
-  # process the Outlier
-  # Calculate the 0th percentile (minimum value) and the 99th percentile
-  lower_color_limit <- quantile(sorted_df$Coverage, 0, na.rm = TRUE)
-  upper_color_limit <- quantile(sorted_df$Coverage, 0.95, na.rm = TRUE)
-  # If the upper and lower limits are the same 
-  # for example, if there are very few data points or values are very concentrated
-  if (abs(upper_color_limit - lower_color_limit) < 1e-9) { 
-    upper_color_limit <- upper_color_limit + 1e-6 
+  
+  if(is.null(color_limits)){
+    lower_limit <- quantile(sorted_df$Coverage, 0.01, na.rm = TRUE)
+    upper_limit <- quantile(sorted_df$Coverage, 0.95, na.rm = TRUE) 
+    
+    # If the lower limit is less than 0 and you want 0 to be white background, you can force the lower limit to be symmetric or set it to 0.
+    #lower_limit <- min(lower_limit, 0) 
+    
+    color_limits <- c(lower_limit, upper_limit)
   }
-  # plot the heatmap
+  
+  if (abs(color_limits[2] - color_limits[1]) < 1e-9) { 
+    color_limits[2] <- color_limits[2] + 1e-6 
+  }
+  
   pbom <- ggplot(sorted_df) +
-    # plot heatmap
     geom_raster(aes(x = XAsis, y = Gene, fill = Coverage)) + 
+    
+    # Using gradient2, force 0 to be white
+    scale_fill_gradient2(
+      low = "grey90",           # Negative value color (or set to white to ignore negative values)
+      mid = "white",            # Forced background (0) is white.
+      high = colorspace::darken(bg_col, 0.3), # Make the highest signal color deeper than the original.
+      midpoint = 0,             # Force white at position 0
+      limits = color_limits,
+      oob = scales::squish      # Values exceeding the limits will be compressed to extreme colors to prevent extreme values from overwhelming the tonal scale.
+    ) +
+    
     myTheme(plot_paras) +
     xlab("") + ylab("") +
-    # add the axis-x label
     scale_x_continuous(breaks = axis_pos, labels = axis_name) +
-    # Reference line
     geom_vline(xintercept = line_pos, linetype = "dashed",
                color = plot_paras$dash_color, linewidth = plot_paras$dash_size) +
-    # Color fill using a continuous gradient palette
-    scale_fill_gradient(
-      # Color corresponding to the lower limit of the data
-      low = "grey95",  
-      # Color corresponding to data limit
-      high = bg_col,     
-      # Key: Set the data range for color mapping
-      limits = c(lower_color_limit, upper_color_limit), 
-      # Key: Handling of values out of range
-      # The values exceeding the range will be "compressed" to the boundaries of limits.
-      oob = scales::squish
-    ) +
-    # Remove the gap between the heatmap edge and the coordinate axis.
     coord_cartesian(expand = 0) + 
-    theme(axis.title.x = element_blank())+
+    theme(axis.title.x = element_blank()) +
     heatmapTheme()
-  # split
+  
   if (split_num > 1) {
     mycol <- plot_paras$split_color[1:split_num]
-    # # the number of result of brewer.pal is three
-    # if(split_num == 2){
-    #   mycol <- mycol[1:2]
-    # }
     pbom <- pbom +
       facet_grid2(Split ~ ., switch = "y", scales = "free_y", space = "free_y",
-                  # Set background for Y-axis strip
                   strip = strip_themed(background_y = elem_list_rect(fill = mycol),
                                        text_y = element_text(
                                          size = plot_paras$ystrip_text_size, 
                                          face = plot_paras$text_face,
                                          margin = margin(t = 2, r = 2, b = 2, l = 2, unit = "pt") 
                                        )
-                                       )
+                  )
       ) +
-      theme(panel.spacing.y = unit(0.1, "lines"), 
-            # The strip is placed outside the graphic.
-            strip.placement = "outside")
+      theme(panel.spacing.y = unit(0.1, "lines"), strip.placement = "outside")
   }
   return(pbom)
 }
 
 
-# average plot ------------------------------------------------------------
-averageCovPlot <- function(sorted_df, plot_paras){
+
+averageCovPlot <- function(sorted_df, plot_paras, ylim = NULL){
   plot_title <- plot_paras$plot_title
-  # calculate the average coverage for each point
   mat_df <- sorted_df %>%
     group_by(Split, XAsis) %>%
     summarise(
@@ -287,38 +274,83 @@ averageCovPlot <- function(sorted_df, plot_paras){
   line_pos <- axis_pos[-c(1, length(axis_pos))]
   print(line_pos)
   split_num <- length(unique(sorted_df$Split))
-  # plot the average plot
+  
+  if (is.null(ylim)) {
+    ylim <- c(0, max(mat_df$Density, na.rm = TRUE) * 1.1)
+  }
+  
   ptop <- ggplot(mat_df) +
     geom_line(aes(x = XAsis, y = Density, color = Split), linewidth = plot_paras$line_size) + 
-    # Specified color
-    # scale_color_brewer(palette = "Set1") + 
     scale_color_manual(values = plot_paras$split_color[1:split_num]) +
-    coord_cartesian(ylim = c(0, max(mat_df$Density)*1.1))+
     xlab("") + ylab("") +
     myTheme(plot_paras) + 
     theme(
       axis.text.x = element_blank(), 
       axis.title.x = element_blank(),
-      # Adjust the margin of the graph, setting the bottom margin to a negative value helps with alignment.
       plot.margin = margin(t = 0.2, r = .2, b = 0, l = .2, unit = "cm") 
     ) +
     geom_vline(xintercept = line_pos, linetype = "dashed", 
                color = plot_paras$dash_color, linewidth = plot_paras$dash_size) +
-    # By sample dimension, because only one sample is selected here, so there is only one dimension.
-    # facet_wrap(~sample, nrow = 1) + 
     labs(title = plot_title) + 
-  # Remove the gap between the heatmap edge and the coordinate axis.
-  coord_cartesian(expand = 1) 
+    coord_cartesian(ylim = ylim, expand = FALSE)
+  
   if(split_num == 1){
     ptop <- ptop + theme(legend.position = "none")
   }
   if(plot_paras$SEM){
-    # Add error lines
     ptop <- ptop + geom_ribbon(aes(x = XAsis, ymin = Density - SEM, ymax = Density + SEM, fill = Split), alpha = 0.3)
   }
   return(ptop)
 }
 
+mergeMultiVisResult <- function(json_path, out_path = ""){
+  plot_para_list <- getJsonFiles(json_path)
+  
+  # ---- 1. Get global Coverage and maximum/minimum values for the Y-axis ----
+  all_df_list <- list()
+  for(i in 1:length(plot_para_list)){
+    plot_paras_path <- file.path(json_path, plot_para_list[[i]])
+    plot_paras <- getPlotJsonParas(plot_paras_path)
+    all_df_list[[i]] <- preparePlotData(plot_paras)
+  }
+  
+  # Unify the color range for all heatmaps
+  global_all_coverage <- unlist(lapply(all_df_list, function(df) df$Coverage))
+  global_lower <- quantile(global_all_coverage, 0, na.rm = TRUE)
+  global_upper <- quantile(global_all_coverage, 0.95, na.rm = TRUE)
+  if (abs(global_upper - global_lower) < 1e-9) global_upper <- global_upper + 1e-6
+  
+  # Unify the Y-axis limits for the top curve plots
+  max_densities <- sapply(all_df_list, function(df) {
+    df %>% group_by(XAsis) %>% summarise(m = mean(Coverage, na.rm=TRUE)) %>% pull(m) %>% max(na.rm=TRUE)
+  })
+  global_ylim <- c(0, max(max_densities) * 1.1)
+  
+  # ---- 2. Loop through and generate plots ----
+  ht_list <- list()
+  for(i in 1:length(plot_para_list)){
+    plot_paras_path <- file.path(json_path, plot_para_list[[i]])
+    plot_paras <- getPlotJsonParas(plot_paras_path)
+    sorted_df <- all_df_list[[i]]
+    
+    pbom <- coverageHeatmap(sorted_df, plot_paras, color_limits = c(global_lower, global_upper))
+    ptop <- averageCovPlot(sorted_df, plot_paras, ylim = global_ylim)
+    
+    p_merge <- aplot::plot_list(gglist = list(ptop, pbom), ncol = 1, heights = c(1, 3))
+    ht_list[[i]] <- p_merge
+  }
+  
+  # ---- 3. Combine plots horizontally ----
+  all_plots <- cowplot::plot_grid(plotlist = ht_list, nrow = 1, align = "h", axis = "tb")
+  
+  if(out_path == ""){ out_path <- json_path }
+  file_name <- sprintf("%s/coverage_heatmap.%s", out_path, plot_paras$file_type)
+  item_num <- length(plot_para_list)
+  ggsave(file_name, plot = all_plots, dpi = plot_paras$dpi, 
+         width = plot_paras$width * item_num, height = plot_paras$high, units = "cm")
+  
+  return(all_plots)
+}
 
 
 # "moving_average", "gaussian", "loess"
@@ -346,6 +378,21 @@ preparePlotData <- function(plot_paras){
     stop(error_message)
   }else{
     data_mat <- read.csv(heatmap_files, row.names = 1) %>% as.matrix()
+  }
+  
+  # filter the data_mat based on the subset gene list
+  # subset gene list without header
+  gene_file <- plot_paras$sub_gene_list_file
+  if (!is.null(gene_file) && !is.na(gene_file) && 
+      nchar(trimws(gene_file)) > 0 && file.exists(gene_file)) {
+    # Read gene list file (assuming one gene per line)
+    sub_gene_list <- read.table(gene_file, header = FALSE, stringsAsFactors = FALSE)
+    target_genes <- sub_gene_list[[1]]
+    # Format GeneName (stripping transcript version if needed)
+    gene_names_in_mat <- sub(":.*$", "", rownames(data_mat))
+    # Filter sorted_df based on the gene list
+    keep_idx <- gene_names_in_mat %in% target_genes
+    data_mat <- data_mat[keep_idx, , drop = FALSE]
   }
   
   # smooth
@@ -408,34 +455,7 @@ averageCovPlotMultiMerge <- function(merge_df, plot_paras, title_name = ""){
   return(ptop)
 }
 
-mergeMultiVisResult <- function(json_path, out_path = ""){
-  # get the json file name list
-  plot_para_list <- getJsonFiles(json_path)
-  ht_list <- list()
-  # plot each visualization result
-  for(i in 1:length(plot_para_list)){
-    plot_paras_name <- plot_para_list[[i]]
-    plot_paras_path <- file.path(json_path, plot_paras_name)
-    plot_paras <- getPlotJsonParas(plot_paras_path)
-    sorted_df <- preparePlotData(plot_paras)
-    # plot
-    pbom <- coverageHeatmap(sorted_df, plot_paras)
-    ptop <- averageCovPlot(sorted_df, plot_paras)
-    p_merge <- aplot::plot_list(gglist = list(ptop, pbom), ncol = 1, heights = c(1, 3))
-    ht_list[[i]] <- p_merge
-  }
-  # merge all the plot result
-  all_plots <- cowplot::plot_grid(plotlist = ht_list, nrow = 1)
-  # output
-  if(out_path == ""){
-    out_path <- json_path
-  }
-  file_name <- sprintf("%s/coverage_heatmap.%s", out_path, plot_paras$file_type)
-  item_num <- length(plot_para_list)
-  ggsave(file_name, plot = all_plots, dpi = plot_paras$dpi, 
-         width = plot_paras$width*item_num, height = plot_paras$high, units = "cm")
-  return(all_plots)
-}
+
 
 mergeAveragePlot <- function(json_path, subgenes_list = NULL, title_name = ""){
   # get the json file name list

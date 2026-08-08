@@ -128,9 +128,11 @@ public class PhysicalCoverageCalculator {
                 if (bamRecord.getNotPrimaryAlignmentFlag() || bamRecord.getSupplementaryAlignmentFlag()) {
                     continue;
                 }
-                // [CHANGED] Count one end per proper pair to avoid double counting fragments.
+
                 if (bamRecord.getReadPairedFlag() &&
-                        (!bamRecord.getProperPairFlag() || !bamRecord.getFirstOfPairFlag())) continue;
+                        !bamRecord.getProperPairFlag()) {
+                    continue;
+                }
 
                 int[] readSpan = getReadSpan(bamRecord);
                 if (readSpan == null) continue;

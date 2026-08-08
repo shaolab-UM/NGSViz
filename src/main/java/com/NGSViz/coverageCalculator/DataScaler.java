@@ -98,12 +98,10 @@ public class DataScaler {
     //   coverage_scaled: List<Double> of binned values
     public static double[] bin(int[] coverage_list, int num_points, String bin_method){
         int total_size = coverage_list.length;
-        int chunk_size = total_size / num_points;
         int[] boundaries = new int[num_points + 1];
         for (int i = 0; i <= num_points; i++) {
-            boundaries[i] = i * chunk_size;
+            boundaries[i] = (int) ((long) i * total_size / num_points);
         }
-        boundaries[num_points] = total_size; // Ensure last boundary is correct
         
         double[] coverage_scaled = new double[num_points];
 
