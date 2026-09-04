@@ -66,7 +66,7 @@ public class ProcessEachQueryCoorRecord {
         String tid_name = parts.length > 1 ? parts[1] : "";
 
         if (flank_factor > 0) {
-            if (interval_type.equals("exon")) {
+            if ("exon".equals(InputParameterAttributes.region_type)) {
                 double calculate_res = ExonModelData.getEnstExonWidth(tid_name) * flank_factor;
                 flank_size = (int) calculate_res;
             } else {
@@ -80,7 +80,7 @@ public class ProcessEachQueryCoorRecord {
         if (interval_type.equals("point_interval")) {
             int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
             interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
-        } else if (interval_type.equals("exon")) {
+        } else if ("exon".equals(InputParameterAttributes.region_type)) {
             System.out.println("----\n");
             System.out.println("--- Performing exon mode! ---");
             start_pos = ExonModelData.getEnstStart(tid_name);
@@ -103,7 +103,7 @@ public class ProcessEachQueryCoorRecord {
             int[] physical_coverage,
             RecordContext ctx
     ) {
-        if (interval_type.equals("exon")) {
+        if ("exon".equals(InputParameterAttributes.region_type)) {
             int query_range_start = ctx.intervalRange.getStart();
             int query_range_end = ctx.intervalRange.getEnd();
             physical_coverage = CoverageExonSubset.getCoverageExonSubset(physical_coverage, ctx.tidName,

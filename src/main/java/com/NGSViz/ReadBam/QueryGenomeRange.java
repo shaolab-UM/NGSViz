@@ -93,7 +93,7 @@ public class QueryGenomeRange {
         String tid_name = parts.length > 1 ? parts[1] : "";
         // config code need to change when flank_factor exist
         if (flank_factor > 0){
-            if(interval_type.equals("exon")){
+            if("exon".equals(InputParameterAttributes.region_type)){
                 // exon specific
                 double calculate_res = ExonModelData.getEnstExonWidth(tid_name)*flank_factor;
                 flank_size = (int) calculate_res;
@@ -112,7 +112,7 @@ public class QueryGenomeRange {
             int middle_point = getMiddlePointPos(start_pos, end_pos, query_strand);
             // Specify the genome interval range to calculate the coverage
             interval_range = QueryGenomeRange.getQueryBamGranges(chr_name, middle_point);
-        } else if(interval_type.equals("exon")){
+        } else if("exon".equals(InputParameterAttributes.region_type)){
             System.out.println("----\n");
             // RNA-seq
             System.out.println("--- Performing exon mode! ---");

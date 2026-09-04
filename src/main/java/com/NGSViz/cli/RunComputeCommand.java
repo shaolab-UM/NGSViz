@@ -168,10 +168,10 @@ public final class RunComputeCommand {
     }
 
     private static void invokeMainCalculator(ComputeRequest ignored) throws Exception {
-        if ("exon".equals(InputParameterAttributes.interval_type)) {
+        if ("exon".equals(InputParameterAttributes.region_type)) {
             ExonModelData.getExonModelData(
                     InputParameterAttributes.tbl_name,
-                    InputParameterAttributes.interval_type,
+                    InputParameterAttributes.analysis_type,
                     InputParameterAttributes.biotype
             );
         }

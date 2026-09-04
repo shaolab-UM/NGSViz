@@ -47,9 +47,9 @@ public class NGSViz {
     /*
     Here, ExonModelData is used to obtain the lengths, starting sites, and other information of all different transcripts.
     * */
-        if (InputParameterAttributes.interval_type.equals("exon")) {
+        if (InputParameterAttributes.region_type.equals("exon")) {
             ExonModelData.getExonModelData(InputParameterAttributes.tbl_name,
-                    InputParameterAttributes.interval_type,
+                    InputParameterAttributes.analysis_type,
                     InputParameterAttributes.biotype);
         }
         MainCalculator.mainCalculator();

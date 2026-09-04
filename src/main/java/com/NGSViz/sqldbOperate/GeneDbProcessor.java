@@ -27,16 +27,25 @@ public class GeneDbProcessor extends DBAtribute{
 
         System.out.println("=== batch size" + BATCH_SIZE + " ===");
 
+        String order = "exon".equals(type) ? " ORDER BY tid, start" : "";
+        String defaultChoice = "exon".equals(type) ? "" : " AND DefaultChoose = 1";
         String query = String.format(
                 "SELECT gname, tid, chrom, strand, start, end FROM '%s' " +
-                        "WHERE biotype = '%s' AND type = '%s' AND DefaultChoose = 1",
-                tbl_name, biotype, type);
+                        "WHERE biotype = '%s' AND type = '%s'%s%s",
+                tbl_name, biotype, type, defaultChoice, order);
         System.out.println("The query keyword is : " + query);
         DatabaseConnectionPool pool = DatabaseConnectionPool.getInstance(DATABASE_URL);
 
         int batchIndex = 0;
         try (ResultSet rs = pool.executeQuery(query)) {
-            List<Transcript> currentBatch = new ArrayList<>(BATCH_SIZE);
+            List<Transcript> transcripts = new ArrayList<>();
+            String currentRecord = null;
+            String currentGene = null;
+            String currentTid = null;
+            String currentChrom = null;
+            String currentStrand = null;
+            int currentStart = 0;
+            int currentEnd = 0;
 
             while (rs.next()) {
                 String geneName   = rs.getString("gname");
@@ -46,24 +55,45 @@ public class GeneDbProcessor extends DBAtribute{
                 int start         = rs.getInt("start");
                 int end           = rs.getInt("end");
 
-                String nochrName = chrName.replace("chr", "");
                 String recordName = geneName + ":" + transcriptId;
+                if ("exon".equals(type)) {
+                    if (!recordName.equals(currentRecord)) {
+                        if (currentRecord != null) {
+                            transcripts.add(new Transcript(currentRecord, currentGene, currentTid,
+                                    currentChrom, currentChrom.replace("chr", ""), currentStrand,
+                                    currentStart, currentEnd));
+                        }
+                        currentRecord = recordName;
+                        currentGene = geneName;
+                        currentTid = transcriptId;
+                        currentChrom = chrName;
+                        currentStrand = strand;
+                        currentStart = start;
+                        currentEnd = end;
+                    } else {
+                        currentStart = Math.min(currentStart, start);
+                        currentEnd = Math.max(currentEnd, end);
+                    }
+                } else {
+                    transcripts.add(new Transcript(recordName, geneName, transcriptId,
+                            chrName, chrName.replace("chr", ""), strand, start, end));
+                }
+            }
+            if ("exon".equals(type) && currentRecord != null) {
+                transcripts.add(new Transcript(currentRecord, currentGene, currentTid,
+                        currentChrom, currentChrom.replace("chr", ""), currentStrand,
+                        currentStart, currentEnd));
+            }
 
-                record_name_list.add(recordName);
-
-                Transcript transcript = new Transcript(
-                        recordName, geneName, transcriptId,
-                        chrName, nochrName, strand, start, end);
-
-                // Join the current batch
+            List<Transcript> currentBatch = new ArrayList<>(BATCH_SIZE);
+            for (Transcript transcript : transcripts) {
+                record_name_list.add(transcript.getRecordName());
                 currentBatch.add(transcript);
-                // Batch is full, stock is depleted and reset
                 if (currentBatch.size() == BATCH_SIZE) {
                     geneList_batches.put(batchIndex++, currentBatch);
                     currentBatch = new ArrayList<>(BATCH_SIZE);
                 }
             }
-            // Process the remaining records that are less than batchSize
             if (!currentBatch.isEmpty()) {
                 geneList_batches.put(batchIndex, currentBatch);
             }

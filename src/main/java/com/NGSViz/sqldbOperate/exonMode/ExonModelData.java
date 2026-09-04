@@ -22,6 +22,10 @@ import java.util.Map;
 public class ExonModelData extends DBAtribute {
     public static Map<String, Object> exon_matrix = new HashMap<>();
 
+    public static void clear() {
+        exon_matrix.clear();
+    }
+
     public static void main(String[] args) {
         String table_name = "Homo_sapiens_ensembl_GRCh38_113";
         String analysis_type = "exon";
@@ -30,6 +34,7 @@ public class ExonModelData extends DBAtribute {
     }
 
     public static void getExonModelData(String table_name, String analysis_type, String biotype) {
+        clear();
         ResultSet resultSet;
         String tid_name = "";
         int start_enst = 0;
