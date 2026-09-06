@@ -107,7 +107,7 @@ The Java CLI has exactly two compute input modes:
 | `flank_region` | integer or null | No | region-specific | Must be `>= 0` |
 | `flank_factor` | number or null | No | `0.0` | Range `[0, 1]` |
 | `num_datapoints` | integer or null | No | `100` | Must be `>= 100` |
-| `scale_ratio` | number or null | No | `null` | Null retains CPM; otherwise use existing `signal * scale_ratio` behavior |
+| `scale_ratio` | number, `sample:input` string, or null | No | `null` | One number scales sample only; `sample:input` scales sample and input separately; null retains CPM for both |
 | `mapping_quality` | integer or null | No | `20` | Must be `>= 0` |
 | `fragment_length` | integer or null | No | `150` | Must be `>= 0`; existing single-end extension semantics |
 | `cores` | integer or null | No | `1` | Must be `>= 1` |
@@ -126,6 +126,7 @@ The Java CLI has exactly two compute input modes:
 - `flank_region=null` selects: `2000` for `tss`, `tes`, `genebody`, `exon`, and `cgi`; `1500` for `enhancer`; `1000` for `dhs` and `bed`.
 - Default resolution produces `resolved_parameters`; the validator and `MainCalculator` consume only this resolved object.
 - `scale_ratio=null` must preserve CPM and must not become `1.0`.
+- `scale_ratio="sample:input"` applies the first value to signal and the second value to input.
 
 ## Legacy short-option compatibility
 
@@ -143,7 +144,7 @@ The Java CLI has exactly two compute input modes:
 | `-F` | `flank_region` | `flank_region` | absent or legacy `0` selects region-specific default |
 | `-N` | `flank_factor` | `flank_factor` | default `0.0` |
 | `-DP` | `num_datapoints` | `num_datapoints` | default `100`; values below `100` fail |
-| `-S` | `scale_ratio` | `scale_ratio` | absent becomes null |
+| `-S` | `scale_ratio` | `scale_ratio` | absent becomes null; `sample:input` is accepted for separate signal/input scaling |
 | `-MQ` | `min_mapq` | `mapping_quality` | default `20` |
 | `-FL` | `frag_len` | `fragment_length` | default `150` |
 | `-P` | `core_num` | `cores` | default `1` |

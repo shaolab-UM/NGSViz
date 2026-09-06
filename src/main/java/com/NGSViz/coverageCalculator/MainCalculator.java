@@ -100,7 +100,7 @@ public class MainCalculator extends InputParameterAttributes {
                 BAMAttribute bamObj_bkg = new BAMAttribute(bam_file_bkg);
                 GeneCoverageProcessor genesProcess_bkg = new GeneCoverageProcessor(bamObj_bkg, geneList_batches, record_name_list);
                 // bkg_coverage_scaled_matrix - FIXED: use paired_bam instead of bam_file
-                Double input_scale_ratio = null;
+                Double input_scale_ratio = InputParameterAttributes.input_scale_ratio;
                 Map<String, Object> coverage_map_bkg = genesProcess_bkg.buildCoverageMatrix(input_scale_ratio);
                 coverage_scaled_matrix_bkg = (SparseMatrix) coverage_map_bkg.get("cov_mat");
                 // adjust the coverage matrix based on the input / IgG
@@ -109,7 +109,8 @@ public class MainCalculator extends InputParameterAttributes {
                         coverage_scaled_matrix_bkg,
                         bamObj.getLibrarySize(),
                         bamObj_bkg.getLibrarySize(),
-                        scale_ratio
+                        scale_ratio,
+                        input_scale_ratio
                 );
             }
             System.out.println("Coverage Scaled Matrix finish!");

@@ -81,6 +81,18 @@ class ComputeRequestReaderTest {
         assertTrue(error.issues().stream().anyMatch(issue -> "genome".equals(issue.field())));
     }
 
+    @Test
+    void readsSeparateSampleAndInputScaleRatios() throws Exception {
+        JSONObject json = new JSONObject(Files.readString(writeMinimalRequest()))
+                .put("scale_ratio", "0.7:0.8");
+
+        ComputeRequest request = new ComputeRequestReader().read(json);
+
+        assertEquals(0.7, request.sampleScaleRatio().orElseThrow(), 1e-12);
+        assertEquals(0.8, request.inputScaleRatio().orElseThrow(), 1e-12);
+        assertEquals("0.7:0.8", request.toJson().getString("scale_ratio"));
+    }
+
     private Path writeMinimalRequest() throws Exception {
         JSONObject request = new JSONObject()
                 .put("sample_id", "sample-1")

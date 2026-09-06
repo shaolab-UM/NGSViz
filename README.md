@@ -300,7 +300,7 @@ Run `/absolute/path/to/java -jar /absolute/path/to/NGSViz/ngsViz-1.3.jar -H` for
 | `-BS` | No | `500` | Gene batch size |
 | `-BM` | No | `mean` | Bin summary: `mean`, `median`, or `max` |
 | `-SS` | No | `both` | Strand mode: `both`, `same`, or `opposite` |
-| `-S` | No | None | Signal scale ratio; when absent, retain CPM normalization |
+| `-S` | No | None | Signal scale ratio, or `sample:input` for separate sample/input scaling; when absent, retain CPM normalization |
 | `-BD` | No | None | Custom BED interval file |
 | `-X` | No | `all` | Gene subset or gene-list path |
 | `-NF` | No | `false` | Create a title-named directory under `-O` |
@@ -635,7 +635,8 @@ The authoritative rules are in `agent/ai-friendly/` and `agent/skills/ngsviz-age
 - Remaining columns are numeric coverage positions.
 - Values inside each bin are summarized with `mean`, `median`, or `max`.
 - Without a scale ratio, coverage retains CPM normalization.
-- With `scale_ratio`, the existing behavior applies `signal * scale_ratio`.
+- With one `scale_ratio`, the existing behavior applies `signal * scale_ratio` and input retains CPM.
+- With `scale_ratio=sample:input`, the two values scale signal and input separately.
 - With a control BAM, the existing background-normalization logic is applied.
 
 For single-end data, `fragment_length` controls read-aware extension used to better represent the estimated DNA fragment. Select it from library characteristics; do not infer it from a filename.

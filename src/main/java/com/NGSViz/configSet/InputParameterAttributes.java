@@ -52,6 +52,7 @@ public class InputParameterAttributes {
     public static double robust = 0.0; //-RB
     public static double random_sampling_rate =0.0;
     public static Double scale_ratio = null;//-S
+    public static Double input_scale_ratio = null;
     public static int core_num = 1; //-P
     public static String bin_method = "mean"; //-BM
     public static int BATCH_SIZE = 500; //-BS

@@ -67,7 +67,11 @@
         "group_name": {"$ref": "#/$defs/nonEmptyString"},
         "signal_bam": {"$ref": "#/$defs/nonEmptyString"},
         "control_bam": {"$ref": "#/$defs/nullableNonEmptyString"},
-        "scale_ratio": {"oneOf": [{"type": "number"}, {"type": "null"}]},
+        "scale_ratio": {"oneOf": [
+          {"type": "number"},
+          {"type": "string", "pattern": "^\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][-+]?\\d+)?\\s*:\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][-+]?\\d+)?\\s*$"},
+          {"type": "null"}
+        ]},
         "output_dir": {"$ref": "#/$defs/nonEmptyString"}
       }
     },

@@ -5,7 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9477a098-73b1-407f-bf34-4e229015b668" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agent/ai-friendly/01_java_compute_cli_contract.md" beforeDir="false" afterPath="$PROJECT_DIR$/agent/ai-friendly/01_java_compute_cli_contract.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agent/ai-friendly/schemas/analysis_plan.schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/agent/ai-friendly/schemas/analysis_plan.schema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/cli/ComputeParameterMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/cli/ComputeParameterMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/cli/LegacyComputeRequestAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/cli/LegacyComputeRequestAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeRequestReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeRequestReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/compute/ComputeValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/configSet/InputParameterAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/BackgrouNormalizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/BackgrouNormalizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/NGSViz/coverageCalculator/MainCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/NGSViz/cli/LegacyComputeRequestAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/NGSViz/cli/LegacyComputeRequestAdapterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/NGSViz/compute/ComputeRequestReaderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/NGSViz/compute/ComputeRequestReaderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/NGSViz/coverageCalculator/BackgrouNormalizerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/NGSViz/coverageCalculator/BackgrouNormalizerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,6 +208,7 @@
       <workItem from="1784817525899" duration="8874000" />
       <workItem from="1785836358141" duration="6319000" />
       <workItem from="1786151069422" duration="1222000" />
+      <workItem from="1788675022097" duration="1001000" />
     </task>
     <servers />
   </component>

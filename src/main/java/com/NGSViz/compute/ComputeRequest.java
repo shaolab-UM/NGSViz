@@ -23,7 +23,8 @@ public final class ComputeRequest {
     int flankRegion;
     double flankFactor;
     int numDatapoints;
-    Double scaleRatio;
+    Double sampleScaleRatio;
+    Double inputScaleRatio;
     int mappingQuality;
     int fragmentLength;
     int cores;
@@ -55,7 +56,9 @@ public final class ComputeRequest {
     public int flankRegion() { return flankRegion; }
     public double flankFactor() { return flankFactor; }
     public int numDatapoints() { return numDatapoints; }
-    public Optional<Double> scaleRatio() { return Optional.ofNullable(scaleRatio); }
+    public Optional<Double> scaleRatio() { return Optional.ofNullable(sampleScaleRatio); }
+    public Optional<Double> sampleScaleRatio() { return Optional.ofNullable(sampleScaleRatio); }
+    public Optional<Double> inputScaleRatio() { return Optional.ofNullable(inputScaleRatio); }
     public int mappingQuality() { return mappingQuality; }
     public int fragmentLength() { return fragmentLength; }
     public int cores() { return cores; }
@@ -87,7 +90,13 @@ public final class ComputeRequest {
         json.put("database", database).put("analysis_type", analysisType)
                 .put("biotype", biotype).put("flank_region", flankRegion)
                 .put("flank_factor", flankFactor).put("num_datapoints", numDatapoints)
-                .put("scale_ratio", nullable(scaleRatio));
+                .put("scale_ratio", scaleRatioJson());
+    }
+
+    private Object scaleRatioJson() {
+        if (sampleScaleRatio == null) return JSONObject.NULL;
+        if (inputScaleRatio == null) return sampleScaleRatio;
+        return sampleScaleRatio + ":" + inputScaleRatio;
     }
 
     private void addExecutionParameters(JSONObject json) {

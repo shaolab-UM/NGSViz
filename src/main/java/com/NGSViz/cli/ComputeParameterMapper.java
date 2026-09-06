@@ -62,7 +62,8 @@ final class ComputeParameterMapper {
         InputParameterAttributes.flank_region = request.flankRegion();
         InputParameterAttributes.flank_factor = request.flankFactor();
         InputParameterAttributes.num_datapoints = request.numDatapoints();
-        InputParameterAttributes.scale_ratio = request.scaleRatio().orElse(null);
+        InputParameterAttributes.scale_ratio = request.sampleScaleRatio().orElse(null);
+        InputParameterAttributes.input_scale_ratio = request.inputScaleRatio().orElse(null);
         InputParameterAttributes.genes = request.geneSubset();
         InputParameterAttributes.bedDB_path = request.customBed().orElse(null);
     }

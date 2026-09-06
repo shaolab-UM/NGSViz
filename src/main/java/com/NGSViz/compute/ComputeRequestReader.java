@@ -102,7 +102,7 @@ public final class ComputeRequestReader {
         request.flankRegion = flank == null ? defaultFlank(request.region) : flank;
         request.flankFactor = numberValue(json, "flank_factor", 0.0, issues);
         request.numDatapoints = integerValue(json, "num_datapoints", 100, issues);
-        request.scaleRatio = nullableNumber(json, "scale_ratio", issues);
+        parseScaleRatios(request, json, issues);
     }
 
     private void populateExecution(ComputeRequest request, JSONObject json,
@@ -163,6 +163,31 @@ public final class ComputeRequestReader {
             return null;
         }
         return ((Number) value).doubleValue();
+    }
+
+    private void parseScaleRatios(ComputeRequest request, JSONObject json,
+                                  List<ValidationIssue> issues) {
+        if (!json.has("scale_ratio") || json.isNull("scale_ratio")) return;
+        Object value = json.get("scale_ratio");
+        if (value instanceof Number) {
+            request.sampleScaleRatio = ((Number) value).doubleValue();
+            return;
+        }
+        if (!(value instanceof String)) {
+            issues.add(typeIssue("scale_ratio", "a number or sample:input string"));
+            return;
+        }
+        String[] ratios = ((String) value).trim().split(":", -1);
+        if (ratios.length != 2 || ratios[0].trim().isEmpty() || ratios[1].trim().isEmpty()) {
+            issues.add(typeIssue("scale_ratio", "a number or sample:input string"));
+            return;
+        }
+        try {
+            request.sampleScaleRatio = Double.parseDouble(ratios[0].trim());
+            request.inputScaleRatio = Double.parseDouble(ratios[1].trim());
+        } catch (NumberFormatException error) {
+            issues.add(typeIssue("scale_ratio", "a number or sample:input string"));
+        }
     }
 
     private boolean booleanValue(JSONObject json, String key, boolean defaultValue,

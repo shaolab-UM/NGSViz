@@ -106,7 +106,8 @@ public final class ComputeValidator {
         checkMinimum(request.flankRegion(), 0, "flank_region", errors);
         checkRange(request.flankFactor(), 0.0, 1.0, "flank_factor", errors);
         checkMinimum(request.numDatapoints(), 100, "num_datapoints", errors);
-        request.scaleRatio().ifPresent(value -> checkFinite(value, "scale_ratio", errors));
+        request.sampleScaleRatio().ifPresent(value -> checkFinite(value, "scale_ratio", errors));
+        request.inputScaleRatio().ifPresent(value -> checkFinite(value, "scale_ratio", errors));
         checkMinimum(request.mappingQuality(), 0, "mapping_quality", errors);
         checkMinimum(request.fragmentLength(), 0, "fragment_length", errors);
         checkMinimum(request.cores(), 1, "cores", errors);

@@ -83,4 +83,15 @@ class LegacyComputeRequestAdapterTest {
         assertEquals("both", request.strandSpecific());
         assertEquals("all", request.geneSubset());
     }
+
+    @Test
+    void legacyScaleRatioAcceptsSampleAndInputValues() throws Exception {
+        ComputeRequest request = new LegacyComputeRequestAdapter().fromArgs(new String[]{
+                "-G", "hg38", "-R", "tss", "-I", "/data/signal.bam:/data/input.bam",
+                "-O", tempDir.resolve("output").toString(), "-T", "Test", "-S", "0.7:0.8"
+        });
+
+        assertEquals(0.7, request.sampleScaleRatio().orElseThrow(), 1e-12);
+        assertEquals(0.8, request.inputScaleRatio().orElseThrow(), 1e-12);
+    }
 }

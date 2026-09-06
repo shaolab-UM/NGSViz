@@ -8,7 +8,8 @@ public class BackgrouNormalizer {
             SparseMatrix inputMat,
             long signalLibrarySize,
             long inputLibrarySize,
-            Double signalScaleRatio
+            Double signalScaleRatio,
+            Double inputScaleRatio
     ) {
         if (signalLibrarySize <= 0 || inputLibrarySize <= 0) {
             throw new IllegalArgumentException("Library size must be greater than zero.");
@@ -23,7 +24,9 @@ public class BackgrouNormalizer {
         double signalPseudocount = signalScaleRatio == null
                 ? 1_000_000.0 / signalLibrarySize
                 : signalScaleRatio;
-        double inputPseudocount = 1_000_000.0 / inputLibrarySize;
+        double inputPseudocount = inputScaleRatio == null
+                ? 1_000_000.0 / inputLibrarySize
+                : inputScaleRatio;
         double log2 = Math.log(2.0);
 
         for (int row = 0; row < signalDims[0]; row++) {

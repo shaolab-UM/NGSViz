@@ -13,7 +13,7 @@ class BackgrouNormalizerTest {
         signal.set(0, 0, 1.0);
 
         SparseMatrix result = BackgrouNormalizer.backgroundNormalize(
-                signal, input, 20_000_000L, 20_000_000L, null
+                signal, input, 20_000_000L, 20_000_000L, null, null
         );
 
         assertEquals(4.392317422778761, result.get(0, 0), 1e-12);
@@ -25,9 +25,21 @@ class BackgrouNormalizerTest {
         SparseMatrix input = new SparseMatrix(1, 1);
 
         SparseMatrix result = BackgrouNormalizer.backgroundNormalize(
-                signal, input, 20_000_000L, 20_000_000L, 0.2
+                signal, input, 20_000_000L, 20_000_000L, 0.2, null
         );
 
         assertEquals(2.0, result.get(0, 0), 1e-12);
+    }
+
+    @Test
+    void usesSeparateScaleRatiosForSignalAndInput() {
+        SparseMatrix signal = new SparseMatrix(1, 1);
+        SparseMatrix input = new SparseMatrix(1, 1);
+
+        SparseMatrix result = BackgrouNormalizer.backgroundNormalize(
+                signal, input, 20_000_000L, 20_000_000L, 0.2, 0.4
+        );
+
+        assertEquals(-1.0, result.get(0, 0), 1e-12);
     }
 }

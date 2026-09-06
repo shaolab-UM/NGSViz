@@ -131,7 +131,9 @@ public final class LegacyComputeRequestAdapter {
     }
 
     private Object optionalDecimal(Map<String, String> flags, String flag) {
-        return flags.containsKey(flag) ? Double.parseDouble(flags.get(flag)) : JSONObject.NULL;
+        if (!flags.containsKey(flag)) return JSONObject.NULL;
+        String value = flags.get(flag);
+        return value.contains(":") ? value : Double.parseDouble(value);
     }
 
     private boolean bool(Map<String, String> flags, String flag, boolean fallback) {
