@@ -129,8 +129,9 @@ public class PhysicalCoverageCalculator {
                     continue;
                 }
 
+                // Count each proper pair once using its first read.
                 if (bamRecord.getReadPairedFlag() &&
-                        !bamRecord.getProperPairFlag()) {
+                        (!bamRecord.getProperPairFlag() || !bamRecord.getFirstOfPairFlag())) {
                     continue;
                 }
 

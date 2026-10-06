@@ -1,0 +1,10 @@
+root <- normalizePath("Test/feature_figure_A_to_G_reproduction_20261006")
+input <- file.path(root, "visualization/EFG")
+lib <- "/Users/benche/Desktop/myProj/ngsPlot/NGSViz/lib"
+options(ngsviz.skip_dependency_loading = TRUE)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(corrplot))
+source(file.path(lib, "processJSON.R"))
+source(file.path(lib, "qualityControlViz.R"))
+getJsonFiles <- function(path) as.list(basename(list.files(path, "_NGSViz_plotSetting[.]json$", full.names = TRUE)))
+corPlot(input, propressData(input))

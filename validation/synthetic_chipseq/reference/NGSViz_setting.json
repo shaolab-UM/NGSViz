@@ -1,0 +1,9 @@
+{
+  "versionNum": {"version": "1.3"},
+  "toolParas": {
+    "tool_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz",
+    "db_path": "/Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/reference/synthetic500.db",
+    "tool_name": "NGSViz-1.3.jar",
+    "java_path": "/usr/bin/java"
+  }
+}

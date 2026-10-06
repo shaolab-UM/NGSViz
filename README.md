@@ -100,6 +100,18 @@ conda activate ngsViz
 
 `environment.yml` records the shared direct dependencies. The files under `conda-lock/` record exact builds and are preferred for installation.
 
+### Container deployment
+
+For rapid deployment, ngsViz is also available as pre-built Docker and Singularity containers.
+
+The Docker image can be pulled from Docker Hub:
+
+```
+docker pull ngsviz/ngsviz:latest
+```
+
+The ngsViz Singularity container is available from [Zenodo](https://doi.org/10.5281/zenodo.19849141).
+
 ### Build the Java application
 
 The repository includes a runnable release JAR. To rebuild it from source:
@@ -154,7 +166,7 @@ An installed genome only proves that ngsViz can query it. It does not prove that
 
 ### Pre-built reference databases
 
-The complete catalog is also available in the [shared Google Drive folder](https://drive.google.com/drive/folders/1h3tORc5PiZ_TTbIH9cH03O1wyqjhNMDz?usp=sharing).
+The complete catalog can be downloaded from [Zenodo](https://doi.org/10.5281/zenodo.19846457).
 
 | Organism | Scientific name | Genome version | Annotation source |
 |---|---|---|---|
@@ -205,16 +217,18 @@ The builder expects transcript/exon records with `gene_name` and `transcript_id`
 
 ### Custom interval BED
 
-Use `-BD` in the legacy CLI or `custom_bed` in a JSON request. The file must be tab-delimited, have no header, and use 0-based half-open coordinates.
+Use `-BD` in the legacy CLI or `custom_bed` in a JSON request. The file must be tab-delimited, have no header, and use 0-based half-open coordinates. The recommended column layout follows standard **BED6**:
 
 | Column | Required | Meaning |
 |---:|---:|---|
 | 1 | Yes | Chromosome |
-| 2 | Yes | Start |
-| 3 | Yes | End |
-| 4 | No | Strand, `+` or `-` |
-| 5 | No | Gene or element name |
-| 6 | No | Transcript or stable element ID |
+| 2 | Yes | Start (0-based) |
+| 3 | Yes | End (half-open) |
+| 4 | No | Name (gene or element) |
+| 5 | No | Score (ignored by ngsViz) |
+| 6 | No | Strand, `+` or `-` |
+
+A legacy NGSViz format (column 4 = strand, column 5 = gene name, column 6 = transcript ID) is still auto-detected when column 4 is a strand token (`+`, `-`, `.`).
 
 When optional columns are absent, ngsViz assumes the `+` strand and generates stable IDs from coordinates.
 

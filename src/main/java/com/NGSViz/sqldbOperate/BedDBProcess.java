@@ -63,11 +63,21 @@ public class BedDBProcess {
                 String gene_name = null;
                 String transcript_id = null;
 
-                // Support both NGSViz custom format and common BED formats.
-                // NGSViz custom (documented): chrom, start, end, strand, geneName, transcriptId
-                // Common BED6: chrom, start, end, name, score, strand
-                if (records.length >= 4 && isStrandToken(records[3])) {
-                    // NGSViz: strand is column 4
+                // Support standard BED6 and legacy NGSViz custom format.
+                // Standard BED6: chrom, start, end, name, score, strand
+                // Legacy NGSViz: chrom, start, end, strand, geneName, transcriptId
+                //
+                // Detection order: BED6 first (col6 is strand token and col4 is NOT
+                // a strand token), then legacy NGSViz (col4 is strand token), then
+                // generic BED4/5 fallback.
+                if (records.length >= 6 && isStrandToken(records[5])
+                        && !isStrandToken(records[3])) {
+                    // Standard BED6: chrom, start, end, name, score, strand
+                    strand = normalizeStrand(records[5]);
+                    gene_name = records[3];
+                    // records[4] is the BED score column — not used by NGSViz.
+                } else if (records.length >= 4 && isStrandToken(records[3])) {
+                    // Legacy NGSViz: strand is column 4
                     strand = normalizeStrand(records[3]);
                     if (records.length >= 6) {
                         gene_name = records[4];
@@ -76,7 +86,8 @@ public class BedDBProcess {
                         gene_name = records[4];
                     }
                 } else if (records.length >= 6 && isStrandToken(records[5])) {
-                    // BED6: strand is column 6
+                    // BED6 where col4 also happens to be a strand token (ambiguous):
+                    // prefer BED6 interpretation.
                     strand = normalizeStrand(records[5]);
                     gene_name = records[3];
                 } else if (records.length >= 4) {

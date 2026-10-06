@@ -1,0 +1,24 @@
+interval type is broad_interval
+The number of middle point is 301
+The number of flank points is 100
+--- The bam file will be analysing: /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/input/synthetic_chipseq.bam
+--- get bam file information ---
+This BAM file is single-end.
+Chromosome label format is 'chr'!
+--- The bam file will be analysing: /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/input/synthetic_chipseq.bam
+The gene subset will be analysing: all
+The title subset will be analysing: synthetic500_genebody
+----------------------------------------
+--- Start coverage matrix calculation! ---
+=== batch size500 ===
+The query keyword is : SELECT gname, tid, chrom, strand, start, end FROM 'synthetic_RefSeq' WHERE biotype = 'protein_coding' AND type = 'transcript' AND DefaultChoose = 1
+Database connection pool initialized with 10 connections
+--- Starting coverage calculation group by chromosomes ----
+--- Consolidating results ----
+Coverage Scaled Matrix finish!
+----------------------------------------
+Coverage matrix with row and column names saved to /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/output/synthetic_chipseq_coverage_matrix_heatmap.csv
+Gene read-count matrix saved to /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/output/synthetic_chipseq_gene_read_count.csv
+The directory already exists.: /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/output
+config_path: /Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/output/synthetic500_genebody_NGSViz_plotSetting.json
+/Users/benche/Desktop/myProj/ngsPlot/NGSViz/validation/synthetic_chipseq/output/synthetic500_genebody_NGSViz_plotSetting.json : JSON config file has been generated!
